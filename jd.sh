@@ -7,7 +7,7 @@
 #
 #set -x
 
-version="1.9"
+version="1.90"
 cron_file="/etc/crontabs/root"
 #url=https://raw.githubusercontent.com/lxk0301/jd_scripts/master
 url=https://gitee.com/lxk0301/jd_scripts/raw/master
