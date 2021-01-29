@@ -1,0 +1,85 @@
+name: Update_js
+
+on:
+
+ # push:
+
+ #   branches: 
+
+ #     - main
+
+   schedule:
+
+     - cron: 55 1,6,12 * * * 
+
+  # release:
+
+  #   types: [published]
+
+   watch:
+
+     types: started
+
+   workflow_dispatch:
+
+    
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    
+
+    steps:
+
+      - name: Checkout
+
+        uses: actions/checkout@main
+
+      
+
+      - name: update
+
+        run: |
+
+          wget https://raw.githubusercontent.com/firkerword/KPR/main/2.sh
+
+          chmod 0755 ./2.sh
+
+          ./2.sh
+
+      
+
+      - name: Push Commits
+
+        continue-on-error : true
+
+        run : |
+
+          cd JD_Script
+
+          git config --global user.email "136000981@qq.com"
+
+          git config --global user.name "firkerword"
+
+          git add . || echo "1"
+
+          git commit -m "github_actions" -a;
+
+          git push "https://firkerword:${{ secrets.MIMA }}@github.com/firkerword/JD_Script.git" main
+
+          
+
+      - name: Delete workflow runs
+
+        uses: GitRML/delete-workflow-runs@main
+
+        with:
+
+          retain_days: 1
+
+          keep_minimum_runs: 3 
