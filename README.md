@@ -75,9 +75,17 @@ N1（群友极地阳光测试）
 
 4.1 抓取 https://bean.m.jd.com/  的cookie
 
-4.1 推荐使用Google Chrome浏览器的无痕模式打开京东签到登录页面并使用手机验证码登入 [浏览器获取京东cookie教程](https://gitee.com/lxk0301/jd_scripts/blob/master/backUp/GetJdCookie.md)
+4.2 推荐使用Google Chrome浏览器的无痕模式打开京东签到登录页面并使用手机验证码登入 [浏览器获取京东cookie教程](https://gitee.com/lxk0301/jd_scripts/blob/master/backUp/GetJdCookie.md)
 
-4.2 用winscp工具连接openwrt，进入usr/share/JD_Script目录找到jdCookie.js和sendNotify.js文件
+4.3 脚本二维码登录，据说有效期是90天：
+
+4.3.1 首次需要执行 `npm install qrcode-terminal` # 安装qrcode-terminal 以后不用
+
+4.3.2 安装完成后执行 `node $jd_file/js/getJDCookie.js` # 获取登录二维码
+
+4.3.3 扫码将获取到的cookie复制填写到jdCookie.js脚本
+
+4.2 用winscp工具连接openwrt，进入usr/share/JD_Script目录找到***jdCookie.js***和***sendNotify.js***文件
 
 打开jdCookie.js文件进行编辑，将抓取到的cookie填写进文本第7行开头的单引号内，并保存，注意不要漏掉或删除字符
 
