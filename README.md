@@ -1,7 +1,6 @@
 # JD_Script
 ![JD_Script](doc/JD_Script.png)
 ## 序言
-   脚本来源：https://github.com/ITdesk01/JD_Script
    调用https://github.com/LXK9301/jd_scripts/tree/master 进行测试学习，在X86机器使用正常，其他机器满足依赖应该问题不大,
    
    **lxk0301大佬的JS脚本里面的助力码替换成我的了，默认会给我助力，如果你不需要自行删除代码或者禁用他**
@@ -13,7 +12,8 @@ openwrt X86 （基于x86编写）
 
 N1（群友极地阳光测试）
 
-感谢作者ITdesk01 lxk0301 shylocks大佬的脚本
+
+感谢作者lxk0301 shylocks大佬的脚本
 
 **注意1（设备Rom小于128M别折腾了，你装不下依赖，不用往下看了，RAM最好大点1G左右，512M也行就是不能跑太多账号，不然会死机）**
 
@@ -65,32 +65,41 @@ N1（群友极地阳光测试）
          npm install -g crypto-js got http-server tough-cookie download request tunnel
 
 
+**如果你执行安装npm install -g crypto-js got http-server tough-cookie download request tunnel报错，你也可以用以下代码安装**
+
+         wget https://gitee.com/lxk0301/jd_scripts/raw/master/package.json
+        
+         npm install
+
+**还不行可以采用最后一个办法（痴雨提供）**
+设置NPM 下载源为淘宝 
+
+         npm config set registry https://registry.npm.taobao.org
+
+查看当前NPM下载源
+
+         npm config get registry
+
+然后再执行
+
+          npm install -g crypto-js got http-server tough-cookie download request tunnel
+
+
 **3.开始下载脚本**
 
-         git clone -b main https://github.com/firkerword/JD_Script.git /usr/share/JD_Script
+         git clone -b main https://github.com/ITdesk01/JD_Script.git /usr/share/JD_Script
          cd /usr/share/JD_Script && chmod 777 jd.sh 
          sh jd.sh 
          
-**4.设置脚本**
 
-4.1 抓取 https://bean.m.jd.com/  的cookie
-
-4.1 推荐使用Google Chrome浏览器的无痕模式打开京东签到登录页面并使用手机验证码登入 [浏览器获取京东cookie教程](https://gitee.com/lxk0301/jd_scripts/blob/master/backUp/GetJdCookie.md)
-
-4.2 用winscp工具连接openwrt，进入usr/share/JD_Script目录找到jdCookie.js和sendNotify.js文件
-
-打开jdCookie.js文件进行编辑，将抓取到的cookie填写进文本第7行开头的单引号内，并保存，注意不要漏掉或删除字符
-
-打开sendNotify.js文件进行编辑，填写微信或者TG或者其他推送平台的推送码，注意不要漏掉或删除字符
-
-设置完成以后可以用以下代码
+脚本安装完成以后可以用以下代码
 
          sh $jd #直接调用代码
 
          cd $jd_file # 可以直接进入代码所在文件夹
 
 
-**5.已知问题!!!**
+##3.已知问题!!!
 
 1.下载下来的js都是空的，建议强制代理raw.githubusercontent.com
 
@@ -99,7 +108,7 @@ N1（群友极地阳光测试）
          sh $jd jd_sharecode
 
 
-**6.问题反馈：https://github.com/ITdesk01/JD_Script/issues (描述清楚问题或者上图片，不然可能没有人理)**
+**4.问题反馈：https://github.com/ITdesk01/JD_Script/issues (描述清楚问题或者上图片，不然可能没有人理)**
 
 **吹水群** :**667491026** (公子大爷请绕道，白嫖可能没人理)
 
