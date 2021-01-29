@@ -943,7 +943,7 @@ COMMENT
 	new_jdimmortal_set="'$new_jdimmortal@$chiyu',"
 	sed -i "s/$old_jdimmortal/$new_jdimmortal_set/g" $dir_file_js/jd_immortal.js
 	sed -i "s/$old_jdimmortal1/$new_jdimmortal_set/g" $dir_file_js/jd_immortal.js
-	sed -i "53a $new_jdimmortal_set\n$new_jdimmortal_set\n$new_jdimmortal_set\n$new_jdimmortal_set" $dir_file_js/jd_immortal.js
+	sed -i "56a $new_jdimmortal_set\n$new_jdimmortal_set\n$new_jdimmortal_set\n$new_jdimmortal_set" $dir_file_js/jd_immortal.js
 
 	#闪购盲盒
 	old_jdsgmh="'T019-aknAFRllhyoQlyI46gCjVWmIaW5kRrbA',"
