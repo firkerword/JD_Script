@@ -294,9 +294,9 @@ run_020() {
 
 run_030() {
 	echo -e "$green run_030$start_script $white"
-	$node $dir_file_js/jd_gyec.js #工业爱消除
-	$node $dir_file_js/jd_xxl.js #东东爱消除
-	$node $dir_file_js/jd_xxl_gh.js	#个护爱消除，完成所有任务+每日挑战
+	#$node $dir_file_js/jd_gyec.js #工业爱消除
+	#$node $dir_file_js/jd_xxl.js #东东爱消除
+	#$node $dir_file_js/jd_xxl_gh.js	#个护爱消除，完成所有任务+每日挑战
 	echo -e "$green run_030$stop_script $white"
 }
 
@@ -318,7 +318,7 @@ run_01() {
 run_02() {
 	echo -e "$green run_02$start_script $white"
 	$node $dir_file_js/jd_moneyTree.js #京东摇钱树，7-9 11-13 18-20签到 每两小时收一次
-	#$node $dir_file_js/jd_bookshop.js #口袋书店
+	$node $dir_file_js/jd_bookshop.js #口袋书店
 	echo -e "$green run_02$stop_script $white"
 }
 
@@ -357,7 +357,7 @@ run_07() {
 	$node $dir_file_js/jd_live.js #直播抢京豆
 	$node $dir_file_js/jd_live.js #直播抢京豆
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
-	#$node $dir_file_js/jd_jxnc.js #京喜农场
+	$node $dir_file_js/jd_jxnc.js #京喜农场
 	$node $dir_file_js/jd_mh.js #京东盲盒
 	$node $dir_file_js/jd_ms.js #京东秒秒币 一个号大概60秒
 	$node $dir_file_js/jd_bj.js #宝洁美发屋
