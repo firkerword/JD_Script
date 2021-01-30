@@ -836,8 +836,9 @@ additional_settings() {
 	new_jxnc="6210b7cb41e01b14d92b2d91eed78384@9455922013cf0f704ee6fc9416ec05df@df0165aa52755c3a5337bc789552d9a8@019cffd91086ab563e91abf469634395@48f4c24ea3d01be32359cc61ba43ae7e@87c34293058a8644f73be7731a91a293@16b73e9a958c3f4636a51a17fcba28df@6cdc3a49111b7b57153a633eb6c1b1e3"
 	zuoyou_20190516_jxnc="8476543ed84f16c6446d48bbe8f769d4@ed92326cbc2013dfc769c5e813599b7c@74e57e9c14b59e8f11baa46d83f5f145@a782af3074ea9a1d0c72be5f04e324d4@e7ccd6363a8d84109b6ea5b6d2d7d355@48117805cf3c3f67371467c7b598964b@203c9e8921ec34ad159c301df8a3874c@c8a49d0b56a702a252d5ec3feea1c31e@f162cc02054a5be81ac30f9557bfd97b"
 	jidiyangguang_20190516_jxnc="ba177c5a5cbfdf43ea517cd21c0c6250@01a09a00572befec4edb60e9d39f7ba1"
+	chiyu_jxnc="6a1d2f560c746e4175d9c5bfc1f30ca1"
 
-	new_jxnc_set="'$new_jxnc@$zuoyou_20190516_jxnc@$jidiyangguang_20190516_jxnc',"
+	new_jxnc_set="'$new_jxnc@$zuoyou_20190516_jxnc@$jidiyangguang_20190516_jxnc@$chiyu_jxnc',"
 	sed -i "s/$old_jxnc/'6210b7cb41e01b14d92b2d91eed78384@9455922013cf0f704ee6fc9416ec05df@df0165aa52755c3a5337bc789552d9a8@019cffd91086ab563e91abf469634395@48f4c24ea3d01be32359cc61ba43ae7e@87c34293058a8644f73be7731a91a293@16b73e9a958c3f4636a51a17fcba28df@6cdc3a49111b7b57153a633eb6c1b1e3'/g" $dir_file_js/jd_jxnc.js
 	sed -i "s/'',/$new_jxnc_set/g" $dir_file_js/jdJxncShareCodes.js
 	sed -i "12a $new_jxnc_set\n$new_jxnc_set\n$new_jxnc_set\n$new_jxnc_set" $dir_file_js/jdJxncShareCodes.js
@@ -901,10 +902,11 @@ COMMENT
 	old_jdbook="'28a699ac78d74aa3b31f7103597f8927@2f14ee9c92954cf79829320dd482bf49@fdf827db272543d88dbb51a505c2e869@ce2536153a8742fb9e8754a9a7d361da@38ba4e7ba8074b78851e928af2b4f6b2',"
 	old_jdbook1="'28a699ac78d74aa3b31f7103597f8927@2f14ee9c92954cf79829320dd482bf49@fdf827db272543d88dbb51a505c2e869'"
 	new_jdbook="2c25276cb61741d98f767884856ebcd4@f68cdec737564d929946ff64c76374cb@1ebabd3990a3499daab4397d09cd723b@d6d73edddaa64cbda1ec42dd496591d0@e50f362dbf8e4e8891c18d0a6fc9d04d@40cb5da84f0448a695dd5b9643592cfa@3ef061eb9b244b3cbdc9904a0297c3f5@99f8c73daa9f488b8cb7a2ed585aa34d"
-	zuoyou_20190516_jdbook="6b1c75eb1cb94a798430419d910b72af@2bcf369644394ffda20b07abbd300957@dbd5fbf1ffde4f99b74fd5b9d5aba901@fa96f480e49b464e893bf18ac96a2772@eae4a6a81da5430688ed02c909d5ed75@"
+	zuoyou_20190516_jdbook="6b1c75eb1cb94a798430419d910b72af@2bcf369644394ffda20b07abbd300957@dbd5fbf1ffde4f99b74fd5b9d5aba901@ccb016eff33147fc96b2b0cfa781965a@ab887a95729a4cc590fbb4161c19f57f@fa96f480e49b464e893bf18ac96a2772@eae4a6a81da5430688ed02c909d5ed75"
 	jidiyangguang_20190516_jdbook="a3ad79593cdb41bd8ab31dab7e19cf06@90660442a37f473b98bf57774e9825fe"
+	chiyu_jdbook="dfae57a9a2654667b0b5e7298d2ad137"
 
-	new_jdbook_set="'$new_jdbook@$zuoyou_20190516_jdbook@$jidiyangguang_20190516_jdbook',"
+	new_jdbook_set="'$new_jdbook@$zuoyou_20190516_jdbook@$jidiyangguang_20190516_jdbook@$chiyu_jdbook',"
 	sed -i "s/$old_jdbook/$new_jdbook_set/g" $dir_file_js/jd_bookshop.js
 	sed -i "s/$old_jdbook1/$new_jdbook_set/g" $dir_file_js/jd_bookshop.js
 	sed -i "34a $new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set" $dir_file_js/jd_bookshop.js
@@ -915,8 +917,9 @@ COMMENT
 	new_jdcash="95OquUc_sFugJO5_E_2dAgm-@eU9YELv7P4thhw6utCVw@eU9YaOjnbvx1-Djdz3UUgw@eU9Ya-iyZ68kpWrRmXBFgw@eU9YabrkZ_h1-GrcmiJB0A@eU9YM7bzIptVshyjrwlteU9YCLTrH5VesRWnvw5t@P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8=@LTyKtCPGU6v0uv-n1GSwfQ==@y7KhVRopnOwB1qFo2vIefg==@WnaDbsWYwImvOD1CpkeVWA==@Y4r32JTAKNBpMoCXvBf7oA==@JuMHWNtZt4Ny_0ltvG6Ipg=="
 	zuoyou_20190516_jdcash="f1kwaQ@a1hzJOmy@eU9Ya7-wM_Qg-T_SyXIb0g@eU9Yaengbv9wozzUmiIU3g@eU9YaO22Z_og-DqGz3AX1Q@f0JgObLlIalJrA@flpkLei3@cUJpO6X3Yf4m@e1JzPbLlJ6V5rzk@eU9Ya7m3NaglpW3QziUW0A"
 	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
+	chiyu_jdcash="cENuJam3ZP0"
 
-	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash',"
+	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash',"
 	sed -i "s/$old_jdcash/$new_jdcash_set/g" $dir_file_js/jd_cash.js
 	sed -i "s/$old_jdcash1/$new_jdcash_set/g" $dir_file_js/jd_cash.js
 	sed -i "33a $new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set" $dir_file_js/jd_cash.js
@@ -927,8 +930,9 @@ COMMENT
 	new_jdnian="cgxZ--kf8RFXPKlP3YUDN9N7qbopP-VtOxRA57Cp3GReD-a9yJi3ezZDqwBUqZz5@cgxZdTXtWO2Ts3mOfmXSkLTAnQUGuJKjSoHMwahkfs9SUuxc0x0N4sU@cgxZdTXtIL6P4g6aAVOh6xbLlZJoC29uIGgW846gj3vFI7ZqODDgGU6gAwA@cgxZdTXtI77a613LXAGtvfpsw8rraLgBTtRR8gtVXzz6qQixKVxvi1jGQt4@cgxZdTXtIeyM6wqaAQGgvhd59Mwz4nvxYSLgIRFrXHtC9Ij-x8O-uY98Rmc@cgxZdTXte-Cbrmm6S3ffi4dB6WNg_mNfNBNnMI122s8KkpZ8PS2o7cM@cgxZdTXtQOKDk2exSH7bm1yqE9lH3OVjhKsFb1yndmZ5KgUbv7F2-X8@cgxZfDnbbf_f6A-FRGauvmGGso1xqGtgAg@cgxZLmmEIbzc4gnMDgPGr2LOJQOfYtSzbdQggbo_ZBZvg1w-tA@cgxZ-twV_BNksFmeREnKvs1gJGa3wzPX6AQP@cgxZdTXtIr6L7g3JWQGguQl0fv8raw1YoF7_nbo39oCIWqSoltmEM42UVdM@cgxZdTXtIumM7g7MXVb_vf5sKfV37FuksxazeYcqfB4lV7yYY6SNJf1K9qo"
 	zuoyou_20190516_jdnian="cgxZcyOFIfaWiQqLAQXLjg@cgxZZyLGbL_apkKqAUet7CfElE0@cgxZdTXtI-nYvwbPAFSu7cfA8L-fTfRluVPeR9kXvOpzr7T1OB7z_vf53pY@cgxZdTXtIb-I4g2fWleovuuIRUaojOVYyqCW2tQE47NH2e5FdQdTPzqVq60@cgxZdTXtILve6wjPAVH6637oFStz2n55oDLBd31Gx1wuFVZtARbf7Apdz2k@cgxZczjVceSNrVumVUnljJGWK910VVlBaWrIryfH@cgxZciDRZb7fpkKqDALuuFHFNhA@cgxZfTjcc_Of7QzJREnK6JpEyVYO3l7cfElq@cgxZdyjGdeSNq1eWVlLlox-BNG_CcXjZTeAN16NgVbs@cgxZdTXtI-_fuVrKXAas6hLMvq8JwrWzJDKWMn5lPVfsd8XKc2XkCY6g0Rw"
 	jidiyangguang_20190516_jdnian="cgxZdTXtIL6J7QzACwWhunFByvPM_ltcuRhq9MwhLp6jp0TOnV3aPkhq-dY@cgxZdTXtI-jeuwqYWQStvcR9psTc5SAZg5CwlSr9fmHCeDi1lNzhztEP3zE"
+	chiyu_jdnian="IgNWdiLGaPaJsleATQCr7iyCWzrGQyVnjFgGJ24sd94"
 
-	new_jdnian_set="'$new_jdnian@$zuoyou_20190516_jdnian@$jidiyangguang_20190516_jdnian',"
+	new_jdnian_set="'$new_jdnian@$zuoyou_20190516_jdnian@$jidiyangguang_20190516_jdnian@$chiyu_jdnian',"
 	sed -i "s/$old_jdnian/$new_jdnian_set/g" $dir_file_js/jd_nian.js
 	sed -i "s/$old_jdnian1/$new_jdnian_set/g" $dir_file_js/jd_nian.js
 	sed -i "50a $new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set" $dir_file_js/jd_nian.js
@@ -958,8 +962,9 @@ COMMENT
 	new_jdsgmh="T024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQCjVWmIaW5kRrbA@T0225KkcRUhP9FCEKR79xaZYcgCjVWmIaW5kRrbA@T0205KkcH0RYsTOkY2iC8I10CjVWmIaW5kRrbA@T0205KkcJEZAjD2vYGGG4Ip0CjVWmIaW5kRrbA"
 	zuoyou_20190516_jdsgmh="T0064r90RQCjVWmIaW5kRrbA@T0089r43CBsZCjVWmIaW5kRrbA@T0225KkcR00boFzRKEvzlvYCcACjVWmIaW5kRrbA@T0225KkcRRtL_VeBckj1xaYNfACjVWmIaW5kRrbA@T0225KkcRB8d9FLRKU6nkPQOdwCjVWmIaW5kRrbA@T0144qQkFUBOsgG4fQCjVWmIaW5kRrbA@T0127KQtF1dc8lbXCjVWmIaW5kRrbA@T0155rQ3EUBOtA2Ifk0CjVWmIaW5kRrbA@T0225KkcR0scpgDUdBnxkaEPcgCjVWmIaW5kRrbA"
 	jidiyangguang_20190516_jdsgmh="T0225KkcR0wdpFCGcRvwxv4JcgCjVWmIaW5kRrbA@T0225KkcRBpK8lbeIxr8wfRcdwCjVWmIaW5kRrbA"
+	chiyu_jdsgmh="T0117aUqCVsc91UCjVWmIaW5kRrbA"
 
-	new_jdsgmh_set="'$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh',"
+	new_jdsgmh_set="'$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh',"
 	sed -i "s/$old_jdsgmh/$new_jdsgmh_set/g" $dir_file_js/jd_sgmh.js
 	sed -i "s/$old_jdsgmh1/$new_jdsgmh_set/g" $dir_file_js/jd_sgmh.js
 	sed -i "32a $new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set" $dir_file_js/jd_sgmh.js
@@ -970,8 +975,9 @@ COMMENT
 	new_jdfestival="a1f4425f-8c39-471e-8689-0dd9af382045@a2538c1d-a045-4ea0-98ba-d8962796c097@753c15e6-ca43-4df0-99d2-08a3e8789bf3@11875cff-d5d6-4f17-af03-6a4cd00f94ec@5925b538-aa20-4417-b448-20f9a8c206b4"
 	zuoyou_20190516_jdfestival="a8f2ca0c-536f-4535-871e-bf493652979a@fc9cc67f-5f6f-43b2-8d51-9e9d945bdb4f@0187b5a4-d78f-4d8a-9a48-3f5669befd57@2c194d51-57de-4612-b85e-4d98cfc5eece@b84c261b-854e-46c7-83b3-a84e6be91f77@9024588f-0e9e-4418-a2a8-00dc2f9533ae@79d5cd28-4930-47e6-acc4-87bbe1325b77@db202644-22c6-4e56-8c58-be5f6db4ebed@884ca6dd-db43-45b9-bf77-b009bed6350d"
 	jidiyangguang_20190516_jdfestival="82b9b70b-a503-45fc-a9b4-04978d767f20@3ce171cf-df49-42eb-99de-1fdd306ca9e6"
+	chiyu_jdfestival="1212d4c9-31e1-41af-b6ba-61c119940db2"
 
-	new_jdfestival_set="'$new_jdfestival@$zuoyou_20190516_jdfestival@$jidiyangguang_20190516_jdfestival',"
+	new_jdfestival_set="'$new_jdfestival@$zuoyou_20190516_jdfestival@$jidiyangguang_20190516_jdfestival@$chiyu_jdfestival',"
 	sed -i "s/$old_jdfestival/$new_jdfestival_set/g" $dir_file_js/jd_festival.js
 	sed -i "s/$old_jdfestival1/$new_jdfestival_set/g" $dir_file_js/jd_festival.js
 	sed -i "34a $new_jdfestival_set\n$new_jdfestival_set\n$new_jdfestival_set\n$new_jdfestival_set" $dir_file_js/jd_festival.js
@@ -981,8 +987,9 @@ COMMENT
 	old_jdsuperbox1="\`O3eI2LwEpHNofuF6LxjNqw@Hvm2Tg0jWloh4bnPOa9wuA@RY7V2DbS5uInv_GGD7JuoQij_0m9TAUe-t_mpE-BHB4@dZGLTyomKT0ZmOYaa4FSu0Ch0ywXFSW7gXwe_z6nUFc@UHW6hnmrpOABeMMKc5kpng\`,"
 	new_jdsuperbox="AdK-E_nAYUm7Nif1o_P9Kz1_IjelEIX3XMR9kLhjkUo@kRUZgiHAG6MH3MbxEmHu7A@Wlnddn9-EST-tViwpRvedoseTzAkJjfBHBqsVhkxBiQ@paajDEtwEBWELjmcQ70f_PEh-JCPmgvF2XktOJIVKk8@NLQlCreLH6IcZX7xXmOy7JVKCiTveYfjCxRBHB1x7U8@TZOHaJd9uoCWSBGjTpvHtq4ESISc_JVtAz15HMVR0Xc@31AEesBSjRfF0nbzA0iTHw@GRTM4onTMM4_xLPwAgg2Lw"
 	zuoyou_20190516_jdsuperbox="hpuuBn_DHIEEtGtO_l1v0g@PTvY82VjS4iyzD6m439G7A@Rhj2389A14HTWpJWakBoh2UcBVQY_4dhCiYnRz-lEdU@fNyyP5hpC8DMme-rHVK4Yw1Wug5CNiD8tBOlK6eDW8o@CbKCRFJOWsdVUJ3UNsnPeAhxGPo1ImbWUCfFnn9t2zI@IeevO_l_9DqDflSG728SPQ@Ulx6tsCj5ebNVpCbDIglSA@8m0NXmTc8I_kwRXxeOTJug@zSH2ixbQdrlZU-5VQwR5Pg@QDD9t-9smLC8GRIipCFU66-ur7VYRlvzT-rWSf8ZzC0"
+	chiyu_jdsuperbox="u1Ev8KHVdp_hmy0nLDHRWQ"
 
-	new_jdsuperbox_set="'$new_jdsuperbox@$zuoyou_20190516_jdsuperbox',"
+	new_jdsuperbox_set="'$new_jdsuperbox@$zuoyou_20190516_jdsuperbox@$chiyu_jdsuperbox',"
 	sed -i "s/$old_jdsuperbox/$new_jdsuperbox_set/g" $dir_file_js/jd_super_box.js
 	sed -i "s/$old_jdsuperbox1/$new_jdsuperbox_set/g" $dir_file_js/jd_super_box.js
 	sed -i "40a $new_jdsuperbox_set\n$new_jdsuperbox_set\n$new_jdsuperbox_set\n$new_jdsuperbox_set" $dir_file_js/jd_super_box.js
