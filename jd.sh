@@ -168,6 +168,8 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_ms.js			#京东秒秒币
 	jd_xg.js			#小鸽有礼 2021年1月15日至2021年2月19日
 	jd_coupon.js			#源头好物红包
+	jd_5g.js			#5G狂欢城
+	jd_818.js			#京东手机狂欢城活动
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
@@ -387,6 +389,8 @@ run_08_12_16() {
 	echo -e "$green run_08_12_16$start_script $white"
 	nian
 	$node $dir_file_js/jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
+	$node $dir_file_js/jd_5g.js #5G狂欢城
+	$node $dir_file_js/jd_818.js #京东手机狂欢城活动
 	echo -e "$green run_08_12_16$stop_script $white"
 }
 
