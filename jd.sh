@@ -170,6 +170,7 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_coupon.js			#源头好物红包
 	jd_5g.js			#5G狂欢城
 	jd_818.js			#京东手机狂欢城活动
+	jd_xgyl.js			#小鸽有礼2 2021年1月28日～2021年2月28日
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
@@ -359,7 +360,7 @@ run_07() {
 	$node $dir_file_js/jd_live.js #直播抢京豆
 	$node $dir_file_js/jd_live.js #直播抢京豆
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
-	$node $dir_file_js/jd_jxnc.js #京喜农场
+	#$node $dir_file_js/jd_jxnc.js #京喜农场
 	$node $dir_file_js/jd_mh.js #京东盲盒
 	$node $dir_file_js/jd_ms.js #京东秒秒币 一个号大概60秒
 	$node $dir_file_js/jd_bj.js #宝洁美发屋
@@ -375,6 +376,7 @@ run_07() {
 	#$node $dir_file_js/jd_vote.js #京年团圆pick2021年1月11日至2021年1月20日 抽奖可获得京豆，白号100豆，黑号全是空气
 	$node $dir_file_js/jd_super_coupon.js #玩一玩-神券驾到,少于三个账号别玩
 	$node $dir_file_js/jd_xg.js #小鸽有礼 2021年1月15日至2021年2月19日
+	$node $dir_file_js/jd_xgyl.js #小鸽有礼2 2021年1月28日～2021年2月28日
 	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
 	$node $dir_file_js/jd_festival.js #京东手机年终奖 2021年1月26日～2021年2月8日
 	sy
@@ -720,10 +722,11 @@ additional_settings() {
 	sed -i "s/$old_fruit1/$new_fruit_set/g" $dir_file_js/jd_fruit.js
 	sed -i "s/$old_fruit2/$new_fruit_set/g" $dir_file_js/jd_fruit.js
 	sed -i "34a $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jd_fruit.js
+	sed -i "s/dFruitBeanCard = false/dFruitBeanCard = true/g" $dir_file_js/jd_fruit.js #年底不浇水开始换豆
 
 	sed -i "s/$old_fruit3/$new_fruit_set/g" $dir_file_js/jdFruitShareCodes.js
 	sed -i "s/$old_fruit4/$new_fruit_set/g" $dir_file_js/jdFruitShareCodes.js
-	sed -i "11a $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jdFruitShareCodes.js
+	sed -i "11a $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jdFruitShareCodes.js.
 
 	#萌宠
 	old_pet1="'MTAxODc2NTEzNTAwMDAwMDAwMjg3MDg2MA==@MTAxODc2NTEzMzAwMDAwMDAyNzUwMDA4MQ==@MTAxODc2NTEzMjAwMDAwMDAzMDI3MTMyOQ==@MTAxODc2NTEzNDAwMDAwMDAzMDI2MDI4MQ==@MTAxODcxOTI2NTAwMDAwMDAxOTQ3MjkzMw==',"
