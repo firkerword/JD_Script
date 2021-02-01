@@ -51,7 +51,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.61"
+	cron_version="2.62"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -79,9 +79,9 @@ cat >>/etc/crontabs/root <<EOF
 */30 1-22 * * * $dir_file/jd.sh joy >/tmp/jd_joy.log 2>&1 #1-22,每半个小时kill joy并运行一次joy挂机
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机
 20 * * * * $dir_file/jd.sh run_020 >/tmp/jd_run_020.log 2>&1 #京东炸年兽领爆竹
-0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >>/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关
-59 23 * * * sleep 57; $dir_file/jd.sh ddcs >>/tmp/jd_ddcs.log 2>&1 #东东超市兑换
-0 9,12,16,20 * * * $dir_file/jd.sh baiyuan >>/tmp/jd_baiyuan.log 2>&1 #京东抢百元卡
+0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关
+59 23 * * * sleep 57; $dir_file/jd.sh ddcs >/tmp/jd_ddcs.log 2>&1 #东东超市兑换
+0 9,12,16,20 * * * $dir_file/jd.sh baiyuan >/tmp/jd_baiyuan.log 2>&1 #京东抢百元卡
 ###########100##########请将其他定时任务放到底下###############
 EOF
 
@@ -1013,6 +1013,16 @@ COMMENT
 	sed -i "s/$old_jdsuperbox/$new_jdsuperbox_set/g" $dir_file_js/jd_super_box.js
 	sed -i "s/$old_jdsuperbox1/$new_jdsuperbox_set/g" $dir_file_js/jd_super_box.js
 	sed -i "40a $new_jdsuperbox_set\n$new_jdsuperbox_set\n$new_jdsuperbox_set\n$new_jdsuperbox_set" $dir_file_js/jd_super_box.js
+
+	#京东压岁钱
+	old_jdnewYearMoney="\`ucp4UudBqMcbT-J9e_xx-UMQA96VZPICgwBY@oMZeX7Mco4wGBrBiNLAl-NqgPbNWoqjpA9BIHLl_7Z2uC4Bt@oMZeGJ8Q3ssja5hkb88ysz1myVkiBAsZmXvj1VVm0_HgAmA@udHn3lOfPCqCnVvmgzY8s7L3GtTvpSi9zyMcRoTjqfxLhw\`,"
+	old_jdnewYearMoney1="\`ucp4UudBqMcbT-J9e_xx-UMQA96VZPMNgwJW@oMZeX7Mco4wGBrBiNLAl-NqgPbNWoqjpA9BIHLl_7Z2uC4Bt@oMZeGJ8Q3ssja5hkb88ysz1myVkiBAsZmXvj1VVm0_HgAmA@udHn3lOfPCqCnVvmgzY8s7L3GtTvpSi9zyMcRoTjqfxLhw\`,"
+	new_jdnewYearMoney="oMZeXOJIodhVV-Y1ZbMmqmvPtKAlRyWSpZHXAsrGYwYZDHR0@oMZeXrAeoY8ECuY4ZuEi-bGnIR1K0yNnDNWDloaaDujkzEMW@oMZeBLwJ5OwkQJBHU8oOs6Lh-j1-tUN-likozedNAf1diJI@oMZeP74R2eIvQ5lDQ80OswPSAqISSuyC2ZZ8fZKY1yWb-KY"
+
+	new_jdnewYearMoney_set="'$new_jdnewYearMoney',"
+	sed -i "s/$old_jdnewYearMoney/$new_jdnewYearMoney_set/g" $dir_file_js/jd_newYearMoney.js
+	sed -i "s/$old_jdnewYearMoney1/$new_jdnewYearMoney_set/g" $dir_file_js/jd_newYearMoney.js
+	sed -i "53a $new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set" $dir_file_js/jd_newYearMoney.js
 
 }
 
