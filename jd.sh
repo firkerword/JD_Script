@@ -727,7 +727,7 @@ additional_settings() {
 	yiji_20201125_fr="df3ae0b59ca74e7a8567cdfb8c383f02@e3ec63e3ba65424881469526d8964657"
 	mjmdz_20201217_fr="9cd630e21bf44a1ea1512402827e4655"
 	JDnailao_20201230_fr="daec421fb1d745148c0ae9bb298f1157"
-	xo_20201229_fr= "0ab77174e0a446ceaf075d2de507066b"
+	xo_20201229_fr="0ab77174e0a446ceaf075d2de507066b"
 	
 	new_fruit_set="'$new_fruit1@$new_fruit2@$new_fruit3@$zuoyou_20190516_fr@$Javon_20201224_fr@$cainiao5_20190516_fr@$whiteboy__20190711_fr@$jiu_20210110_fr@$Oyeah_20200104_fr@$shisan_20200213_fr@$JOSN_20200807_fr@$Jhone_Potte_20200824_fr@$liandao_20201010_fr@$adong_20201108_fr@$deng_20201120_fr@$gomail_20201125_fr@$baijiezi_20201126_fr@$superbei666_20201124_fr@$yiji_20201125_fr@$mjmdz_20201217_fr@$JDnailao_20201230_fr@$xo_20201229_fr',"
 	sed -i "s/$old_fruit1/$new_fruit_set/g" $dir_file_js/jd_fruit.js
@@ -737,7 +737,7 @@ additional_settings() {
 
 	sed -i "s/$old_fruit3/$new_fruit_set/g" $dir_file_js/jdFruitShareCodes.js
 	sed -i "s/$old_fruit4/$new_fruit_set/g" $dir_file_js/jdFruitShareCodes.js
-	sed -i "11a $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jdFruitShareCodes.js.
+	sed -i "11a $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jdFruitShareCodes.js
 
 	#萌宠
 	old_pet1="'MTAxODc2NTEzNTAwMDAwMDAwMjg3MDg2MA==@MTAxODc2NTEzMzAwMDAwMDAyNzUwMDA4MQ==@MTAxODc2NTEzMjAwMDAwMDAzMDI3MTMyOQ==@MTAxODc2NTEzNDAwMDAwMDAzMDI2MDI4MQ==@MTAxODcxOTI2NTAwMDAwMDAxOTQ3MjkzMw==',"
@@ -766,7 +766,7 @@ additional_settings() {
 	yiji_20201125_pet="MTE1NDUwMTI0MDAwMDAwMDQyODExMzU1@MTEzMzI0OTE0NTAwMDAwMDA0Mjg4NTczOQ=="
 	mjmdz_20201217_pet="MTAxODc2NTEzMTAwMDAwMDAyNzI5OTU3MQ=="
 	JDnailao_20201230_pet="MTEzMzI0OTE0NTAwMDAwMDA0MzEzMjkzNw=="
-	xo_20201229_pet= "MTAxODc2NTEzNTAwMDAwMDAyMzYzODQzNw=="
+	xo_20201229_pet="MTAxODc2NTEzNTAwMDAwMDAyMzYzODQzNw=="
 	
 	new_pet_set="'$new_pet1@$new_pet2@$new_pet3@$zuoyou_20190516_pet@$Javon_20201224_pet@$cainiao5_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$Jhone_Potte_20200824_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet',"
 
@@ -950,9 +950,9 @@ COMMENT
 	new_jdnian="cgxZ--kf8RFXPKlP3YUDN9N7qbopP-VtOxRA57Cp3GReD-a9yJi3ezZDqwBUqZz5@cgxZdTXtWO2Ts3mOfmXSkLTAnQUGuJKjSoHMwahkfs9SUuxc0x0N4sU@cgxZdTXtIL6P4g6aAVOh6xbLlZJoC29uIGgW846gj3vFI7ZqODDgGU6gAwA@cgxZdTXtI77a613LXAGtvfpsw8rraLgBTtRR8gtVXzz6qQixKVxvi1jGQt4@cgxZdTXtIeyM6wqaAQGgvhd59Mwz4nvxYSLgIRFrXHtC9Ij-x8O-uY98Rmc@cgxZdTXte-Cbrmm6S3ffi4dB6WNg_mNfNBNnMI122s8KkpZ8PS2o7cM@cgxZdTXtQOKDk2exSH7bm1yqE9lH3OVjhKsFb1yndmZ5KgUbv7F2-X8@cgxZfDnbbf_f6A-FRGauvmGGso1xqGtgAg@cgxZLmmEIbzc4gnMDgPGr2LOJQOfYtSzbdQggbo_ZBZvg1w-tA@cgxZ-twV_BNksFmeREnKvs1gJGa3wzPX6AQP@cgxZdTXtIr6L7g3JWQGguQl0fv8raw1YoF7_nbo39oCIWqSoltmEM42UVdM@cgxZdTXtIumM7g7MXVb_vf5sKfV37FuksxazeYcqfB4lV7yYY6SNJf1K9qo"
 	zuoyou_20190516_jdnian="cgxZcyOFIfaWiQqLAQXLjg@cgxZZyLGbL_apkKqAUet7CfElE0@cgxZdTXtI-nYvwbPAFSu7cfA8L-fTfRluVPeR9kXvOpzr7T1OB7z_vf53pY@cgxZdTXtIb-I4g2fWleovuuIRUaojOVYyqCW2tQE47NH2e5FdQdTPzqVq60@cgxZdTXtILve6wjPAVH6637oFStz2n55oDLBd31Gx1wuFVZtARbf7Apdz2k@cgxZczjVceSNrVumVUnljJGWK910VVlBaWrIryfH@cgxZciDRZb7fpkKqDALuuFHFNhA@cgxZfTjcc_Of7QzJREnK6JpEyVYO3l7cfElq@cgxZdyjGdeSNq1eWVlLlox-BNG_CcXjZTeAN16NgVbs@cgxZdTXtI-_fuVrKXAas6hLMvq8JwrWzJDKWMn5lPVfsd8XKc2XkCY6g0Rw"
 	jidiyangguang_20190516_jdnian="cgxZdTXtIL6J7QzACwWhunFByvPM_ltcuRhq9MwhLp6jp0TOnV3aPkhq-dY@cgxZdTXtI-jeuwqYWQStvcR9psTc5SAZg5CwlSr9fmHCeDi1lNzhztEP3zE"
-	chiyu_jdnian="IgNWdiLGaPaJsleATQCr7iyCWzrGQyVnjFgGJ24sd94"
+	chiyu_jdnian=""
 
-	new_jdnian_set="'$new_jdnian@$zuoyou_20190516_jdnian@$jidiyangguang_20190516_jdnian@$chiyu_jdnian',"
+	new_jdnian_set="'$new_jdnian@$zuoyou_20190516_jdnian@$jidiyangguang_20190516_jdnian',"
 	sed -i "s/$old_jdnian/$new_jdnian_set/g" $dir_file_js/jd_nian.js
 	sed -i "s/$old_jdnian1/$new_jdnian_set/g" $dir_file_js/jd_nian.js
 	sed -i "50a $new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set" $dir_file_js/jd_nian.js
@@ -962,6 +962,15 @@ COMMENT
 	sed -i "s/$old_jdnian1/$new_jdnian_set/g" $dir_file_js/jd_nian_ar.js
 	sed -i "50a $new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set" $dir_file_js/jd_nian_ar.js
 
+	#京东炸年兽PK
+	old_nian_pk="'IgNWdiLGaPadvlqJQnnKp27-YpAvKvSYNTSkTGvZylf_0wcvqD9EMkohENk@IgNWdiLGaPaZskfACQyhgLSpZWps-WtQEW3McibT@IgNWdiLGaPaAvmHPAQf769XqjJjMyRirPzN9-AS-WHY9Y_G7t9Cwe5gdiI2qEvDf@IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hJTS2SQzU0vulL0fHeULJaIfgqHFd7f_a0 @IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hLRjZBAJLHzBpcl18AeskNYctp_9A',"
+	old_nian_pk1="'IgNWdiLGaPadvlqJQnnKp27-YpAvKvSYNTSkTGvZylf_0wcvqD9EMkohENk@IgNWdiLGaPaZskfACQyhgLSpZWps-WtQEW3McibT@IgNWdiLGaPaAvmHPAQf769XqjJjMyRirPzN9-AS-WHY9Y_G7t9Cwe5gdiI2qEvDf@IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hJTS2SQzU0vulL0fHeULJaIfgqHFd7f_a0 @IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hLRjZBAJLHzBpcl18AeskNYctp_9A'"
+	new_nian_pk="IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxTdVozWzvm1_etjnQvYdPkZj@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxTU-9lpZ2DvBtnBVL-fnj03h@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxW9xSTeGkUZE_6fcT6G9rHA@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxVQVGUrTfU1VM3N9zDV17QI"
+
+	new_jdnianpk_set="'$new_nian_pk',"
+	sed -i "s/$old_nian_pk/$new_jdnianpk_set/g" $dir_file_js/jd_nian.js
+	sed -i "s/$old_nian_pk1/$new_jdnianpk_set/g" $dir_file_js/jd_nian.js
+	sed -i "58a $new_jdnianpk_set\n$new_jdnianpk_set\n$new_jdnianpk_set\n$new_jdnianpk_set" $dir_file_js/jd_nian.js
 
 	#京东神仙书院
 		old_jdimmortal="\`39xIs4YwE5Z7CPQQ0baz9jNWO6PSZHsNWqfOwWyqScbJBGhg4v7HbuBg63TJ4@27xIs4YwE5Z7FGzJqrMmavC_vWKtbEaJxbz0Vahw@43xIs4YwE5Z7DsWOzDSP_N6WTDnbA0wBjjof6cA9FzcbHMcZB9wE1R3ToSluCgxAzEXQ@43xIs4YwE5Z7DsWOzDSEuRWEOROpnDjMx_VvSs5ikYQ8XgcZB9whEHjDmPKQoL16TZ8w@50xIs4YwE5Z7FTId9W-KibDgxxx6AEa7189V1zSxSf2HP6681IXPQ81aJEP77WoHXLcK7QzlxGqsGqfU@43xIs4YwE5Z7DsWOzDSPKFWdkRe2Ae6h0jAdlhuSmuwcfUcZB9wBcHhj0_zyZDNK4Rhg\`,"
@@ -1171,22 +1180,26 @@ system_variable() {
 	help
 }
 
+black_version="黑名单版本1.0"
 script_black_Description() {
-cat >$dir_file/config/Script_blacklist.txt <<EOF
-******************************不要删使用说明*********************************************************************
 
+cat >> $dir_file/config/Script_blacklist.txt <<EOF
+******************************不要删使用说明，$black_version*********************************************************************
+*
 *这是脚本黑名单功能，作用就是你跑脚本黑活动了，你只需要把脚本名字放底下，跑脚本的时候（全部账号）就不会跑这个脚本了
 *但你可以通过node  脚本名字来单独跑（只是不会自动跑了而已）
 *PS：（彻底解开的办法就是删除这里的脚本名称，然后更新脚本）
 *例子
-
-jd_ceshi1.js #禁用的脚本1
-jd_ceshi2.js #禁用的脚本2
-
+*
+* 	jd_ceshi1.js #禁用的脚本1
+* 	jd_ceshi2.js #禁用的脚本2
+*
+*注意事项：禁用JOY挂机需要这么写 jd_crazy_joy_coin.js &
 *按这样排列下去（一行一个脚本名字）
-*每个脚本应的文件可以参考jd.sh 的注释，ctrl+f输名字搜索即可
-
-***********************要禁用的脚本往下写，不要删除这里的任何字符，也不要动上面的************************************
+*每个脚本应的文件可以用 sh \$jd script_name                    #显示所有JS脚本名称与作用
+*
+*
+***********************要禁用的脚本不要写这里面，不要删除这里的任何字符，也不要动里面的，往下面写随便你********************************
 EOF
 }
 
@@ -1197,8 +1210,12 @@ script_black() {
 		echo > $dir_file/config/Script_blacklist.txt
 	fi
 
-	if_txt=$(grep "不要删使用说明" $dir_file/config/Script_blacklist.txt)
-	if [ !  $if_txt ];then
+	if_txt=$(grep "$black_version" $dir_file/config/Script_blacklist.txt | wc -l)
+	if [  $if_txt == "0" ];then
+		echo "更新黑名单说明"
+		sed -i '/*/d' $dir_file/config/Script_blacklist.txt >/dev/null 2>&1
+		sed -i '/jd_ceshi/d' $dir_file/config/Script_blacklist.txt >/dev/null 2>&1
+		sed -i "s/ //g"  $dir_file/config/Script_blacklist.txt >/dev/null 2>&1
 		script_black_Description
 	fi
 
