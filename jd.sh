@@ -363,7 +363,7 @@ run_07() {
 	$node $dir_file_js/jd_live.js #直播抢京豆
 	$node $dir_file_js/jd_live.js #直播抢京豆
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
-	#$node $dir_file_js/jd_jxnc.js #京喜农场
+	$node $dir_file_js/jd_jxnc.js #京喜农场
 	$node $dir_file_js/jd_mh.js #京东盲盒
 	$node $dir_file_js/jd_ms.js #京东秒秒币 一个号大概60秒
 	$node $dir_file_js/jd_bj.js #宝洁美发屋
@@ -1018,8 +1018,10 @@ COMMENT
 	old_jdnewYearMoney="\`ucp4UudBqMcbT-J9e_xx-UMQA96VZPICgwBY@oMZeX7Mco4wGBrBiNLAl-NqgPbNWoqjpA9BIHLl_7Z2uC4Bt@oMZeGJ8Q3ssja5hkb88ysz1myVkiBAsZmXvj1VVm0_HgAmA@udHn3lOfPCqCnVvmgzY8s7L3GtTvpSi9zyMcRoTjqfxLhw\`,"
 	old_jdnewYearMoney1="\`ucp4UudBqMcbT-J9e_xx-UMQA96VZPMNgwJW@oMZeX7Mco4wGBrBiNLAl-NqgPbNWoqjpA9BIHLl_7Z2uC4Bt@oMZeGJ8Q3ssja5hkb88ysz1myVkiBAsZmXvj1VVm0_HgAmA@udHn3lOfPCqCnVvmgzY8s7L3GtTvpSi9zyMcRoTjqfxLhw\`,"
 	new_jdnewYearMoney="Lhqsjk3FdizR1mKb7z7-K7Njx8Kx5kXkHhkgRBuL4oTCmFIWhfg@oMZeJ7EB-fwQdYJKSOYTs4Kn6PZYLirnNY34RGSlK_xwM2Q@oMZeX-IdqIsECrQ5M7Z3qtyub2RMkdQpvPkkptGu6dFpTWFk@oMZeXOJIodhVV-Y1ZbMmqmvPtKAlRyWSpZHXAsrGYwYZDHR0@oMZeXrAeoY8ECuY4ZuEi-bGnIR1K0yNnDNWDloaaDujkzEMW@oMZeBLwJ5OwkQJBHU8oOs6Lh-j1-tUN-likozedNAf1diJI@oMZeP74R2eIvQ5lDQ80OswPSAqISSuyC2ZZ8fZKY1yWb-KY"
+	zuoyou_20190516_jdnewYearMoney="ptA2XqoE7IsbT64wMbFy_ijm1-Ix0vpd@stF1E-NI7McbA659e7F2_s6ZURRz8JnxEf8@oMZeXLVK9YNRC7M2NbF4-7Xm7XEsdoV41IsXn_1QRLQ7Nq7i@oMZeXuMaqIgBUbAwZuF39xmqW6y10RIBAP2ExzTk6nutNDSP@oMZeX-dMoY1RCrZiM7N0_BOfqHWcJLLXMAbrx3wwWCqXLLSx@pstmDrgf5944Xq59e7A8s4nkzMoa0aoJMEbaCgtA@p9NiGuJN7McbA659e7F2_g87WymICeNisfA@qMtvDK8Np4lXT659N_w8s3VNk9t-99MAHpjBWX4@ott1Crgf4dIIXbV9e_xws3sLXFIdRIkncldD7MFBtg@oMZeXLNN899UV-E0MuZ1-eBYUy16HG80tqC739W6DbRNs-uH"
+	jidiyangguang_20190516_jd_newYearMoney="oMZeX-Ibp4leAOI5YrMm_AAFBQ9pi-CmolSqY3BP5B5gdqU5@oMZeXLRM8Y8GUuM1Zblz-Tc1sYflDoMfgwtsLkCttvorfvxx"
 
-	new_jdnewYearMoney_set="'$new_jdnewYearMoney',"
+	new_jdnewYearMoney_set="'$new_jdnewYearMoney@$zuoyou_20190516_jdnewYearMoney@$jidiyangguang_20190516_jd_newYearMoney',"
 	sed -i "s/$old_jdnewYearMoney/$new_jdnewYearMoney_set/g" $dir_file_js/jd_newYearMoney.js
 	sed -i "s/$old_jdnewYearMoney1/$new_jdnewYearMoney_set/g" $dir_file_js/jd_newYearMoney.js
 	sed -i "53a $new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set" $dir_file_js/jd_newYearMoney.js
