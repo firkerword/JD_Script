@@ -417,7 +417,7 @@ run_10_15_20() {
 
 baiyuan() {
         echo -e "$green百元卡$start_script $white"
-	baiyuan_left=15
+	baiyuan_left=8
 	while [[ ${baiyuan_left} -gt 0 ]]; do
 		$node $dir_file_js/jd_newYearMoney_lottery.js &
 		sleep 1
@@ -604,16 +604,6 @@ that_day() {
 backnas() {
 	date_time=$(date +%Y-%m-%d-%H:%M)
 	back_file_name="script_${date_time}.tar.gz"
-
-	#判断定时任务
-	backnas_version="1.0"
-	if [ `grep -o "backnas定时任务$backnas_version" $cron_file |wc -l` == "0" ]; then
-		echo "不存在计划任务开始设置"
-		sed -i '/backnas/d' /etc/crontabs/root >/dev/null 2>&1
-		backnas_cron
-		echo "计划任务设置完成"
-	fi
-	clear
 	#判断所在文件夹
 	if [ "$dir_file" == "$install_script/JD_Script" ];then
 		backnas_config_file="$install_script_config/backnas_config.txt"
@@ -621,7 +611,6 @@ backnas() {
 		if [ ! -f "$install_script_config/backnas_config.txt" ]; then
 			cd $install_script_config
 			backnas_config
-			cd
 		fi
 	else
 		backnas_config_file="$dir_file/config/backnas_config.txt"
@@ -629,9 +618,26 @@ backnas() {
 		if [ ! -f "$dir_file/config/backnas_config.txt" ]; then
 			cd $dir_file/config
 			backnas_config
-			cd
 		fi
 	fi
+
+	#判断定时任务
+	backnas_version="1.1"
+	if [ `grep -o "backnas定时任务$backnas_version" $cron_file |wc -l` == "0" ]; then
+		echo "backnas定时任务有变，开始更新"
+		sed -i '/backnas/d' /etc/crontabs/root >/dev/null 2>&1
+		backnas_cron
+		echo "backnas计划任务设置完成"
+	fi
+
+	#判断config文件
+	backnas_config_version="1.0"
+	if [ `grep -o "backnas_config版本$backnas_config_version" $backnas_config_file |wc -l` == "0" ]; then
+		echo "backnas_config有变，开始更新"
+		backnas_config
+		echo "backnas计划任务设置完成"
+	fi
+	clear
 
 	#判断依赖
 	sshpass_if=$(opkg list-installed | grep 'sshpass' |awk '{print $1}')
@@ -643,6 +649,7 @@ backnas() {
 
 	#开始传递参数
 	nas_user=$(grep "user" $backnas_config_file | awk -F "'" '{print $2}')
+	nas_secret_key=$(grep "secret_key" $backnas_config_file | awk -F "'" '{print $2}')
 	nas_pass=$(grep "password" $backnas_config_file | awk -F "'" '{print $2}')
 	nas_ip=$(grep "nas_ip" $backnas_config_file | awk -F "'" '{print $2}')
 	nas_file=$(grep "nas_file" $backnas_config_file | awk -F "'" '{print $2}')
@@ -662,11 +669,16 @@ backnas() {
 
 	#判断密码
 	if [ ! $nas_pass ];then
-		echo -e "$red 密码为空，参数填写$backnas_config_file填完再回车继续 $white"
-		read a
-		backnas
+		echo -e "$yellow 密码：$green空 $white"
 	else
 		echo -e "$yellow 密码：$green这是机密不显示给你看 $white"
+	fi
+
+	#判断密钥
+	if [ ! $nas_secret_key ];then
+		echo -e "$yellow NAS 密钥：$green 空$white"
+	else
+		echo -e "$yellow NAS 密钥：$green $nas_secret_key $white"
 	fi
 
 	#判断IP
@@ -695,6 +707,8 @@ backnas() {
 	else
 		echo -e "$yellow NAS 端口：$green $nas_prot $white"
 	fi
+
+	echo -e "$yellow 使用协议：$green SCP$white"
 	echo "#########################################"
 
 	echo -e "$green>> 开始备份到nas$white"
@@ -710,7 +724,19 @@ backnas() {
 	echo -e "$yellow解决办法:ctrl+c ，然后$green ssh -p $nas_prot $nas_user@$nas_ip $white连接成功以后输$green logout$white退出NAS，重新执行$green sh \$jd backnas$white"
 	echo ""
 	echo -e "$green>> 上传文件中，请稍等。。。。 $white"
-	sshpass -p "$nas_pass" scp -P $nas_prot /tmp/$back_file_name $nas_user@$nas_ip:$nas_file
+
+	if [ ! $nas_secret_key ];then
+		if [ ! $nas_pass ];then
+			echo -e "$red 密码：为空，参数填写$backnas_config_file填完再回车继续$white"
+			read a
+			backnas
+		else
+			sshpass -p "$nas_pass" scp -P $nas_prot -r /tmp/$back_file_name $nas_user@$nas_ip:$nas_file
+		fi
+	else
+		scp -P $nas_prot -i $nas_secret_key -r /tmp/$back_file_name $nas_user@$nas_ip:$nas_file
+	fi
+
 	if [ $? -eq 0 ]; then
 		sleep 5
 		echo -e "$green>> 上传文件完成 $white"
@@ -730,15 +756,19 @@ backnas() {
 }
 
 backnas_config() {
-cat >backnas_config.txt <<EOF
-#################################################################
+cat >$backnas_config_file <<EOF
+################################################################
+                 backnas_config版本$backnas_config_version
 用于备份JD_script 到NAS 采用scp传输，请确保你的nas，ssh端口有打开
 ################################################################
 #填入你的nas账号(必填)
 user=''
 
-#填入你nas的密码(必填)
+#填入你nas的密码(密码和密钥必须填一个)
 password=''
+
+#填入你nas的密钥位置(可以留空)(密钥 > 密码,有密钥的情况优先使用密钥而不是密码)
+secret_key=''
 
 #填入nas IP地址可以是域名(必填)
 nas_ip=''
@@ -754,7 +784,7 @@ EOF
 backnas_cron() {
 cat >>/etc/crontabs/root <<EOF
 #**********这里是backnas定时任务$backnas_version版本**********#
-0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次JD_script
+0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script
 ###########backnas##########请将其他定时任务放到底下###############
 EOF
 
@@ -883,7 +913,7 @@ additional_settings() {
 	whiteboy__20190711_fr="dfb6b5dcc9d24281acbfce5d649924c0@319239c7aed84c1a97092ddbf2564717@45e193df45704b8bb25e04ea86c650bf@49fefaa873c84b398882218588b0647a"
 	jiu_20210110_fr="a413cb9823394d2d91eb8346d2fa4514@96721546e8fd429dbfa1351c907ea0f7"
 	Oyeah_20200104_fr="5e54362c4a294f66853d14e777584598"
-	shisan_20200213_fr="cf13366e69d648ff9022e0fdce8c172a"
+	shisan_20200213_fr="cf13366e69d648ff9022e0fdce8c172a@cedfefd072434e57afcd95bed69a5f5c"
 	JOSN_20200807_fr="2868e98772cb4fac9a04cd43e964f337"
 	Jhone_Potte_20200824_fr="64304080a2714e1cac59af03b0009581@e9333dbf9c294ad6af2792dacc236fe7"
 	liandao_20201010_fr="1c6474a197af4b3c8d40c26ec7f11c9e@6f7a7cc42b9342e29163588bafc3782b"
@@ -922,7 +952,7 @@ additional_settings() {
 	whiteboy_20190711_pet="MTAxODc2NTEzMzAwMDAwMDAwNjU4NDU4NQ==@MTAxODc2NTE0NzAwMDAwMDAwNDI4ODExMQ=="
 	jiu_20210110_pet="MTE1NDUwMTI0MDAwMDAwMDQwODg1ODg3@MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzgwMDAwMDAwNDM1NjI2Mjk="
 	Oyeah_20200104_pet="MTE1NDQ5OTUwMDAwMDAwNDAyNTYyMjM="
-	shisan_20200213_pet="MTAxODc2NTEzMjAwMDAwMDAyMjc4OTI5OQ=="
+	shisan_20200213_pet="MTAxODc2NTEzMjAwMDAwMDAyMjc4OTI5OQ==@MTAxODExNTM5NDAwMDAwMDAzOTYzODY1Nw=="
 	JOSN_20200807_pet="MTEzMzI0OTE0NTAwMDAwMDA0MTc2Njc2Nw=="
 	Jhone_Potte_20200824_pet="MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzcwMDAwMDAwNDE3MDkwNzE=@MTE1NDUyMjEwMDAwMDAwNDE3NDU2MjU="
 	liandao_20201010_pet="MTE1NDQ5MzYwMDAwMDAwNDA3Nzk0MTc=@MTE1NDQ5OTUwMDAwMDAwNDExNjIxMDc="
@@ -962,7 +992,7 @@ additional_settings() {
 	whiteboy_20190711_pb="jfbrzo4erngfjdjlvmvpkpgbgie7i7c6gsw54yq@e7lhibzb3zek3uzcrgdebl2uyh3kuh7kap6cwaq"
 	jiu_20210110_pb="e7lhibzb3zek3ng2hntfcceilic4hw26k24s3li@mlrdw3aw26j3wbley5cfqbdzsfdhusjessnlavi"
 	Oyeah_20200104_pb="e7lhibzb3zek234ckc2fm2yvkj5cbsdpe7y6p2a"
-	shisan_20200213_pb="mlrdw3aw26j3xzd26qnacr3cfnm4zggngukbhny"
+	shisan_20200213_pb="mlrdw3aw26j3xzd26qnacr3cfnm4zggngukbhny@okj5ibnh3onz7yqop3tum45jigtppsihwynzavy"
 	JOSN_20200807_pb="pmvt25o5pxfjzcquanxwokbgvu3h7wlwy7o5jii"
 	Jhone_Potte_20200824_pb="olmijoxgmjutzcbkzw4njrhy3l3gwuh6g2qzsvi@olmijoxgmjuty4tpgnpbnzvu4pl6hyxp3sferqa"
 	liandao_20201010_pb="nxawbkvqldtx4wdwxxbkf23g6y@l4ex6vx6yynouxxefa4hfq6z3in25fmktqqwtca"
@@ -1113,8 +1143,8 @@ COMMENT
 	sed -i "33a $new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set" $dir_file_js/jd_cash.js
 
 	#京东炸年兽
-	old_jdnian="\`cgxZaDXWZPCmiUa2akPVmFMI27K6antJzucULQPYNim_BPEW1Dwd@cgxZdTXtIrPYuAqfDgSpusxr97nagU6hwFa3TXxnqM95u3ib-xt4nWqZdz8@cgxZdTXtIO-O6QmYDVf67KCEJ19JcybuMB2_hYu8NSNQg0oS2Z_FpMce45g@cgxZdTXtILiLvg7OAASp61meehou4OeZvqbjghsZlc3rI5SBk7b3InUqSQ0@cgxZdTXtIL-L7FzMAQCqvap-CydslPKkAn5-YquhVOdq2fHQPxbVJ4pskHs\`,"
-	old_jdnian1="\`cgxZaDXWZPCmiUa2akPVmFMI27K6antJzucULQPYNim_BPEW1Dwd@cgxZdTXtIrPYuAqfDgSpusxr97nagU6hwFa3TXxnqM95u3ib-xt4nWqZdz8@cgxZdTXtIO-O6QmYDVf67KCEJ19JcybuMB2_hYu8NSNQg0oS2Z_FpMce45g@cgxZdTXtILiLvg7OAASp61meehou4OeZvqbjghsZlc3rI5SBk7b3InUqSQ0@cgxZdTXtIL-L7FzMAQCqvap-CydslPKkAn5-YquhVOdq2fHQPxbVJ4pskHs\`"
+	old_jdnian="\`cgxZbDnLLbvT4kKFa2r4itMpof2y7_o@cgxZdTXtILLevwyYCwz65yWwCE8lGkr3bUNrT0h7kLPi4wxXS762i1R7_A0@cgxZdTXtIryM712cW1aougOBa8ZyzwDRObdr4-lyq7WPJbXwCd4EB76el1c@cgxZdTXtIL-L7FzMAQCqvap-CydslPKkAn5-YquhVOdq2fHQPxbVJ4pskHs\`,"
+	old_jdnian1="\`cgxZbDnLLbvT4kKFa2r4itMpof2y7_o@cgxZdTXtILLevwyYCwz65yWwCE8lGkr3bUNrT0h7kLPi4wxXS762i1R7_A0@cgxZdTXtIryM712cW1aougOBa8ZyzwDRObdr4-lyq7WPJbXwCd4EB76el1c@cgxZdTXtIL-L7FzMAQCqvap-CydslPKkAn5-YquhVOdq2fHQPxbVJ4pskHs\`"
 	new_jdnian="cgxZ--kf8RFXPKlP3YUDN9N7qbopP-VtOxRA57Cp3GReD-a9yJi3ezZDqwBUqZz5@cgxZdTXtWO2Ts3mOfmXSkLTAnQUGuJKjSoHMwahkfs9SUuxc0x0N4sU@cgxZdTXtIL6P4g6aAVOh6xbLlZJoC29uIGgW846gj3vFI7ZqODDgGU6gAwA@cgxZdTXtI77a613LXAGtvfpsw8rraLgBTtRR8gtVXzz6qQixKVxvi1jGQt4@cgxZdTXtIeyM6wqaAQGgvhd59Mwz4nvxYSLgIRFrXHtC9Ij-x8O-uY98Rmc@cgxZdTXte-Cbrmm6S3ffi4dB6WNg_mNfNBNnMI122s8KkpZ8PS2o7cM@cgxZdTXtQOKDk2exSH7bm1yqE9lH3OVjhKsFb1yndmZ5KgUbv7F2-X8@cgxZfDnbbf_f6A-FRGauvmGGso1xqGtgAg@cgxZLmmEIbzc4gnMDgPGr2LOJQOfYtSzbdQggbo_ZBZvg1w-tA@cgxZ-twV_BNksFmeREnKvs1gJGa3wzPX6AQP@cgxZdTXtIr6L7g3JWQGguQl0fv8raw1YoF7_nbo39oCIWqSoltmEM42UVdM@cgxZdTXtIumM7g7MXVb_vf5sKfV37FuksxazeYcqfB4lV7yYY6SNJf1K9qo"
 	zuoyou_20190516_jdnian="cgxZcyOFIfaWiQqLAQXLjg@cgxZZyLGbL_apkKqAUet7CfElE0@cgxZdTXtI-nYvwbPAFSu7cfA8L-fTfRluVPeR9kXvOpzr7T1OB7z_vf53pY@cgxZdTXtIb-I4g2fWleovuuIRUaojOVYyqCW2tQE47NH2e5FdQdTPzqVq60@cgxZdTXtILve6wjPAVH6637oFStz2n55oDLBd31Gx1wuFVZtARbf7Apdz2k@cgxZczjVceSNrVumVUnljJGWK910VVlBaWrIryfH@cgxZciDRZb7fpkKqDALuuFHFNhA@cgxZfTjcc_Of7QzJREnK6JpEyVYO3l7cfElq@cgxZdyjGdeSNq1eWVlLlox-BNG_CcXjZTeAN16NgVbs@cgxZdTXtI-_fuVrKXAas6hLMvq8JwrWzJDKWMn5lPVfsd8XKc2XkCY6g0Rw"
 	jidiyangguang_20190516_jdnian="cgxZdTXtIL6J7QzACwWhunFByvPM_ltcuRhq9MwhLp6jp0TOnV3aPkhq-dY@cgxZdTXtI-jeuwqYWQStvcR9psTc5SAZg5CwlSr9fmHCeDi1lNzhztEP3zE"
@@ -1131,9 +1161,9 @@ COMMENT
 	sed -i "50a $new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set" $dir_file_js/jd_nian_ar.js
 
 	#京东炸年兽PK
-	old_nian_pk="'IgNWdiLGaPadvlqJQnnKp27-YpAvKvSYNTSkTGvZylf_0wcvqD9EMkohENk@IgNWdiLGaPaZskfACQyhgLSpZWps-WtQEW3McibT@IgNWdiLGaPaAvmHPAQf769XqjJjMyRirPzN9-AS-WHY9Y_G7t9Cwe5gdiI2qEvDf@IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hJTS2SQzU0vulL0fHeULJaIfgqHFd7f_a0 @IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hLRjZBAJLHzBpcl18AeskNYctp_9A',"
-	old_nian_pk1="'IgNWdiLGaPadvlqJQnnKp27-YpAvKvSYNTSkTGvZylf_0wcvqD9EMkohENk@IgNWdiLGaPaZskfACQyhgLSpZWps-WtQEW3McibT@IgNWdiLGaPaAvmHPAQf769XqjJjMyRirPzN9-AS-WHY9Y_G7t9Cwe5gdiI2qEvDf@IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hJTS2SQzU0vulL0fHeULJaIfgqHFd7f_a0 @IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hLRjZBAJLHzBpcl18AeskNYctp_9A'"
-	new_nian_pk="IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxTdVozWzvm1_etjnQvYdPkZj@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxTU-9lpZ2DvBtnBVL-fnj03h@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxW9xSTeGkUZE_6fcT6G9rHA@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxVQVGUrTfU1VM3N9zDV17QI"
+	old_nian_pk="'IgNWdiLGaPadvlqJQnnKp27-YpAvKvSYNTSkTGvZylf_0wcvqD9EMkohEN4@IgNWdiLGaPaZskfACQyhgLSpZWps-WtQEW3McibU@IgNWdiLGaPaAvmHPAQf769XqjJjMyRirPzN9-AS-WHY9Y_G7t9Cwe5gdiI2qEvDY@IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hJTS2SQzU0vulL0fHeULJaIfgqHFd7f_ao@IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hLRjZBAJLHzBpcl18AeskNYctp_8w',"
+	old_nian_pk1="'IgNWdiLGaPadvlqJQnnKp27-YpAvKvSYNTSkTGvZylf_0wcvqD9EMkohEN4@IgNWdiLGaPaZskfACQyhgLSpZWps-WtQEW3McibU@IgNWdiLGaPaAvmHPAQf769XqjJjMyRirPzN9-AS-WHY9Y_G7t9Cwe5gdiI2qEvDY@IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hJTS2SQzU0vulL0fHeULJaIfgqHFd7f_ao@IgNWdiLGaPYCeJUfsq18UNi5ln9xEZSPRdOue8Wl3hLRjZBAJLHzBpcl18AeskNYctp_8w'"
+	new_nian_pk="IgNWdiLGaPYOYpMco4h_SP7HuWxIp1taps3bO2MpExLpVfOzrHtAAS2hWRDy4ekwQb7FiA@IgNWdiLGaPaAvmG1X0zwmBiKl4F-BlwscXg1KDfdx3O-gs0-osIS9_O5ZAGt-Q@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxTdVozWzvm1_etjnQvYdPkZj@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxTU-9lpZ2DvBtnBVL-fnj03h@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxW9xSTeGkUZE_6fcT6G9rHA@IgNWdiLGaPaAvmHODAWovAEQf5WnHYwnEopqHDyPxVQVGUrTfU1VM3N9zDV17QI"
 	zuoyou_20190516_nian_pk="IgNWdiLGaPaGqAnMZwXlo0PFiMdNj2YL@IgNWdiLGaPaAvmHNCQGo6YVqweTVylalVlaXKQIaKOosWst_P6NrORmEBh5X5r2q@IgNWdiLGaPaGs1mcVlLuuggjtZR-vo9r441dFARTzw30QMe1@IgNWdiLGaPaIs1CeQUCu7UQQj2LahbozbU4CGwKB_WqRVw"
 
 	new_jdnianpk_set="'$new_nian_pk@$zuoyou_20190516_nian_pk',"
@@ -1197,8 +1227,8 @@ COMMENT
 	old_jdnewYearMoney1="\`oMZeX-5M9YkGAOtiP7Rz_yglorV31MmxRvuK5Itar4d2t7V2@oMZeXbBAqIJUAbA3ZrZ2rsve9AyA3Kq-6R23UrqYSIOwFRDm@vcZZM4U-2s49fLxMRfA8s9Ob_ZkZ7O0QtnrKtPOtbZhSjA@oMZeXOZOoY9eUOFiZrFxrKwAOXx25LYPCj8I_sDK6tbv4jls@oMZeXe9Kod0DCrE5M7Z1qcr4t7hsbJF9IrJMdgiso95xHVqC\`,"
 	new_jdnewYearMoney="Lhqsjk3FdizR1mKb7z7-K7Njx8Kx5kXkHhkgRBuL4oTCmFIWhfg@oMZeJ7EB-fwQdYJKSOYTs4Kn6PZYLirnNY34RGSlK_xwM2Q@oMZeX-IdqIsECrQ5M7Z3qtyub2RMkdQpvPkkptGu6dFpTWFk@oMZeXOJIodhVV-Y1ZbMmqmvPtKAlRyWSpZHXAsrGYwYZDHR0@oMZeXrAeoY8ECuY4ZuEi-bGnIR1K0yNnDNWDloaaDujkzEMW@oMZeBLwJ5OwkQJBHU8oOs6Lh-j1-tUN-likozedNAf1diJI@oMZeP74R2eIvQ5lDQ80OswPSAqISSuyC2ZZ8fZKY1yWb-KY"
 	zuoyou_20190516_jdnewYearMoney="ptA2XqoE7IsbT64wMbFy_ijm1-Ix0vpd@stF1E-NI7McbA659e7F2_s6ZURRz8JnxEf8@oMZeXLVK9YNRC7M2NbF4-7Xm7XEsdoV41IsXn_1QRLQ7Nq7i@oMZeXuMaqIgBUbAwZuF39xmqW6y10RIBAP2ExzTk6nutNDSP@oMZeX-dMoY1RCrZiM7N0_BOfqHWcJLLXMAbrx3wwWCqXLLSx@pstmDrgf5944Xq59e7A8s4nkzMoa0aoJMEbaCgtA@p9NiGuJN7McbA659e7F2_g87WymICeNisfA@qMtvDK8Np4lXT659N_w8s3VNk9t-99MAHpjBWX4@ott1Crgf4dIIXbV9e_xws3sLXFIdRIkncldD7MFBtg@oMZeXLNN899UV-E0MuZ1-eBYUy16HG80tqC739W6DbRNs-uH"
-	jidiyangguang_20190516_jd_newYearMoney="oMZeX-Ibp4leAOI5YrMm_AAFBQ9pi-CmolSqY3BP5B5gdqU5@oMZeXLRM8Y8GUuM1Zblz-Tc1sYflDoMfgwtsLkCttvorfvxx"
-	chiyu_jd_newYearMoney="qcpoEqNNooobT64xe_w8_raxKs0X582w7BuCTw"
+	jidiyangguang_20190516_jd_newYearMoney="oMZeX-Ibp4leAOI5YrMm_AAFBQ9pi-CmolSqYXlK4h1tUYEO@oMZeXLRM8Y8GUuM1Zblz-Tc1sYflDoMfgwtsLEmosPjb7dFI"
+	chiyu_jd_newYearMoney="qcpoEqNNooobT64xe_w8_raxKs0V5su15ReITQ"
 
 	new_jdnewYearMoney_set="'$new_jdnewYearMoney@$zuoyou_20190516_jdnewYearMoney@$jidiyangguang_20190516_jd_newYearMoney@$chiyu_jd_newYearMoney',"
 	sed -i "s/$old_jdnewYearMoney/$new_jdnewYearMoney_set/g" $dir_file_js/jd_newYearMoney.js
