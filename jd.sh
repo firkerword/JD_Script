@@ -1233,6 +1233,9 @@ COMMENT
 	sed -i "s/$old_jdnewYearMoney1/$new_jdnewYearMoney_set/g" $dir_file_js/jd_newYearMoney.js
 	sed -i "53a $new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set\n$new_jdnewYearMoney_set" $dir_file_js/jd_newYearMoney.js
 
+	#脚本黑名单
+	script_black
+
 }
 
 time() {
@@ -1349,8 +1352,6 @@ system_variable() {
 		. /etc/profile
 	fi
 
-	script_black
-
 	blacklist=""
 	if [ "黑名单" == "$blacklist" ];then
 		echo ""
@@ -1429,7 +1430,6 @@ script_black() {
 	fi
 	clear
 }
-
 
 action1="$1"
 action2="$2"
