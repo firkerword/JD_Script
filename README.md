@@ -60,7 +60,7 @@ N1（群友极地阳光测试）
          sh $jd jd_sharecode
 
 
-**6.问题反馈：https://github.com/ITdesk01/JD_Script/issues (描述清楚问题或者上图片，不然可能没有人理)**
+**4.问题反馈：https://github.com/ITdesk01/JD_Script/issues (描述清楚问题或者上图片，不然可能没有人理)**
 
 **吹水群** :**667491026** (公子大爷请绕道，白嫖可能没人理)
 
