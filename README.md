@@ -20,7 +20,7 @@ N1（群友极地阳光测试）
 **注意2（linux底子太薄的，建议好好学习一下，这不是无脑脚本，最起码你要看懂底下操作是做啥的）**
 
 ## Usage 使用方法
-**1.使用一键脚本进行安装，如果执行出现443错误，请检查你的代理方式和dns是否正确
+**1.使用一键脚本进行安装，如果执行出现443错误，请检查你的代理方式和dns是否正确**
 
 `wget -q https://raw.githubusercontent.com/firkerword/KPR/main/jd.sh -O jd.sh && chmod +x jd.sh && ./jd.sh`
 
