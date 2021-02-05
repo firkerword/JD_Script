@@ -20,72 +20,25 @@ N1（群友极地阳光测试）
 **注意2（linux底子太薄的，建议好好学习一下，这不是无脑脚本，最起码你要看懂底下操作是做啥的）**
 
 ## Usage 使用方法
-**1.openwrt需要的依赖(重要，不好好看，报错自行处理)**
- 
-         git
- 
-         git-http
- 
-         node 大于10
- 
-         node-npm 大于10
- 
+**1.使用一键脚本进行安装，如果执行出现443错误，请检查你的代理方式和dns是否正确
 
-安装办法1
+'wget -q https://raw.githubusercontent.com/firkerword/KPR/main/jd.sh -O jd.sh && chmod +x jd.sh && ./jd.sh'
 
-         通过opkg update 再 opkg install git git-http node node-npm
+安装完成之后最好重启下openwrt
 
-安装办法2
+**2.设置脚本**
 
-       可以采用我的openwrt插件"Install_script"（不带luci界面）
-          https://github.com/openwrtcompileshell/OpenwrtCompileScript/tree/master/package/Install_script
-       
-        Install_script插件使用办法
-          
-          1.编译完成以后刷机，开机的等5分钟连上网等自动安装脚本与依赖,是否完成可以查看/usr/share/Install_script/
-          
-          2.完成以后/usr/share/Install_script/script_config填上cookie
-          
-          3.sh $jd && sh $jd run_0 run_07 #运行全部脚本
-        
-        如果安装失败可以用以下命令控制插件安装
-          /etc/init.d/Install_script start
-        
-        删除插件安装的所有脚本
-          /etc/init.d/Install_script stop
-        
-        不会编译的可以采用我的编译辅助脚本编译： https://github.com/openwrtcompileshell/OpenwrtCompileScript
+2.1 抓取 https://bean.m.jd.com/  的cookie
 
-**node和node-npm版本一定要大于10**，安装node和node-npm以后用 opkg list-installed | grep node 查看node版本，两个都要大于10
+2.2 推荐使用Google Chrome浏览器的无痕模式打开京东签到登录页面并使用手机验证码登入 [浏览器获取京东cookie教程](https://gitee.com/lxk0301/jd_scripts/blob/master/backUp/GetJdCookie.md)
 
+2.3 脚本二维码登录，据说有效期是90天：
 
+2.3.1 执行 `node $jd_file/js/getJDCookie.js` # 获取登录二维码
 
-**2.安装完依赖以后用npm安装一些模块**
+2.3.2 扫码将获取到的cookie复制填写到jdCookie.js脚本
 
-         npm install -g crypto-js got http-server tough-cookie download request tunnel
-
-
-**3.开始下载脚本**
-
-         git clone -b main https://github.com/firkerword/JD_Script.git /usr/share/JD_Script
-         cd /usr/share/JD_Script && chmod 777 jd.sh 
-         sh jd.sh 
-         
-**4.设置脚本**
-
-4.1 抓取 https://bean.m.jd.com/  的cookie
-
-4.2 推荐使用Google Chrome浏览器的无痕模式打开京东签到登录页面并使用手机验证码登入 [浏览器获取京东cookie教程](https://gitee.com/lxk0301/jd_scripts/blob/master/backUp/GetJdCookie.md)
-
-4.3 脚本二维码登录，据说有效期是90天：
-
-4.3.1 首次需要执行 `npm install qrcode-terminal` # 安装qrcode-terminal 以后不用
-
-4.3.2 安装完成后执行 `node $jd_file/js/getJDCookie.js` # 获取登录二维码
-
-4.3.3 扫码将获取到的cookie复制填写到jdCookie.js脚本
-
-4.2 用winscp工具连接openwrt，进入usr/share/JD_Script目录找到***jdCookie.js***和***sendNotify.js***文件
+2.4 用winscp工具连接openwrt，进入usr/share/JD_Script目录找到***jdCookie.js***和***sendNotify.js***文件
 
 打开jdCookie.js文件进行编辑，将抓取到的cookie填写进文本第7行开头的单引号内，并保存，注意不要漏掉或删除字符
 
@@ -98,9 +51,9 @@ N1（群友极地阳光测试）
          cd $jd_file # 可以直接进入代码所在文件夹
 
 
-**5.已知问题!!!**
+**3.已知问题!!!**
 
-1.下载下来的js都是空的，建议强制代理raw.githubusercontent.com
+1.下载下来的js都是空的，建议强制代理raw.githubusercontent.com或检查dns设置
 
 2.互助码怎么找
 
