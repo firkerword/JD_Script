@@ -393,13 +393,6 @@ run_08_12_16() {
 	echo -e "$green run_08_12_16$stop_script $white"
 }
 
-run_19_20_21() {
-	echo -e "$green run_19_20_21$start_script $white"
-	$node $dir_file_js/jd_live_redrain2.js #直播间红包雨 1月17日-2月5日，每天19点、20点、21点
-	echo -e "$green run_19_20_21$stop_script $white"
-}
-
-
 run_10_15_20() {
 	echo -e "$green run_10_15_20$start_script $white"
 	$node $dir_file_js/jd_superMarket.js #东东超市,0 10 15 20四场补货加劵
@@ -1270,7 +1263,9 @@ COMMENT
 	#京东压岁钱
 		old_jdnewYearMoney="\`oMZeX-5M9YkGAOtiP7Rz_yglorV31MmxRvuK5Itar4d2t7V2@oMZeXbBAqIJUAbA3ZrZ2rsve9AyA3Kq-6R23UrqYSIOwFRDm@vcZZM4U-2s49fLxMRfA8s9Ob_ZkZ7O0QtnrKtPOtbZhSjA@oMZeXOZOoY9eUOFiZrFxrKwAOXx25LYPCj8I_sDK6tbv4jls@oMZeXe9Kod0DCrE5M7Z1qcr4t7hsbJF9IrJMdgiso95xHVqC\`,"
 	old_jdnewYearMoney1="\`oMZeX-5M9YkGAOtiP7Rz_yglorV31MmxRvuK5Itar4d2t7V2@oMZeXbBAqIJUAbA3ZrZ2rsve9AyA3Kq-6R23UrqYSIOwFRDm@vcZZM4U-2s49fLxMRfA8s9Ob_ZkZ7O0QtnrKtPOtbZhSjA@oMZeXOZOoY9eUOFiZrFxrKwAOXx25LYPCj8I_sDK6tbv4jls@oMZeXe9Kod0DCrE5M7Z1qcr4t7hsbJF9IrJMdgiso95xHVqC\`,"
-	new_jdnewYearMoney="Lhqsjk3FdizR1mKb7z7-K7Njx8Kx5kXkHhkgRBuL4oTCmFIWhfg@oMZeJ7EB-fwQdYJKSOYTs4Kn6PZYLirnNY34RGSlK_xwM2Q@oMZeX-IdqIsECrQ5M7Z3qtyub2RMkdQpvPkkptGu6dFpTWFk@oMZeXOJIodhVV-Y1ZbMmqmvPtKAlRyWSpZHXAsrGYwYZDHR0@oMZeXrAeoY8ECuY4ZuEi-bGnIR1K0yNnDNWDloaaDujkzEMW@oMZeBLwJ5OwkQJBHU8oOs6Lh-j1-tUN-likozedNAf1diJI@oMZeP74R2eIvQ5lDQ80OswPSAqISSuyC2ZZ8fZKY1yWb-KY"
+
+	new_jdnewYearMoney="Lhqsjk3FdizR1mKb7z7-K7Njx8Kx5kXkHhkgRBuL4oTCmFIWhfg@oMZeJ7EB-fwQdYJKSOYTs4Kn6PZYLirnNY34RGSlK_xwM2Q@oMZeX-IdqIsECrQ5M7Z3qtyub2RMkdQpvPkkptGu6dFpTWFk@oMZeXOJIodhVV-Y1ZbMmqmvPtKAlRyWSpZHXBsLBaQWytYZN@oMZeXrAeoY8ECuY4ZuEi-bGnIR1K0yNnDNWDko6dBOXgZLaf@oMZeBLwJ5OwkQJBHU8oOs6Lh-j1-tUN-liksxe9MC_lyacc@oMZeP74R2eIvQ5lDQ80OswPSAqISSuyC2ZZ4dZqZ2y99rwY"
+
 	zuoyou_20190516_jdnewYearMoney="ptA2XqoE7IsbT64wMbFy_ijm1-Ix0vpd@stF1E-NI7McbA659e7F2_s6ZURRz8JnxEf8@oMZeXLVK9YNRC7M2NbF4-7Xm7XEsdoV41IsXn_1QRLQ7Nq7i@oMZeXuMaqIgBUbAwZuF39xmqW6y10RIBAP2ExzTk6nutNDSP@oMZeX-dMoY1RCrZiM7N0_BOfqHWcJLLXMAbrx3wwWCqXLLSx@pstmDrgf5944Xq59e7A8s4nkzMoa0aoJMEbaCgtA@p9NiGuJN7McbA659e7F2_g87WymICeNisfA@qMtvDK8Np4lXT659N_w8s3VNk9t-99MAHpjBWX4@ott1Crgf4dIIXbV9e_xws3sLXFIdRIkncldD7MFBtg@oMZeXLNN899UV-E0MuZ1-eBYUy16HG80tqC739W6DbRNs-uH"
 	jidiyangguang_20190516_jd_newYearMoney="oMZeX-Ibp4leAOI5YrMm_AAFBQ9pi-CmolSqYXlK4h1tUYEO@oMZeXLRM8Y8GUuM1Zblz-Tc1sYflDoMfgwtsLEmosPjb7dFI"
 	chiyu_jd_newYearMoney="qcpoEqNNooobT64xe_w8_raxKs0V5su15ReITQ"
@@ -1432,7 +1427,7 @@ if [[ -z $action1 ]]; then
 	system_variable
 else
 	case "$action1" in
-		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_19_20_21|run_020|stop_notice|nian|checklog|nian_live|that_day|stop_script|script_black|ddcs|sy|script_name|baiyuan|backnas)
+		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|nian|checklog|nian_live|that_day|stop_script|script_black|ddcs|sy|script_name|baiyuan|backnas)
 		$action1
 		;;
 		*)
@@ -1444,7 +1439,7 @@ else
 		echo ""
 	else
 		case "$action2" in
-		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_19_20_21|run_020|stop_notice|nian|checklog|nian_live|that_day|stop_script|script_black|ddcs|sy|script_name|baiyuan|backnas)
+		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|nian|checklog|nian_live|that_day|stop_script|script_black|ddcs|sy|script_name|baiyuan|backnas)
 		$action2
 		;;
 		*)
