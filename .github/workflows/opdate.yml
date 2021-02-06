@@ -8,13 +8,13 @@ on:
 
  #     - main
 
-   schedule:
+ #   schedule:
 
-     - cron: 55 1,6,12 * * * 
+ #     - cron: 55 1,6,12 * * * 
 
-  # release:
+ #   release:
 
-  #   types: [published]
+ #     types: [published]
 
    watch:
 
