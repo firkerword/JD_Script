@@ -30,9 +30,9 @@ on:
 
   workflow_dispatch:
 
-  schedule:
+#  schedule:
 
-    - cron: 0 8-22/1 * * *
+#    - cron: 0 10-22/3 * * *
 
 jobs:
 
