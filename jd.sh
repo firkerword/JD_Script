@@ -51,7 +51,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.64"
+	cron_version="2.66"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -144,8 +144,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_jdzz.js			#京东赚赚长期活动
 	jd_lotteryMachine.js 		#京东抽奖机
 	jd_necklace.js			#点点券
-	jd_immortal.js			#京东神仙书院 2021-1-20至2021-2-5
-	jd_immortal_answer.js		#京东书院自动答题
 	jd_syj.js			#赚京豆
 	jd_bookshop.js			#口袋书店
 	jd_family.js			#京东家庭号
@@ -157,15 +155,13 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_daily_egg.js 		#京东金融-天天提鹅
 	jd_nh.js			#京东年货节2021年1月9日-2021年2月9日
 	jd_sgmh.js			#闪购盲盒长期活动
-	jd_super_box.js			#京东超级盒子
-	jd_festival.js			#京东手机年终奖 2021年1月26日～2021年2月8日
-	jd_mh.js			#京东盲盒
 	jd_ms.js			#京东秒秒币
 	jd_xg.js			#小鸽有礼 2021年1月15日至2021年2月19日
 	jd_818.js			#京东手机狂欢城活动
 	jd_xgyl.js			#小鸽有礼2 2021年1月28日～2021年2月28日
         jd_newYearMoney.js              #京东压岁钱
-        jd_newYearMoney_lottery.js      ＃京东抢百元卡
+        jd_newYearMoney_lottery.js      #京东抢百元卡
+	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
@@ -199,6 +195,7 @@ COMMENT
 
 	#wget https://raw.githubusercontent.com/799953468/Quantumult-X/master/Scripts/JD/jd_paopao.js -O $dir_file_js/jd_paopao.js
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_entertainment.js -O $dir_file_js/jd_entertainment.js
 
 
 	if [ $? -eq 0 ]; then
@@ -347,15 +344,15 @@ run_07() {
 	$node $dir_file_js/jd_live.js #直播抢京豆
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
 	$node $dir_file_js/jd_jxnc.js #京喜农场
-	$node $dir_file_js/jd_mh.js #京东盲盒
+	rm -rf $dir_file_js/jd_mh.js #京东盲盒
 	$node $dir_file_js/jd_ms.js #京东秒秒币 一个号大概60
-	$node $dir_file_js/jd_immortal.js #京东神仙书院 2021-1-20至2021-2-5
-	$node $dir_file_js/jd_super_box.js #京东超级盒子
+	rm -rf  $dir_file_js/jd_immortal.js #京东神仙书院 2021-1-20至2021-2-5
+	rm -rf $dir_file_js/jd_super_box.js #京东超级盒子
 	$node $dir_file_js/jd_xg.js #小鸽有礼 2021年1月15日至2021年2月19日
 	$node $dir_file_js/jd_xgyl.js #小鸽有礼2 2021年1月28日～2021年2月28日
 	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
-	$node $dir_file_js/jd_festival.js #京东手机年终奖 2021年1月26日～2021年2月8日
-	sy
+	rm -rf  $dir_file_js/jd_festival.js #京东手机年终奖 2021年1月26日～2021年2月8日
+	$node $dir_file_js/jd_entertainment.log #百变大咖秀
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
@@ -408,19 +405,11 @@ nian_live() {
 ddcs() {
 	ddcs_left=15
 	while [[ ${ddcs_left} -gt 0 ]]; do
+		echo -e "$green正在循环运行脚本，大概$ddcs_left次结束这个循环，然后跑下一个，不需要理这个,这个是正常的$white"
 		#$node $dir_file_js/jd_blueCoin.js  &	#东东超市兑换，有次数限制，没时间要求
 		$node $dir_file_js/jd_car_exchange.js   #京东汽车兑换，500赛点兑换500京豆
 		sleep 1
 		ddcs_left=$(($ddcs_left - 1))
-	done
-}
-
-sy() {
-	sy_left=15
-	while [[ ${sy_left} -gt 0 ]]; do
-		$node $dir_file_js/jd_immortal_answer.js
-		sleep 10
-		sy_left=$(($sy_left - 1))
 	done
 }
 
@@ -1149,20 +1138,6 @@ COMMENT
 	sed -i "s/$old_jdnian1/$new_jdnian_set/g" $dir_file_js/jd_nian.js
 	sed -i "50a $new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set\n$new_jdnian_set" $dir_file_js/jd_nian.js
 
-
-	#京东神仙书院
-		old_jdimmortal="\`39xIs4YwE5Z7CPQQ0baz9jNWO6PSZHsNWqfOwWyqScbJBGhg4v7HbuBg63TJ4@27xIs4YwE5Z7FGzJqrMmavC_vWKtbEaJxbz0Vahw@43xIs4YwE5Z7DsWOzDSP_N6WTDnbA0wBjjof6cA9FzcbHMcZB9wE1R3ToSluCgxAzEXQ@43xIs4YwE5Z7DsWOzDSEuRWEOROpnDjMx_VvSs5ikYQ8XgcZB9whEHjDmPKQoL16TZ8w@50xIs4YwE5Z7FTId9W-KibDgxxx6AEa7189V1zSxSf2HP6681IXPQ81aJEP77WoHXLcK7QzlxGqsGqfU@43xIs4YwE5Z7DsWOzDSPKFWdkRe2Ae6h0jAdlhuSmuwcfUcZB9wBcHhj0_zyZDNK4Rhg\`,"
-	old_jdimmortal1="\`39xIs4YwE5Z7CPQQ0baz9jNWO6PSZHsNWqfOwWyqScbJBGhg4v7HbuBg63TJ4@27xIs4YwE5Z7FGzJqrMmavC_vWKtbEaJxbz0Vahw@43xIs4YwE5Z7DsWOzDSP_N6WTDnbA0wBjjof6cA9FzcbHMcZB9wE1R3ToSluCgxAzEXQ@43xIs4YwE5Z7DsWOzDSEuRWEOROpnDjMx_VvSs5ikYQ8XgcZB9whEHjDmPKQoL16TZ8w@43xIs4YwE5Z7DsWOzDSFehRRs_UaNcqkiU7BrrzDTKHScMcZB9wkYC2z6K-QOsQy1S3A@43xIs4YwE5Z7DsWOzDSFcl8RjNxfrQquzeGQQtkQOUbyqscZB9wkxX2jw2HhM7TczeqA\`"
-	new_jdimmortal="46xIs4YwE5Z7G9g7VXXVQVAj1XaPuxnp42KWW3VHkbUCSyjZA_0yPE-_eWZkyLRGQewhtvF47@40xIs4YwE5Z7DsWOzDQEvxJW4_Gu_rEEGejqss1NHaWcZB9uhMa1knD7NF3t1DS@43xIs4YwE5Z7DsWOzDSFeBVdsn8wMSAqZUdmm4Ino9y4jMcZB9wkAGhz4L9-SqwpvWCg@43xIs4YwE5Z7DsWOzDSL_9CEGF8QjcKrGKFEUZqKB1WklAcZB9wUBTjm2pNOZkO1C8ew@43xIs4YwE5Z7DsWOzDSAvhIEJtWP7xzngvIUYtd1sw1JxIcZB9wxIFjjol6A2DOPxahQ@40xIs4YwE5Z7DsWOzDIZ8JBWj2nwoTJJBQQIYNpex1AcZB9mR4Sy1n0tWVpaoPC@40xIs4YwE5Z7DsWOzDKEspZQ0F-aIyW1stJDO2fu-9rcZB9ohwK9lcfpPTN0sBR"
-	chiyu="28xIs4YwE5Z7Dm46PNfntL3F3pXbHtieJxLjwFWjT8"
-	zuoyou_20190516_jdimmortal="22xIs4YwE5Z7DrE6AN9wfGxBQd4YVww@24xIs4YwE5Z7DdEYicm7x33rqDrY4dWjkFT@43xIs4YwE5Z7DsWOzDSZ6B6RrIMC4HFfxkSzf3jCbCFdHUcZB9wRdR2jb0-siyZL2Msw@43xIs4YwE5Z7DsWOzDSBeRUdmFA1baI1BuCTaeaNNRzhuIcZB9w0EBhz0OiBBprwWVKg@43xIs4YwE5Z7DsWOzDSFah8ENPhsZkB4O26BSbUl6LYstAcZB9wkVXjji_Rw4aYogBiw@32xIs4YwE5Z7DrHgFhpxYnERh2_hG_6b9vBd51FkxoEyGviag@24xIs4YwE5Z7DqBplRuwqToDxNydoVBh0BW@30xIs4YwE5Z7DmS7PZa-cX3FmkYs6Y8DAeZ1MkQ0WiDzP@34xIs4YwE5Z7DsvAWDFAtJXXa6aOvcyHgMcLAc41WlxoEzmeCYcI@43xIs4YwE5Z7DsWOzDSZ-N7WUyYAsdChzhnPpcvKkWX7u8cZB9wRFW3GrM09VTlnbADw"
-	jidiyangguang_20190516_jdimmortal="43xIs4YwE5Z7DsWOzDSFeBTEW2yCionsUe6mEQoABstc0EcZB9wkAAiDzCkgQMVOwngA@43xIs4YwE5Z7DsWOzDSZ-d8WWsr_YlS1abHIWCEl1CuGf0cZB9wRZX3joyj0K_tfJ0XA"
-
-	new_jdimmortal_set="'$new_jdimmortal@$chiyu@$zuoyou_20190516_jdimmortal@$jidiyangguang_20190516_jdimmortal',"
-	sed -i "s/$old_jdimmortal/$new_jdimmortal_set/g" $dir_file_js/jd_immortal.js
-	sed -i "s/$old_jdimmortal1/$new_jdimmortal_set/g" $dir_file_js/jd_immortal.js
-	sed -i "56a $new_jdimmortal_set\n$new_jdimmortal_set\n$new_jdimmortal_set\n$new_jdimmortal_set" $dir_file_js/jd_immortal.js
-
 	#闪购盲盒
 	new_jdsgmh="T024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQCjVWmIaW5kRrbA@T0225KkcRUhP9FCEKR79xaZYcgCjVWmIaW5kRrbA@T0205KkcH0RYsTOkY2iC8I10CjVWmIaW5kRrbA@T0205KkcJEZAjD2vYGGG4Ip0CjVWmIaW5kRrbA"
 	zuoyou_20190516_jdsgmh="T0064r90RQCjVWmIaW5kRrbA@T0089r43CBsZCjVWmIaW5kRrbA@T0225KkcR00boFzRKEvzlvYCcACjVWmIaW5kRrbA@T0225KkcRRtL_VeBckj1xaYNfACjVWmIaW5kRrbA@T0225KkcRB8d9FLRKU6nkPQOdwCjVWmIaW5kRrbA@T0144qQkFUBOsgG4fQCjVWmIaW5kRrbA@T00847wgARocCjVWmIaW5kRrbA@T0127KQtF1dc8lbXCjVWmIaW5kRrbA@T0155rQ3EUBOtA2Ifk0CjVWmIaW5kRrbA@T0225KkcR0scpgDUdBnxkaEPcgCjVWmIaW5kRrbA"
@@ -1173,27 +1148,9 @@ COMMENT
 	sed -i '32,33d' $dir_file_js/jd_sgmh.js
 	sed -i "31a $new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set" $dir_file_js/jd_sgmh.js
 
-	#京东手机年终奖
-	new_jdfestival="a1f4425f-8c39-471e-8689-0dd9af382045@a2538c1d-a045-4ea0-98ba-d8962796c097@753c15e6-ca43-4df0-99d2-08a3e8789bf3@11875cff-d5d6-4f17-af03-6a4cd00f94ec@5925b538-aa20-4417-b448-20f9a8c206b4"
-	zuoyou_20190516_jdfestival="cb1d0b7a-fd57-4307-8b08-01450a040fa4@35c05a09-945a-44f9-97a0-421c08b4dd98@3c8812e9-1ae6-4829-8cb3-98a772671b6a@bb2637ce-8bfb-4daf-889a-d3769803cfcb@a41318a2-4b7f-4b74-ba30-c68b5d681bbd@06568238-438e-4f5e-a278-f0502df10634@ff73b39e-0130-4b44-88bb-6129e5d6af36@5f6e9de2-123d-4bbe-9a7e-95dfe09525d3@a55789d2-72a8-40cd-b49c-382df8954887@34f512de-68c2-45c1-a1c7-1f7e778f1e22"
-	jidiyangguang_20190516_jdfestival="82b9b70b-a503-45fc-a9b4-04978d767f20@3ce171cf-df49-42eb-99de-1fdd306ca9e6"
-	chiyu_jdfestival="1212d4c9-31e1-41af-b6ba-61c119940db2"
-
-	new_jdfestival_set="'$new_jdfestival@$zuoyou_20190516_jdfestival@$jidiyangguang_20190516_jdfestival@$chiyu_jdfestival',"
-	sed -i '32,33d' $dir_file_js/jd_festival.js
-	sed -i "31a $new_jdfestival_set\n$new_jdfestival_set\n$new_jdfestival_set\n$new_jdfestival_set\n$new_jdfestival_set\n$new_jdfestival_set" $dir_file_js/jd_festival.js
-
-	#京东超级盒子
-	new_jdsuperbox="AdK-E_nAYUm7Nif1o_P9Kz1_IjelEIX3XMR9kLhjkUo@kRUZgiHAG6MH3MbxEmHu7A@Wlnddn9-EST-tViwpRvedoseTzAkJjfBHBqsVhkxBiQ@paajDEtwEBWELjmcQ70f_PEh-JCPmgvF2XktOJIVKk8@NLQlCreLH6IcZX7xXmOy7JVKCiTveYfjCxRBHB1x7U8@TZOHaJd9uoCWSBGjTpvHtq4ESISc_JVtAz15HMVR0Xc@31AEesBSjRfF0nbzA0iTHw@GRTM4onTMM4_xLPwAgg2Lw"
-	zuoyou_20190516_jdsuperbox="hpuuBn_DHIEEtGtO_l1v0g@PTvY82VjS4iyzD6m439G7A@Rhj2389A14HTWpJWakBoh2UcBVQY_4dhCiYnRz-lEdU@fNyyP5hpC8DMme-rHVK4Yw1Wug5CNiD8tBOlK6eDW8o@CbKCRFJOWsdVUJ3UNsnPeAhxGPo1ImbWUCfFnn9t2zI@IeevO_l_9DqDflSG728SPQ@Ulx6tsCj5ebNVpCbDIglSA@8m0NXmTc8I_kwRXxeOTJug@zSH2ixbQdrlZU-5VQwR5Pg@QDD9t-9smLC8GRIipCFU66-ur7VYRlvzT-rWSf8ZzC0"
-	chiyu_jdsuperbox="u1Ev8KHVdp_hmy0nLDHRWQ"
-
-	new_jdsuperbox_set="'$new_jdsuperbox@$zuoyou_20190516_jdsuperbox@$chiyu_jdsuperbox',"
-	sed -i '39,40d' $dir_file_js/jd_super_box.js
-	sed -i "38a $new_jdsuperbox_set\n$new_jdsuperbox_set\n$new_jdsuperbox_set\n$new_jdsuperbox_set\n$new_jdsuperbox_set\n$new_jdsuperbox_set" $dir_file_js/jd_super_box.js
 
 	#京东压岁钱
-	new_jdnewYearMoney="Lhqsjk3FdizR1mKb7z7-K7Njx8Kx5kXkHhkgRBuL4oTCmFIWhfg@oMZeJ7EB-fwQdYJKSOYTs4Kn6PZYLirnNY34RGSlK_xwM2Q@oMZeX-IdqIsECrQ5M7Z3qtyub2RMkdQpvPkkptGu6dFpTWFk@oMZeXOJIodhVV-Y1ZbMmqmvPtKAlRyWSpZHXBsLBaQWytYZN@oMZeXrAeoY8ECuY4ZuEi-bGnIR1K0yNnDNWDko6dBOXgZLaf@oMZeBLwJ5OwkQJBHU8oOs6Lh-j1-tUN-liksxe9MC_lyacc@oMZeP74R2eIvQ5lDQ80OswPSAqISSuyC2ZZ4dZqZ2y99rwY"
+	new_jdnewYearMoney="Lhqsjk3FdizR1mKb7z7-K7Njx8Kx5kXkHhkgRBuL4oTCmFIWhfg@oMZeJ7EB-fwQdYJKSOYTs4Kn6PZYLirnNY34RGSlK_xwM2Q@oMZeX-IdqIsECrQ5M7Z3qtyub2RMkdQpvPkkptGu6dFpTWFk@oMZeXOJIodhVV-Y1ZbMmqmvPtKAlRyWSpZHXBcPOaAvS_K7m@oMZeXrAeoY8ECuY4ZuEi-bGnIR1K0yNnDNWDkY-SBOxh0-wC@oMZeBLwJ5OwkQJBHU8oOs6Lh-j1-tUN-likvxO9HDfnZ8DM@oMZeP74R2eIvQ5lDQ80OswPSAqISSuyC2ZZ7dJqS2ys0eME"
 
 	zuoyou_20190516_jdnewYearMoney="ptA2XqoE7IsbT64wMbFy_ijm1-Ix0vpd@stF1E-NI7McbA659e7F2_s6ZURRz8JnxEf8@oMZeXLVK9YNRC7M2NbF4-7Xm7XEsdoV41IsXn_1QRLQ7Nq7i@oMZeXuMaqIgBUbAwZuF39xmqW6y10RIBAP2ExzTk6nutNDSP@oMZeX-dMoY1RCrZiM7N0_BOfqHWcJLLXMAbrx3wwWCqXLLSx@pstmDrgf5944Xq59e7A8s4nkzMoa0aoJMEbaCgtA@p9NiGuJN7McbA659e7F2_g87WymICeNisfA@qMtvDK8Np4lXT659N_w8s3VNk9t-99MAHpjBWX4@ott1Crgf4dIIXbV9e_xws3sLXFIdRIkncldD7MFBtg@oMZeXLNN899UV-E0MuZ1-eBYUy16HG80tqC739W6DbRNs-uH"
 	jidiyangguang_20190516_jd_newYearMoney="oMZeX-Ibp4leAOI5YrMm_AAFBQ9pi-CmolSqYXlK4h1tUYEO@oMZeXLRM8Y8GUuM1Zblz-Tc1sYflDoMfgwtsLEmosPjb7dFI"
@@ -1357,7 +1314,7 @@ if [[ -z $action1 ]]; then
 	system_variable
 else
 	case "$action1" in
-		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|nian|checklog|nian_live|that_day|stop_script|script_black|ddcs|sy|script_name|baiyuan|backnas)
+		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|nian|checklog|nian_live|that_day|stop_script|script_black|ddcs|script_name|baiyuan|backnas)
 		$action1
 		;;
 		*)
@@ -1369,7 +1326,7 @@ else
 		echo ""
 	else
 		case "$action2" in
-		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|nian|checklog|nian_live|that_day|stop_script|script_black|ddcs|sy|script_name|baiyuan|backnas)
+		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|nian|checklog|nian_live|that_day|stop_script|script_black|ddcs|script_name|baiyuan|backnas)
 		$action2
 		;;
 		*)
