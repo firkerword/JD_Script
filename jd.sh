@@ -339,7 +339,6 @@ run_07() {
 	$node $dir_file_js/jx_sign.js #京喜app签到长期
 	$node $dir_file_js/jd_rankingList.js #京东排行榜签到领京豆
 	$node $dir_file_js/jd_syj.js #十元街签到,一天一次即可，一周30豆子
-	rm -rf  $dir_file_js/jd_paopao.js #京东泡泡大战,一天一次
 	$node $dir_file_js/jd_kd.js #京东快递签到 一天运行一次即可
 	$node $dir_file_js/jd_bean_home.js #领京豆额外奖励
 	$node $dir_file_js/jd_club_lottery.js #摇京豆，没时间要求
@@ -349,13 +348,9 @@ run_07() {
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
 	$node $dir_file_js/jd_jxnc.js #京喜农场
 	$node $dir_file_js/jd_mh.js #京东盲盒
-	$node $dir_file_js/jd_ms.js #京东秒秒币 一个号大概60秒
-	rm -rf  $dir_file_js/jd_bj.js #宝洁美发屋
+	$node $dir_file_js/jd_ms.js #京东秒秒币 一个号大概60
 	$node $dir_file_js/jd_immortal.js #京东神仙书院 2021-1-20至2021-2-5
-	rm -rf 	$node $dir_file_js/jd_vote.js #京年团圆
-	rm -rf  $dir_file_js/jd_sx.js #海产新年抽奖，欧皇可中实物
 	$node $dir_file_js/jd_super_box.js #京东超级盒子
-	rm -rf  $dir_file_js/jd_super_coupon.js #玩一玩-神券驾到,少于三个账号别玩
 	$node $dir_file_js/jd_xg.js #小鸽有礼 2021年1月15日至2021年2月19日
 	$node $dir_file_js/jd_xgyl.js #小鸽有礼2 2021年1月28日～2021年2月28日
 	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
