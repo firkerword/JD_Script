@@ -236,6 +236,7 @@ run_0() {
 	$node $dir_file_js/jd_nian_sign.js #年兽签到
 	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
+	$node $dir_file_js/jd_newYearMoney.js #京东压岁钱
 	run_08_12_16
 	$node $dir_file_js/jd_small_home.js #东东小窝
 	run_06_18
@@ -245,6 +246,7 @@ run_0() {
 	run_03
 	run_045
 	$node $dir_file_js/jd_crazy_joy.js #crazyJoy任务
+	$node $dir_file_js/jd_newYearMoney.js #京东压岁钱
 	echo -e "$green run_0$stop_script $white"
 }
 
@@ -366,7 +368,6 @@ run_08_12_16() {
 	$node $dir_file_js/jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
 	rm -rf  $dir_file_js/jd_5g.js #5G狂欢城
 	$node $dir_file_js/jd_818.js #京东手机狂欢城活动
-        $node $dir_file_js/jd_newYearMoney.js #京东压岁钱
 	$node $dir_file_js/jd_bookshop.js #口袋书店
 	echo -e "$green run_08_12_16$stop_script $white"
 }
@@ -1150,7 +1151,7 @@ COMMENT
 
 
 	#京东压岁钱
-	new_jdnewYearMoney="Lhqsjk3FdizR1mKb7z7-K7Njx8Kx5kXkHhkgRBuL4oTCmFIWhfg@oMZeJ7EB-fwQdYJKSOYTs4Kn6PZYLirnNY34RGSlK_xwM2Q@oMZeX-IdqIsECrQ5M7Z3qtyub2RMkdQpvPkkptGu6dFpTWFk@oMZeXOJIodhVV-Y1ZbMmqmvPtKAlRyWSpZHXBcPOaAvS_K7m@oMZeXrAeoY8ECuY4ZuEi-bGnIR1K0yNnDNWDkY-SBOxh0-wC@oMZeBLwJ5OwkQJBHU8oOs6Lh-j1-tUN-likvxO9HDfnZ8DM@oMZeP74R2eIvQ5lDQ80OswPSAqISSuyC2ZZ7dJqS2ys0eME"
+	new_jdnewYearMoney="Lhqsjk3FdizR1mKb7z7-K7Njx8Kx5kXkHhkgRBuL4oTCmFIWhfg@oMZeJ7EB-fwQdYJKSOYTs4Kn6PZYLirnNY34RGSlK_xwM2Q@oMZeX-IdqIsECrQ5M7Z3qtyub2RMkdQpvPkkptGu6dFpTWFk@oMZeXOJIodhVV-Y1ZbMmqmvPtKAlRyWSpZHXBMXHaQv7_xCg@oMZeXrAeoY8ECuY4ZuEi-bGnIR1K0yNnDNWDkImYDex4F_F1@oMZeP74R2eIvQ5lDQ80OswPSAqISSuyC2ZZ6cpCa3i7-ZXw"
 
 	zuoyou_20190516_jdnewYearMoney="ptA2XqoE7IsbT64wMbFy_ijm1-Ix0vpd@stF1E-NI7McbA659e7F2_s6ZURRz8JnxEf8@oMZeXLVK9YNRC7M2NbF4-7Xm7XEsdoV41IsXn_1QRLQ7Nq7i@oMZeXuMaqIgBUbAwZuF39xmqW6y10RIBAP2ExzTk6nutNDSP@oMZeX-dMoY1RCrZiM7N0_BOfqHWcJLLXMAbrx3wwWCqXLLSx@pstmDrgf5944Xq59e7A8s4nkzMoa0aoJMEbaCgtA@p9NiGuJN7McbA659e7F2_g87WymICeNisfA@qMtvDK8Np4lXT659N_w8s3VNk9t-99MAHpjBWX4@ott1Crgf4dIIXbV9e_xws3sLXFIdRIkncldD7MFBtg@oMZeXLNN899UV-E0MuZ1-eBYUy16HG80tqC739W6DbRNs-uH"
 	jidiyangguang_20190516_jd_newYearMoney="oMZeX-Ibp4leAOI5YrMm_AAFBQ9pi-CmolSqYXlK4h1tUYEO@oMZeXLRM8Y8GUuM1Zblz-Tc1sYflDoMfgwtsLEmosPjb7dFI"
