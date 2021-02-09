@@ -194,8 +194,18 @@ COMMENT
 	cat $dir_file/config/shylocks_script.txt >> $dir_file/config/collect_script.txt
 
 	#wget https://raw.githubusercontent.com/799953468/Quantumult-X/master/Scripts/JD/jd_paopao.js -O $dir_file_js/jd_paopao.js
-	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js
-	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_entertainment.js -O $dir_file_js/jd_entertainment.js
+	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_entertainment.js -O $dir_file_js/jd_entertainment.js #百变大咖秀
+	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_priceProtect.js -O $dir_file_js/jd_priceProtect.js #京东价格保护
+	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
+
+cat >>$dir_file/config/collect_script.txt <<EOF
+	jx_products_detail.js		#京喜工厂商品列表详情
+	jd_entertainment.js 		#百变大咖秀
+	jd_priceProtect.js 		#京东价格保护
+	jd_try.js 			#京东试用
+EOF
+
 
 
 	if [ $? -eq 0 ]; then
@@ -260,7 +270,7 @@ joy(){
 
 kill_joy() {
 	echo -e "$green  执行kill_joy$start_script $white"
-	pid=$(ps -ef ww | grep "jd_crazy_joy_coin.js" | grep -v grep | awk '{print $1}')
+	pid=$(ps -ww | grep "jd_crazy_joy_coin.js" | grep -v grep | awk '{print $1}')
 	if [ $(echo $pid |wc -l ) == "1" ];then
 		echo -e "$yellow发现joy后台程序开始清理，请稍等$white"
 		for joy_pid in `echo $pid`
@@ -356,7 +366,7 @@ run_07() {
 	rm -rf  $dir_file_js/jd_festival.js #京东手机年终奖 2021年1月26日～2021年2月8日
 	$node $dir_file_js/jd_entertainment.log #百变大咖秀
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
-	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
+	$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
 	echo -e "$green run_07$stop_script $white"
@@ -915,7 +925,7 @@ additional_settings() {
 	#sed -i "s/|| 0/|| 20/g" $dir_file_js/jd_blueCoin.js
 
 	#取消店铺从20个改成50个(没有星推官先默认20吧)
-	sed -i "s/|| 20/|| 50/g" $dir_file_js/jd_unsubscribe.js
+	sed -i "s/|| 20/|| 100/g" $dir_file_js/jd_unsubscribe.js
 
 	#宠汪汪积分兑换奖品改成兑换500豆子，个别人会兑换错误(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
 	#sed -i "s/let joyRewardName = 20/let joyRewardName = 500/g" $dir_file_js/jd_joy_reward.js
