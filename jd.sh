@@ -165,7 +165,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
-	jd_unbind.js			#注销京东会员卡
 	jd_unsubscribe.js		#取关京东店铺和商品
 EOF
 
@@ -356,17 +355,13 @@ run_07() {
 	$node $dir_file_js/jd_live.js #直播抢京豆
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
 	$node $dir_file_js/jd_jxnc.js #京喜农场
-	rm -rf $dir_file_js/jd_mh.js #京东盲盒
 	$node $dir_file_js/jd_ms.js #京东秒秒币 一个号大概60
-	rm -rf  $dir_file_js/jd_immortal.js #京东神仙书院 2021-1-20至2021-2-5
-	rm -rf $dir_file_js/jd_super_box.js #京东超级盒子
 	$node $dir_file_js/jd_xg.js #小鸽有礼 2021年1月15日至2021年2月19日
 	$node $dir_file_js/jd_xgyl.js #小鸽有礼2 2021年1月28日～2021年2月28日
 	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
-	rm -rf  $dir_file_js/jd_festival.js #京东手机年终奖 2021年1月26日～2021年2月8日
-	$node $dir_file_js/jd_entertainment.log #百变大咖秀
+	$node $dir_file_js/jd_entertainment.js #百变大咖秀
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
-	$node $dir_file_js/jd_unbind.js #注销京东会员卡
+	rm -rf $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
 	echo -e "$green run_07$stop_script $white"
@@ -376,7 +371,6 @@ run_08_12_16() {
 	echo -e "$green run_08_12_16$start_script $white"
 	nian
 	$node $dir_file_js/jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
-	rm -rf  $dir_file_js/jd_5g.js #5G狂欢城
 	$node $dir_file_js/jd_818.js #京东手机狂欢城活动
 	$node $dir_file_js/jd_bookshop.js #口袋书店
 	echo -e "$green run_08_12_16$stop_script $white"
