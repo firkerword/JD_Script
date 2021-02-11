@@ -115,18 +115,14 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_bean_sign.js			#京东多合一签到
 	jx_sign.js			#京喜app签到长期
 	jd_fruit.js			#东东农场
-	jdFruitShareCodes.js		#东东农场ShareCodes
 	jd_jxnc.js			#京喜农场
 	jdJxncTokens.js			#京喜农场token
 	jdJxncShareCodes.js		#京喜农场ShareCodes
 	jd_pet.js			#东东萌宠
-	jdPetShareCodes.js		#东东萌宠ShareCodes
 	jd_plantBean.js			#种豆得豆
-	jdPlantBeanShareCodes.js	#种豆得豆ShareCodes
 	jd_superMarket.js		#东东超市
 	jd_blueCoin.js			#东东超市兑换奖品
 	jd_dreamFactory.js		#京喜工厂
-	jdDreamFactoryShareCodes.js	#京喜工厂ShareCodes
 	jd_jdfactory.js			#东东工厂
 	jdFactoryShareCodes.js		#东东工厂ShareCodes
 	jd_joy_feedPets.js 		#宠汪汪单独喂食
@@ -206,6 +202,10 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	jd_entertainment.js 		#百变大咖秀
 	jd_priceProtect.js 		#京东价格保护
 	jd_try.js 			#京东试用
+	jdDreamFactoryShareCodes.js	#京喜工厂ShareCodes
+	jdFruitShareCodes.js		#东东农场ShareCodes
+	jdPetShareCodes.js		#东东萌宠ShareCodes
+	jdPlantBeanShareCodes.js	#种豆得豆ShareCodes
 EOF
 
 
