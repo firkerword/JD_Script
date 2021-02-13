@@ -906,7 +906,7 @@ additional_settings() {
 	Oyeah_20200104_fr="5e54362c4a294f66853d14e777584598"
 	shisan_20200213_fr="cf13366e69d648ff9022e0fdce8c172a@cedfefd072434e57afcd95bed69a5f5c"
 	JOSN_20200807_fr="2868e98772cb4fac9a04cd43e964f337"
-	Jhone_Potte_20200824_fr="64304080a2714e1cac59af03b0009581@e9333dbf9c294ad6af2792dacc236fe7"
+	Jhone_Potte_20200824_fr="64304080a2714e1cac59af03b0009581@e9333dbf9c294ad6af2792dacc236fe7@f6f58dc91bad4e24b9dd6f9a1ba19950@674922141a014f13bdd882e8b5c15916@4f53be3edea541268b1b948456d6ff4e"
 	liandao_20201010_fr="1c6474a197af4b3c8d40c26ec7f11c9e@6f7a7cc42b9342e29163588bafc3782b"
 	adong_20201108_fr="3d1985319106483ba83de3366d3716d5@9e9d99a4234d45cd966236d3cb3908cf"
 	deng_20201120_fr="bc26d0bdc442421aa92cafcf26a1e148@57cf86ce18ca4f4987ce54fae6182bbd@521a558fcce44fbbb977c8eba4ba0d40@389f3bfe4bdc45e2b1c3e2f36e6be260@26c79946c7cc4477b56d94647d0959f2@26c79946c7cc4477b56d94647d0959f2"
@@ -974,7 +974,7 @@ additional_settings() {
 	Oyeah_20200104_pb="e7lhibzb3zek234ckc2fm2yvkj5cbsdpe7y6p2a"
 	shisan_20200213_pb="mlrdw3aw26j3xzd26qnacr3cfnm4zggngukbhny@okj5ibnh3onz7yqop3tum45jigtppsihwynzavy"
 	JOSN_20200807_pb="pmvt25o5pxfjzcquanxwokbgvu3h7wlwy7o5jii"
-	Jhone_Potte_20200824_pb="olmijoxgmjutzcbkzw4njrhy3l3gwuh6g2qzsvi@olmijoxgmjuty4tpgnpbnzvu4pl6hyxp3sferqa"
+	Jhone_Potte_20200824_pb="olmijoxgmjutzcbkzw4njrhy3l3gwuh6g2qzsvi@olmijoxgmjuty4tpgnpbnzvu4pl6hyxp3sferqa@h3cggkcy6agkh4ozcp5idack3aupbxyuunf2oti@l4ex6vx6yynouz2vsrqlkogw4gvwf5sihbmchdq@wsr6thb5bd25kamxdqdkgw2m5zfiwo4o66p6saa"
 	liandao_20201010_pb="nxawbkvqldtx4wdwxxbkf23g6y@l4ex6vx6yynouxxefa4hfq6z3in25fmktqqwtca"
 	adong_20201108_pb="qhw4z5vauoy4gfkaybvpmxvjfi@olmijoxgmjuty6wu5iufrhoi6jmzzodszk6xgda"
 	deng_20201120_pb="e7lhibzb3zek3knwnjhrbaadekphavflo22jqii@olmijoxgmjutzfvkt4iu7xobmplveczy2ogou3i@f3er4cqcqgwogenz3dwsg7owhy@eupxefvqt76x2ssddhd35aysfrchgqeijzo2wdi@3en43v3ev6tvx55oefp3vb2xure67mm3kwgsm6a@nkvdrkoit5o657wm7ui35qcu2dmtir7t5h7sema"
@@ -1094,8 +1094,9 @@ COMMENT
 	zuoyou_20190516_jdbook="6b1c75eb1cb94a798430419d910b72af@2bcf369644394ffda20b07abbd300957@dbd5fbf1ffde4f99b74fd5b9d5aba901@ccb016eff33147fc96b2b0cfa781965a@ab887a95729a4cc590fbb4161c19f57f@fa96f480e49b464e893bf18ac96a2772@eae4a6a81da5430688ed02c909d5ed75"
 	jidiyangguang_20190516_jdbook="a3ad79593cdb41bd8ab31dab7e19cf06@90660442a37f473b98bf57774e9825fe"
 	chiyu_jdbook="dfae57a9a2654667b0b5e7298d2ad137"
+	Jhone_Potte_20200824_jdbook="9248205cc28144d0bd1a925f9db0083c@de78e3257e184519bb7a2212cc4e49ec"
 
-	new_jdbook_set="'$new_jdbook@$zuoyou_20190516_jdbook@$jidiyangguang_20190516_jdbook@$chiyu_jdbook',"
+	new_jdbook_set="'$new_jdbook@$zuoyou_20190516_jdbook@$jidiyangguang_20190516_jdbook@$chiyu_jdbook@$Jhone_Potte_20200824_jdbook',"
 	sed -i '33,34d' $dir_file_js/jd_bookshop.js
 	sed -i "32a $new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set" $dir_file_js/jd_bookshop.js
 	
@@ -1104,8 +1105,9 @@ COMMENT
 	zuoyou_20190516_jdcash="f1kwaQ@a1hzJOmy@eU9Ya7-wM_Qg-T_SyXIb0g@eU9Yaengbv9wozzUmiIU3g@eU9YaO22Z_og-DqGz3AX1Q@f0JgObLlIalJrA@flpkLei3@cUJpO6X3Yf4m@e1JzPbLlJ6V5rzk@eU9Ya7m3NaglpW3QziUW0A"
 	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
 	chiyu_jdcash="cENuJam3ZP0"
+	Jhone_Potte_20200824_jdcash="eU9Yaum1N_4j82-EzCUSgw@eU9Yar-7Nf518GyBniIWhw"
 
-	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash',"
+	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash',"
 	sed -i '32,33d' $dir_file_js/jd_cash.js
 	sed -i "31a $new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set" $dir_file_js/jd_cash.js
 	sed -i "s/https:\/\/gitee.com\/shylocks\/updateTeam\/raw\/main\/jd_cash.json/https:\/\/raw.githubusercontent.com\/ITdesk01\/JD_Script\/main\/JSON\/jd_cash.json/g"  $dir_file_js/jd_cash.js
@@ -1115,8 +1117,10 @@ COMMENT
 	zuoyou_20190516_jdsgmh="T0064r90RQCjVWmIaW5kRrbA@T0089r43CBsZCjVWmIaW5kRrbA@T0225KkcR00boFzRKEvzlvYCcACjVWmIaW5kRrbA@T0225KkcRRtL_VeBckj1xaYNfACjVWmIaW5kRrbA@T0225KkcRB8d9FLRKU6nkPQOdwCjVWmIaW5kRrbA@T0144qQkFUBOsgG4fQCjVWmIaW5kRrbA@T00847wgARocCjVWmIaW5kRrbA@T0127KQtF1dc8lbXCjVWmIaW5kRrbA@T0155rQ3EUBOtA2Ifk0CjVWmIaW5kRrbA@T0225KkcR0scpgDUdBnxkaEPcgCjVWmIaW5kRrbA"
 	jidiyangguang_20190516_jdsgmh="T0225KkcR0wdpFCGcRvwxv4JcgCjVWmIaW5kRrbA@T0225KkcRBpK8lbeIxr8wfRcdwCjVWmIaW5kRrbA"
 	chiyu_jdsgmh="T0117aUqCVsc91UCjVWmIaW5kRrbA"
+	Jhone_Potte_20200824_jdsgmh="T0225KkcRhsepFbSIhulk6ELIQCjVWmIaW5kRrbA@T0225KkcRk0QplaEIRigwaYPJQCjVWmIaW5kRrbA"
 
-	new_jdsgmh_set="'$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh',"
+
+	new_jdsgmh_set="'$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$Jhone_Potte_20200824_jdsgmh',"
 	sed -i '32,33d' $dir_file_js/jd_sgmh.js
 	sed -i "31a $new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set" $dir_file_js/jd_sgmh.js
 
