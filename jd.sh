@@ -51,7 +51,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.70"
+	cron_version="2.71"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -79,13 +79,14 @@ cat >>/etc/crontabs/root <<EOF
 */30 1-22 * * * $dir_file/jd.sh joy >/tmp/jd_joy.log 2>&1 #1-22,每半个小时kill joy并运行一次joy挂机
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机
 0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关
-0 9,12,20,21 * * * $node $dir_file_js/jd_global.js >/tmp/jd_global.log 2>&1 #环球挑战赛
-0 9,12,20,21 * * * $node $dir_file_js/jd_global_mh.js >/tmp/jd_global_mh.log 2>&1 #环球魔盒
-0 0,20-23 10-12 2 * $node $dir_file_js/jd_cxhb.js >/tmp/jd_cxhb.log 2>&1 #除夕红包
-10 20 10-13 2 * $node $dir_file_js/jd_xmf.js >/tmp/jd_xmf.log 2>&1 #京东小魔方
+#0 9,12,20,21 * * * $node $dir_file_js/jd_global.js >/tmp/jd_global.log 2>&1 #环球挑战赛
+#0 9,12,20,21 * * * $node $dir_file_js/jd_global_mh.js >/tmp/jd_global_mh.log 2>&1 #环球魔盒
 ###########100##########请将其他定时任务放到底下###############
 EOF
-
+	rm -rf /tmp/jd_global.log
+	rm -rf /tmp/jd_global_mh.log
+	rm -rf /tmp/jd_xmf.log
+	rm -rf /tmp/jd_cxhb.log
 	/etc/init.d/cron restart
 	cron_help="$yellow定时任务更新完成，记得看下你的定时任务$white"
 }
@@ -146,7 +147,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
 	jd_speed.js			#天天加速
-	jd_moneyTree.js 		#摇钱树
 	jd_pigPet.js			#金融养猪
 	jd_daily_egg.js 		#京东金融-天天提鹅
 	jd_sgmh.js			#闪购盲盒长期活动
@@ -248,7 +248,6 @@ run_0() {
 	run_06_18
 	run_10_15_20
 	run_01
-	run_02
 	run_03
 	run_045
 	$node $dir_file_js/jd_crazy_joy.js #crazyJoy任务
@@ -312,7 +311,7 @@ run_01() {
 
 run_02() {
 	echo -e "$green run_02$start_script $white"
-	$node $dir_file_js/jd_moneyTree.js #京东摇钱树，7-9 11-13 18-20签到 每两小时收一次
+	echo "暂时为空"
 	echo -e "$green run_02$stop_script $white"
 }
 
