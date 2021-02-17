@@ -51,7 +51,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.71"
+	cron_version="2.74"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -79,14 +79,9 @@ cat >>/etc/crontabs/root <<EOF
 */30 1-22 * * * $dir_file/jd.sh joy >/tmp/jd_joy.log 2>&1 #1-22,每半个小时kill joy并运行一次joy挂机
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机
 0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关
-#0 9,12,20,21 * * * $node $dir_file_js/jd_global.js >/tmp/jd_global.log 2>&1 #环球挑战赛
-#0 9,12,20,21 * * * $node $dir_file_js/jd_global_mh.js >/tmp/jd_global_mh.log 2>&1 #环球魔盒
+0 9,12,20,21 * * * $node $dir_file_js/jd_global.js >/tmp/jd_global.log 2>&1 #环球挑战赛
 ###########100##########请将其他定时任务放到底下###############
 EOF
-	rm -rf /tmp/jd_global.log
-	rm -rf /tmp/jd_global_mh.log
-	rm -rf /tmp/jd_xmf.log
-	rm -rf /tmp/jd_cxhb.log
 	/etc/init.d/cron restart
 	cron_help="$yellow定时任务更新完成，记得看下你的定时任务$white"
 }
@@ -154,7 +149,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_xg.js			#小鸽有礼 2021年1月15日至2021年2月19日
 	jd_xgyl.js			#小鸽有礼2 2021年1月28日～2021年2月28日
 	jd_global.js			#环球挑战赛,活动时间：2021-02-02 至 2021-02-22
-	jd_global_mh.js                 #国际盲盒,活动时间：2021-01-15 至 2021-02-15
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
@@ -379,7 +373,7 @@ run_10_15_20() {
 }
 
 ddcs() {
-	ddcs_left=15
+	ddcs_left=6
 	while [[ ${ddcs_left} -gt 0 ]]; do
 		echo -e "$green正在循环运行脚本，大概$ddcs_left次结束这个循环，然后跑下一个，不需要理这个,这个是正常的$white"
 		#$node $dir_file_js/jd_blueCoin.js  &	#东东超市兑换，有次数限制，没时间要求
