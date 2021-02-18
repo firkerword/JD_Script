@@ -373,7 +373,7 @@ run_10_15_20() {
 }
 
 ddcs() {
-	ddcs_left=6
+	ddcs_left=3
 	while [[ ${ddcs_left} -gt 0 ]]; do
 		echo -e "$green正在循环运行脚本，大概$ddcs_left次结束这个循环，然后跑下一个，不需要理这个,这个是正常的$white"
 		#$node $dir_file_js/jd_blueCoin.js  &	#东东超市兑换，有次数限制，没时间要求
