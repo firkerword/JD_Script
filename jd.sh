@@ -51,7 +51,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.75"
+	cron_version="2.76"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -80,6 +80,9 @@ cat >>/etc/crontabs/root <<EOF
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机
 0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关
 ###########100##########请将其他定时任务放到底下###############
+#**********这里是backnas定时任务******************************#
+0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script
+###########backnas##########请将其他定时任务放到底下###############
 EOF
 	rm -rf /tmp/jd_global.log
 	rm -rf /tmp/jd_global_mh.log
@@ -90,6 +93,7 @@ EOF
 task_delete() {
 	sed -i '/JD_Script/d' /etc/crontabs/root >/dev/null 2>&1
 	sed -i '/#100#/d' /etc/crontabs/root >/dev/null 2>&1
+	sed -i '/backnas/d' /etc/crontabs/root >/dev/null 2>&1
 }
 
 ds_setup() {
@@ -543,15 +547,6 @@ backnas() {
 		fi
 	fi
 
-	#判断定时任务
-	backnas_version="1.1"
-	if [ `grep -o "backnas定时任务$backnas_version" $cron_file |wc -l` == "0" ]; then
-		echo "backnas定时任务有变，开始更新"
-		sed -i '/backnas/d' /etc/crontabs/root >/dev/null 2>&1
-		backnas_cron
-		echo "backnas计划任务设置完成"
-	fi
-
 	#判断config文件
 	backnas_config_version="1.0"
 	if [ `grep -o "backnas_config版本$backnas_config_version" $backnas_config_file |wc -l` == "0" ]; then
@@ -582,56 +577,66 @@ backnas() {
 	echo "#########################################"
 	#判断用户名
 	if [ ! $nas_user ];then
-		echo -e "$red 用户名为空，参数填写$backnas_config_file填完再回车继续$white"
-		read a
-		backnas
+		echo -e "$yellow 用户名:$red    空 $white"
+		echo "空" >/tmp/backnas_if.log
 	else
 		echo -e "$yellow 用户名：$green $nas_user $white"
+		echo "正常" >/tmp/backnas_if.log
 	fi
 
 	#判断密码
 	if [ ! $nas_pass ];then
-		echo -e "$yellow 密码：$green空 $white"
+		echo -e "$yellow 密码：$red     空 $white"
+		echo "空" >>/tmp/backnas_if.log
 	else
 		echo -e "$yellow 密码：$green这是机密不显示给你看 $white"
+		echo "正常" >>/tmp/backnas_if.log
 	fi
 
 	#判断密钥
 	if [ ! $nas_secret_key ];then
-		echo -e "$yellow NAS 密钥：$green 空$white"
+		echo -e "$yellow NAS 密钥：$green 空(可以为空)$white"
 	else
 		echo -e "$yellow NAS 密钥：$green $nas_secret_key $white"
+		echo "正常" >>/tmp/backnas_if.log
 	fi
 
 	#判断IP
 	if [ ! $nas_ip ];then
-		echo -e "$red NAS IP为空，参数填写$backnas_config_file填完再回车继续 $white"
-		read a
-		backnas
+		echo -e "$yellow NAS IP:$red    空 $white"
+		echo "空" >>/tmp/backnas_if.log
 	else
 		echo -e "$yellow NAS IP：$green$nas_ip $white"
+		echo "正常" >>/tmp/backnas_if.log
 	fi
 
 	#判断NAS文件夹
 	if [ ! $nas_file ];then
-		echo -e "$red NAS名为空，参数填写$backnas_config_file填完再回车继续 $white"
-		read a
-		backnas
+		echo -e "$yellow NAS文件夹:$red 空 $white"
+		echo "空" >>/tmp/backnas_if.log
 	else
 		echo -e "$yellow NAS备份目录：$green $nas_file $white"
+		echo "正常" >>/tmp/backnas_if.log
 	fi
 
 	#判断端口
 	if [ ! $nas_prot ];then
-		echo -e "$red NAS 端口为空，参数填写$backnas_config_file填完再回车继续$white"
-		read a
-		backnas
+		echo -e "$yellow NAS 端口:$red   空 $white"
 	else
 		echo -e "$yellow NAS 端口：$green $nas_prot $white"
 	fi
 
 	echo -e "$yellow 使用协议：$green SCP$white"
+	echo ""
+	echo -e "$yellow 参数填写$green$backnas_config_file$white"
 	echo "#########################################"
+
+	back_if=$(cat /tmp/backnas_if.log | sort -u )
+	if [ $back_if == "空" ];then
+		echo ""
+		echo -e "$red重要参数为空 不执行备份操作，需要备份的，把参数填好,$white填好以后运行$green sh \$jd backnas $white测试一下是否正常$white"
+		exit 0
+	fi
 
 	echo -e "$green>> 开始备份到nas$white"
 	sleep 5
@@ -649,7 +654,7 @@ backnas() {
 
 	if [ ! $nas_secret_key ];then
 		if [ ! $nas_pass ];then
-			echo -e "$red 密码：为空，参数填写$backnas_config_file填完再回车继续$white"
+			echo -e "$red 密码：为空 $white参数填写$green$backnas_config_file$white"
 			read a
 			backnas
 		else
@@ -702,19 +707,6 @@ nas_file=''
 port='22'
 EOF
 }
-
-backnas_cron() {
-cat >>/etc/crontabs/root <<EOF
-#**********这里是backnas定时任务$backnas_version版本**********#
-0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script
-###########backnas##########请将其他定时任务放到底下###############
-EOF
-
-	/etc/init.d/cron restart
-	cron_help="$yellow定时任务更新完成，记得看下你的定时任务$white"
-}
-
-
 
 script_black() {
 	#不是很完美，但也能用，后面再想想办法，grep无法处理$node 这种这样我无法判断是否禁用了，只能删除掉一了百了
