@@ -51,7 +51,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.76"
+	cron_version="2.77"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -79,6 +79,7 @@ cat >>/etc/crontabs/root <<EOF
 */30 1-22 * * * $dir_file/jd.sh joy >/tmp/jd_joy.log 2>&1 #1-22,每半个小时kill joy并运行一次joy挂机
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机
 0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关
+0 8 1 */1 * $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每个月1号8点执行京东保价
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script
@@ -154,6 +155,8 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_global.js			#环球挑战赛,活动时间：2021-02-02 至 2021-02-22
 	jd_nzmh.js			#女装盲盒 活动时间：2021-2-19至2021-2-25
 	jd_beauty.js			#美丽研究院
+	jd_price.js			#京东保价
+	jd_speed_sign.js		#京东极速版签到+赚现金任务
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
@@ -188,13 +191,11 @@ COMMENT
 	#wget https://raw.githubusercontent.com/799953468/Quantumult-X/master/Scripts/JD/jd_paopao.js -O $dir_file_js/jd_paopao.js
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_entertainment.js -O $dir_file_js/jd_entertainment.js #百变大咖秀
-	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_priceProtect.js -O $dir_file_js/jd_priceProtect.js #京东价格保护
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
 
 cat >>$dir_file/config/collect_script.txt <<EOF
 	jx_products_detail.js		#京喜工厂商品列表详情
 	jd_entertainment.js 		#百变大咖秀
-	jd_priceProtect.js 		#京东价格保护
 	jd_try.js 			#京东试用
 	jdDreamFactoryShareCodes.js	#京喜工厂ShareCodes
 	jdFruitShareCodes.js		#东东农场ShareCodes
@@ -353,6 +354,7 @@ run_07() {
 	$node $dir_file_js/jd_entertainment.js #百变大咖秀
 	$node $dir_file_js/jd_global.js #京东国际环球赛事
 	$node $dir_file_js/jd_nzmh.js #女装盲盒 活动时间：2021-2-19至2021-2-25
+	$node $dir_file_js/jd_speed_sign.js #京东极速版签到+赚现金任务
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	rm -rf $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
