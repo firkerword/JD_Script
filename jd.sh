@@ -10,7 +10,7 @@
 version="1.9"
 cron_file="/etc/crontabs/root"
 #url=https://raw.githubusercontent.com/lxk0301/jd_scripts/master
-url=https://gitee.com/lxk0301/jd_scripts/raw/master
+url=https://gitee.com/shuye72/MyActions/raw/main
 
 #url=https://raw.githubusercontent.com/zy2021/JD/master
 
