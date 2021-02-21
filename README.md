@@ -24,6 +24,8 @@ N1（群友极地阳光测试）
 
          wget -q https://raw.githubusercontent.com/firkerword/KPR/main/jdup.sh -O jdup.sh && chmod +x jdup.sh && ./jdup.sh
 
+首次安装执行之后会要求输入yes/no，输入yes之后回车即可
+
 安装完成之后最好重启下openwrt
 
 **2.设置脚本**
