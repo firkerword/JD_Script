@@ -9,8 +9,8 @@
 
 version="1.9"
 cron_file="/etc/crontabs/root"
-# url=https://gitee.com/lxk0301/jd_scripts/raw/master
-url=https://gitee.com/shuye72/MyActions/raw/main
+url=https://gitee.com/lxk0301/jd_scripts/raw/master
+# url=https://gitee.com/shuye72/MyActions/raw/main
 #获取当前脚本目录copy脚本之家
 Source="$0"
 while [ -h "$Source"  ]; do
