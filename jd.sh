@@ -118,6 +118,7 @@ update() {
 	if [ ! -d /root/.ssh ];then
 		cp -r $dir_file/.ssh /root/.ssh
 		chmod 600 /root/.ssh/lxk0301
+		sed -i "s/#   StrictHostKeyChecking ask/StrictHostKeyChecking no/g" /etc/ssh/ssh_config
 	fi
 
 	if [ ! -d $dir_file/git_clone ];then
@@ -1113,8 +1114,8 @@ COMMENT
 	new_jdzz="95OquUc_sFugJO5_E_2dAgm-@eU9YELv7P4thhw6utCVw@eU9YaOjnbvx1-Djdz3UUgw@AUWE5mKmQzGYKXGT8j38cwA@AUWE5mvvGzDFbAWTxjC0Ykw@AUWE5wPfRiVJ7SxKOuQY0@S5KkcJEZAjD2vYGGG4Ip0@S7aUqCVsc91U@S5KkcREsZ_QXWIx31wKJZcA@S5KkcRUwe81LRIR_3xaNedw@Suvp2RBcY_VHKKBn3k_MMdNw"
 
 	new_jdzz_set="'$new_jdzz',"
-	sed -i '49,50d' $dir_file_js/jd_jdzz.js
-	sed -i "48a $new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set" $dir_file_js/jd_jdzz.js
+	sed -i '43,44d' $dir_file_js/jd_jdzz.js
+	sed -i "42a $new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set" $dir_file_js/jd_jdzz.js
 	sed -i "s/helpAuthor=true/helpAuthor=false/g" $dir_file_js/jd_jdzz.js
 
 	#crazyJoy任务
@@ -1231,7 +1232,7 @@ system_variable() {
 	if [ "$dir_file" == "$install_script/JD_Script" ];then
 		#jdCookie.js
 		if [ ! -f "$install_script_config/jdCookie.js" ]; then
-			wget $url/jdCookie.js -O $install_script_config/jdCookie.js
+			cp  $dir_file/git_clone/lxk0301/jdCookie.js -O $install_script_config/jdCookie.js
 			rm -rf $dir_file_js/jdCookie.js #用于删除旧的链接
 			ln -s $install_script_config/jdCookie.js $dir_file_js/jdCookie.js
 		fi
@@ -1243,7 +1244,7 @@ system_variable() {
 
 		#sendNotify.js
 		if [ ! -f "$install_script_config/sendNotify.js" ]; then
-			wget $url/sendNotify.js -O $install_script_config/sendNotify.js
+			cp  $dir_file/git_clone/lxk0301/sendNotify.js -O $install_script_config/sendNotify.js
 			rm -rf $dir_file_js/sendNotify.js  #用于删除旧的链接
 			ln -s $install_script_config/sendNotify.js $dir_file_js/sendNotify.js
 		fi
@@ -1255,7 +1256,7 @@ system_variable() {
 
 		#USER_AGENTS.js
 		if [ ! -f "$install_script_config/USER_AGENTS.js" ]; then
-			wget $url/USER_AGENTS.js -O $install_script_config/USER_AGENTS.js
+			cp  $dir_file/git_clone/lxk0301/USER_AGENTS.js -O $install_script_config/USER_AGENTS.js
 			rm -rf $dir_file_js/USER_AGENTS.js #用于删除旧的链接
 			ln -s $install_script_config/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
@@ -1267,17 +1268,17 @@ system_variable() {
 
 	else
 		if [ ! -f "$dir_file/jdCookie.js" ]; then
-			wget $url/jdCookie.js -O $dir_file/jdCookie.js
+			cp  $dir_file/git_clone/lxk0301/jdCookie.js -O $dir_file/jdCookie.js
 			ln -s $dir_file/jdCookie.js $dir_file_js/jdCookie.js
 		fi
 
 		if [ ! -f "$dir_file/sendNotify.js" ]; then
-			wget $url/sendNotify.js -O $dir_file/sendNotify.js
+			cp  $dir_file/git_clone/lxk0301/sendNotify.js -O $dir_file/sendNotify.js
 			ln -s $dir_file/sendNotify.js $dir_file_js/sendNotify.js
 		fi
 
 		if [ ! -f "$dir_file/USER_AGENTS.js" ]; then
-			wget $url/USER_AGENTS.js -O $dir_file/USER_AGENTS.js
+			cp  $dir_file/git_clone/lxk0301/USER_AGENTS.js -O $dir_file/USER_AGENTS.js
 			ln -s $dir_file/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
 
