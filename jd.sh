@@ -101,33 +101,12 @@ ds_setup() {
 }
 
 update() {
-	#判断openssh
-	openssh_if=$(opkg list-installed | grep 'openssh-client' | awk '{print $1}')
-	openssh_if1=$(opkg list-installed | grep 'openssh-keygen' | awk '{print $1}')
-	if [ ! $openssh_if ];then
-		echo -e "未找到$green openssh-client$white，请安装以后再使用本脚本"
-		exit 0
-	fi
-
-	if [ ! $openssh_if1 ];then
-		echo -e "未找到$green openssh-keygen$white，请安装以后再使用本脚本"
-		exit 0
-	fi
-	
-	#判断参数
-	if [ ! -d /root/.ssh ];then
-		cp -r $dir_file/.ssh /root/.ssh
-		chmod 600 /root/.ssh/lxk0301
-		sed -i "s/#   StrictHostKeyChecking ask/StrictHostKeyChecking no/g" /etc/ssh/ssh_config
-	fi
-
 	if [ ! -d $dir_file/git_clone ];then
 		mkdir $dir_file/git_clone
 	fi
 
 	if [ ! -d $dir_file/git_clone/lxk0301 ];then
 		git clone -b master git@gitee.com:lxk0301/jd_scripts.git $dir_file/git_clone/lxk0301
-		update
 	else
 		cd $dir_file/git_clone/lxk0301
 		git fetch --all
@@ -231,6 +210,8 @@ COMMENT
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_entertainment.js -O $dir_file_js/jd_entertainment.js #百变大咖秀
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_asus_iqiyi.js -O $dir_file_js/jd_asus_iqiyi.js #华硕-爱奇艺
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_fanslove.js -O $dir_file_js/jd_fanslove.js #粉丝互动
 
 cat >>$dir_file/config/collect_script.txt <<EOF
 	jx_products_detail.js		#京喜工厂商品列表详情
@@ -393,7 +374,9 @@ run_07() {
 	$node $dir_file_js/jd_nzmh.js #女装盲盒 活动时间：2021-2-19至2021-2-25
 	$node $dir_file_js/jd_speed_sign.js #京东极速版签到+赚现金任务
 	$node $dir_file_js/jd_speed_redpocke.js	#京东极速版红包
-	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
+	$node $dir_file_js/jd_asus_iqiyi.js #华硕-爱奇艺
+	$node $dir_file_js/jd_fanslove.js #粉丝互动
+	#$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	rm -rf $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
@@ -403,7 +386,6 @@ run_07() {
 run_08_12_16() {
 	echo -e "$green run_08_12_16$start_script $white"
 	$node $dir_file_js/jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
-	rm -rf $dir_file_js/jd_818.js #京东手机狂欢城活动
 	$node $dir_file_js/jd_bookshop.js #口袋书店
 	echo -e "$green run_08_12_16$stop_script $white"
 }
@@ -1225,14 +1207,33 @@ system_variable() {
 	
 	if [[ ! -d "$dir_file/js" ]]; then
 		mkdir  $dir_file/js
-		update
 	fi
 
+	#判断openssh
+	openssh_if=$(opkg list-installed | grep 'openssh-client' | awk '{print $1}')
+	openssh_if1=$(opkg list-installed | grep 'openssh-keygen' | awk '{print $1}')
+	if [ ! $openssh_if ];then
+		echo -e "未找到$green openssh-client$white，请安装以后再使用本脚本"
+		exit 0
+	fi
+	
+	if [ ! $openssh_if1 ];then
+		echo -e "未找到$green openssh-keygen$white，请安装以后再使用本脚本"
+		exit 0
+	fi
+
+	#判断参数
+	if [ ! -d /root/.ssh ];then
+		cp -r $dir_file/.ssh /root/.ssh
+		chmod 600 /root/.ssh/lxk0301
+		sed -i "s/#   StrictHostKeyChecking ask/StrictHostKeyChecking no/g" /etc/ssh/ssh_config
+		update
+	fi
 
 	if [ "$dir_file" == "$install_script/JD_Script" ];then
 		#jdCookie.js
 		if [ ! -f "$install_script_config/jdCookie.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/jdCookie.js -O $install_script_config/jdCookie.js
+			cp  $dir_file/git_clone/lxk0301/jdCookie.js  $install_script_config/jdCookie.js
 			rm -rf $dir_file_js/jdCookie.js #用于删除旧的链接
 			ln -s $install_script_config/jdCookie.js $dir_file_js/jdCookie.js
 		fi
@@ -1244,7 +1245,7 @@ system_variable() {
 
 		#sendNotify.js
 		if [ ! -f "$install_script_config/sendNotify.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/sendNotify.js -O $install_script_config/sendNotify.js
+			cp  $dir_file/git_clone/lxk0301/sendNotify.js $install_script_config/sendNotify.js
 			rm -rf $dir_file_js/sendNotify.js  #用于删除旧的链接
 			ln -s $install_script_config/sendNotify.js $dir_file_js/sendNotify.js
 		fi
@@ -1256,7 +1257,7 @@ system_variable() {
 
 		#USER_AGENTS.js
 		if [ ! -f "$install_script_config/USER_AGENTS.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/USER_AGENTS.js -O $install_script_config/USER_AGENTS.js
+			cp  $dir_file/git_clone/lxk0301/USER_AGENTS.js $install_script_config/USER_AGENTS.js
 			rm -rf $dir_file_js/USER_AGENTS.js #用于删除旧的链接
 			ln -s $install_script_config/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
@@ -1268,17 +1269,17 @@ system_variable() {
 
 	else
 		if [ ! -f "$dir_file/jdCookie.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/jdCookie.js -O $dir_file/jdCookie.js
+			cp  $dir_file/git_clone/lxk0301/jdCookie.js $dir_file/jdCookie.js
 			ln -s $dir_file/jdCookie.js $dir_file_js/jdCookie.js
 		fi
 
 		if [ ! -f "$dir_file/sendNotify.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/sendNotify.js -O $dir_file/sendNotify.js
+			cp  $dir_file/git_clone/lxk0301/sendNotify.js $dir_file/sendNotify.js
 			ln -s $dir_file/sendNotify.js $dir_file_js/sendNotify.js
 		fi
 
 		if [ ! -f "$dir_file/USER_AGENTS.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/USER_AGENTS.js -O $dir_file/USER_AGENTS.js
+			cp  $dir_file/git_clone/lxk0301/USER_AGENTS.js $dir_file/USER_AGENTS.js
 			ln -s $dir_file/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
 
@@ -1296,7 +1297,7 @@ system_variable() {
 		echo "node-npm 版本小于10，请升级以后再使用本脚本"
 		exit 0
 	fi
-
+:<<'COMMENT'
 	#判断JS文件夹是否为空
 	if [ ! -f "$dir_file_js/Detect.txt" ]; then
 		echo -e "$green js文件夹缺少一个Detect.txt，现在开始更新请稍等很快$white"
@@ -1306,6 +1307,7 @@ system_variable() {
 		update
 		system_variable
 	fi
+COMMENT
 
 	#添加系统变量
 	jd_script_path=$(cat /etc/profile | grep -o jd.sh | wc -l)
