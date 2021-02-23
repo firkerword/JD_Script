@@ -157,13 +157,13 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_sgmh.js			#闪购盲盒长期活动
 	jd_ms.js			#京东秒秒币
 	jd_xgyl.js			#小鸽有礼2 2021年1月28日～2021年2月28日
-	jd_global.js			#环球挑战赛,活动时间：2021-02-02 至 2021-02-22
 	jd_nzmh.js			#女装盲盒 活动时间：2021-2-19至2021-2-25
 	jd_beauty.js			#美丽研究院
 	jd_price.js			#京东保价
 	jd_speed_sign.js		#京东极速版签到+赚现金任务
 	jd_speed_redpocke.js		#京东极速版红包
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
+	jd_crazy_joy_bonus.js		#监控crazyJoy分红狗(默认不运行，欧皇自己设置定时任务)
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
@@ -261,7 +261,7 @@ run_0() {
 	$node $dir_file_js/jd_cash.js #签到领现金，每日2毛～5毛长期
 	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
-	$node $dir_file_js/jd_global.js #京东国际环球赛事
+	rm -rf  $dir_file_js/jd_global.js #京东国际环球赛事
 	run_08_12_16
 	$node $dir_file_js/jd_small_home.js #东东小窝
 	run_06_18
@@ -370,7 +370,6 @@ run_07() {
 	$node $dir_file_js/jd_xgyl.js #小鸽有礼2 2021年1月28日～2021年2月28日
 	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
 	$node $dir_file_js/jd_entertainment.js #百变大咖秀
-	$node $dir_file_js/jd_global.js #京东国际环球赛事
 	$node $dir_file_js/jd_nzmh.js #女装盲盒 活动时间：2021-2-19至2021-2-25
 	$node $dir_file_js/jd_speed_sign.js #京东极速版签到+赚现金任务
 	$node $dir_file_js/jd_speed_redpocke.js	#京东极速版红包
@@ -1147,25 +1146,6 @@ COMMENT
 	new_jdsgmh_set="'$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$Jhone_Potte_20200824_jdsgmh',"
 	sed -i '32,33d' $dir_file_js/jd_sgmh.js
 	sed -i "31a $new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set" $dir_file_js/jd_sgmh.js
-
-	#环球挑战赛
-	new_jdglobal="cG90S2ZvL08rRkpWMFdjMHEyVW9Ta1hrTlorVTF0aTVQU1NrUG5SaHhtZz0=@a1NGVHVxNHRyblBCZEp2dGhIdWNRQT09@SHdSZG13MEUrRUEwakdMalZYVW5wVnVvWDBzSHU5aFBXMGxqc2ZQUnY5VT0=@UGJmYjF5bkViaURrQnBtQlhPNWpOeFRIb1gvczhPYTJya1RqTksxZFB6Zz0=@M0lGNjQwUWk4a0YxWDJuRDRZMDhXNmNPekh0dmFDV3ZHNHlnSXV3RSt0ND0=@QkZBdHg3b3JOcVl3d01ZS0lTOWZVZz09@dlBxYmhhcTVCS1Z1VnF5cUxrNlp3QT09"
-	zuoyou_20190516_gb="WkdTb3dTUXo5WlJ0b09MNTdWMmNHQT09@K28ydmszcmF4ditCYjZrZ3UwS0lRUT09@ZHJtNkVxdzJFeEtQWmltRXNqRllPcmRpYk41VFI3NENjVjR1OS9ybXc4bz0=@RENkbGxncnNNb2lqK05LdktCSnhvRFJHVmdUVHJBTjdvVEQwWElYUEFJRT0=@Q1JFL1c5cWJCQ2JTVVFVSUFLamJ0ZnJ0eXZuRzl1ck9tWEovajJTaDBWUT0=@RHFSajJFVW9IQzlFdWttYzJ5aTc5UT09@VTdzK1l4SEF4RllvQlZ1b3BTOU5wZz09@Z09wTEFaZ3lQR0RYeTVTSElkM1g5Zz09@SVBLcGdCMXg2M1hxK1AvQmpDc2NmQT09@blJCWmdUNUxWRkMzeUhWeERTcDE4bHMwV0xaYWMzb1VyeTVJOWZKNXk3cz0=@MU9wNXJPZSt5VmlsRFVKby9HS0Ywdz09"
-	jidiyangguang_20190516_gb="OFYrQnpmSUVLMFZ6MkN5OWc1RU5xRXJsWnNuVG1LS1Zmd2wvSlZWbnZVOD0=@M3FqU1RPM2x4UWdobHhyVGZrelpqYnc4emdBTVJzOVZpZkJxdEc5Y0s2dz0="
-	Oyeah_20200104_gb='Tlg1YnBTb1lPc3FOMUNFd0t4cTR6YTJtQmlWb2ozcmd6QnhSMSs2aTlEND0='
-	wjq_20190516_gb="aXpOOU1UK2JXSXJwMGVKOUM1N1R4QT09"
-	Jhone_Potte_20200824_gb="R1dpTW1RUjlMN1lPYjg0NDFyU2JiWGZ4L2VtU0xTZVh5czdpeXR1ajhMYz0=@V1drMmNEd1ZWRTVkMUV1anRLOHFMdnp5T080M0pkY2NPdTN3N2JMUkNaQT0="
-	JOSN_20210102_gb="Qmx1YkdRV3FKdlJQL0pkRkRmRlN3dz09"
-	xo_20201229_gb="UzZRTFNsQVFqWFk4cUxYM1NKT2xhT2c4QmprTDY1WW1KSWFsOFBtWnRXOD0="
-	qingwa_20210129_gb='UFdqVDRvRGdoWDlMUUdrRXBQWHlmQT09'
-
-
-	random_jdglobal="$Oyeah_20200104_gb@$wjq_20190516_gb@$Jhone_Potte_20200824_gb@$JOSN_20210102_gb@$xo_20201229_gb@$qingwa_20210129_gb"
-	random="$random_jdglobal"
-	random_array
-	new_jdglobal_set="'$new_jdglobal@$zuoyou_20190516_gb@$jidiyangguang_20190516_gb@$random_set',"
-	sed -i '53,54d' $dir_file_js/jd_global.js
-	sed -i "52a $new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set" $dir_file_js/jd_global.js
 
 	#脚本黑名单
 	script_black
