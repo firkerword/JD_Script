@@ -47,7 +47,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.78"
+	cron_version="2.79"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -76,6 +76,7 @@ cat >>/etc/crontabs/root <<EOF
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机
 0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关
 0 8 1 */1 * $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每个月1号8点执行京东保价
+0 9,12,20,21 * * * $node $dir_file/js/jd_global_mh.js >/tmp/jd_global_mh.log #京东国际盲盒
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script
@@ -164,6 +165,7 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_speed_redpocke.js		#京东极速版红包
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	jd_crazy_joy_bonus.js		#监控crazyJoy分红狗(默认不运行，欧皇自己设置定时任务)
+	jd_global_mh.js			#京东国际盲盒
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
@@ -212,6 +214,7 @@ COMMENT
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_asus_iqiyi.js -O $dir_file_js/jd_asus_iqiyi.js #华硕-爱奇艺
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_fanslove.js -O $dir_file_js/jd_fanslove.js #粉丝互动
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_jump-jump.js  -O $dir_file_js/jd_jump-jump.js #母婴-跳一跳
 
 cat >>$dir_file/config/collect_script.txt <<EOF
 	jx_products_detail.js		#京喜工厂商品列表详情
@@ -322,8 +325,8 @@ run_045() {
 
 run_01() {
 	echo -e "$green run_01$start_script $white"
-	$node $dir_file_js/jd_plantBean.js
-	$node $dir_file_js/jd_joy_feedPets.js #种豆得豆，没时间要求，一个小时收一次瓶子 & #宠汪汪喂食一个小时喂一次
+	$node $dir_file_js/jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
+	$node $dir_file_js/jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
 	#$node $dir_file_js/jd_family.js #京东家庭号
 	echo -e "$green run_01$stop_script $white"
 }
@@ -375,6 +378,8 @@ run_07() {
 	$node $dir_file_js/jd_speed_redpocke.js	#京东极速版红包
 	$node $dir_file_js/jd_asus_iqiyi.js #华硕-爱奇艺
 	$node $dir_file_js/jd_fanslove.js #粉丝互动
+	$node $dir_file_js/jd_cash.js #签到领现金，每日2毛～5毛长期
+	$node $dir_file_js/jd_jump-jump.js #母婴-跳一跳
 	#$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	rm -rf $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
