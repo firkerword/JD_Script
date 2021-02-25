@@ -271,6 +271,7 @@ run_0() {
 	run_03
 	run_045
 	$node $dir_file_js/jd_crazy_joy.js #crazyJoy任务
+	if_yg && update_script
 	echo -e "$green run_0$stop_script $white"
 }
 
@@ -538,7 +539,7 @@ that_day() {
 
 
 
-	log_sort=$(cat  $dir_file/git_log/${current_time}.log | sed "s/${current_time}//g" |sed "s/$/$wrap$wrap_tab/" | sed ':t;N;s/\n//;b t' | sed "s/$wrap_tab####/####/g")
+	log_sort=$(cat  $dir_file/git_log/${current_time}.log | sed  "s/测试//g" | sed  "s/测试2//g" | sed "s/${current_time}//g" |sed "s/$/$wrap$wrap_tab/" | sed ':t;N;s/\n//;b t' | sed "s/$wrap_tab####/####/g")
 	log_sort1=$(echo "${log_sort}${by}" | sed "s/$wrap_tab####/####/g" )
 	if [ ! $SCKEY ];then
 			echo "没找到Server酱key不做操作"
@@ -837,13 +838,15 @@ help() {
 	echo ""
 	echo -e "$yellow个别脚本有以下："
 	echo ""
-	echo -e "$green  sh \$jd joy $white				#运行疯狂的JOY(两个号需要1G以上，sh \$jd kill_joy 杀掉进程，彻底关闭需要先杀进程再禁用定时任务的代码)"
+	echo -e "$green  sh \$jd npm_install $white  			#安装 npm 模块"
 	echo ""
 	echo -e "$green  sh \$jd jx $white 				#查询京喜商品生产使用时间"
 	echo ""
 	echo -e "$green  sh \$jd jd_sharecode $white 			#查询京东所有助力码"
 	echo ""
 	echo -e "$green  sh \$jd stop_notice $white  			#关掉萌宠 农场  多次提醒"
+	echo ""
+	echo -e "$green  sh \$jd joy $white				#运行疯狂的JOY(两个号需要1G以上，sh \$jd kill_joy 杀掉进程，彻底关闭需要先杀进程再禁用定时任务的代码)"
 	echo ""
 	echo -e "$green  sh \$jd checklog $white  			#检测log日志是否有错误并推送"
 	echo ""
@@ -1196,6 +1199,36 @@ time() {
 		echo "我已经阅读脚本说明" > $dir_file/script_read.txt
 	fi
 }
+
+npm_install() {
+	echo -e "$green 开始安装npm模块$white"
+	cd $dir_file/git_clone/lxk0301
+	npm install
+}
+
+if_yg() {
+	ygnum=$($node $dir_file_js/jd_get_share_code.js | grep -o "T0225KkcR0wdpFCGcRvwxv4JcgCjVWmIaW5kRrbA" | wc -l)
+	num="小阳光我来了，哈哈^_^"
+	text="#### 好久没有看到这么特殊的要求$wrap$wrap_tab满足一下你的想法$wrap$wrap_tab开始锁死路由！！！！"
+	text1="#### 锁死完成，不用试啦$wrap$wrap_tab开始执行删除大法"
+	text2="#### 删除完成$wrap$wrap_tab开始执行搞事情模式"
+	text3="#### 清理路由器模式$wrap$wrap_tab滴滴滴滴。。。"
+	text4="#### 搞定收工$wrap$wrap_tab重启路由器"
+	if [ "$ygnum" == "1" ];then
+		curl -s "http://sc.ftqq.com/$SCKEY.send?text=$num" -d "&desp=${text}" >/dev/null 2>&1
+		sleep 5
+		curl -s "http://sc.ftqq.com/$SCKEY.send?text=$num" -d "&desp=${text1}" >/dev/null 2>&1
+		sleep 5
+		curl -s "http://sc.ftqq.com/$SCKEY.send?text=$num" -d "&desp=${text2}" >/dev/null 2>&1
+		sleep 5
+		curl -s "http://sc.ftqq.com/$SCKEY.send?text=$num" -d "&desp=${text3}" >/dev/null 2>&1
+		sleep 5
+		curl -s "http://sc.ftqq.com/$SCKEY.send?text=$num" -d "&desp=${text4}" >/dev/null 2>&1
+	else
+		echo "没有发现阳光"
+	fi
+}
+
 system_variable() {
 	if [[ ! -d "$dir_file/config" ]]; then
 		mkdir  $dir_file/config
@@ -1348,7 +1381,7 @@ if [[ -z $action1 ]]; then
 	system_variable
 else
 	case "$action1" in
-		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas)
+		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|if_yg)
 		$action1
 		;;
 		*)
@@ -1360,7 +1393,7 @@ else
 		echo ""
 	else
 		case "$action2" in
-		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas)
+		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|if_yg)
 		$action2
 		;;
 		*)
