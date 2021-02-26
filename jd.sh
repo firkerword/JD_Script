@@ -47,7 +47,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.82"
+	cron_version="2.84"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -62,7 +62,7 @@ task() {
 task_add() {
 cat >>/etc/crontabs/root <<EOF
 #**********这里是JD_Script的定时任务$cron_version版本#100#**********#
-59 23 * * * sleep 57; $dir_file/jd.sh run_0  >/tmp/jd_run_0.log 2>&1 #0点0分执行全部脚本#100#
+0 0 * * * $dir_file/jd.sh run_0  >/tmp/jd_run_0.log 2>&1 #0点0分执行全部脚本#100#
 */45 2-23 * * * $dir_file/jd.sh run_045 >/tmp/jd_run_045.log 2>&1 #两个工厂#100#
 0 2-23/1 * * * $dir_file/jd.sh run_01 >/tmp/jd_run_01.log 2>&1 #种豆得豆收瓶子#100#
 10 2-22/3 * * * $dir_file/jd.sh run_03 >/tmp/jd_run_03.log 2>&1 #天天加速 3小时运行一次，打卡时间间隔是6小时#100#
@@ -75,7 +75,7 @@ cat >>/etc/crontabs/root <<EOF
 */30 1-22 * * * $dir_file/jd.sh joy >/tmp/jd_joy.log 2>&1 #1-22,每半个小时kill joy并运行一次joy挂机#100#
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
 0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关#100#
-0 8 1 */1 * $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每个月1号8点执行京东保价#100#
+0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -86,9 +86,7 @@ EOF
 }
 
 task_delete() {
-	sed -i '/JD_Script/d' /etc/crontabs/root >/dev/null 2>&1
         sed -i '/#100#/d' /etc/crontabs/root >/dev/null 2>&1
-	sed -i '/backnas/d' /etc/crontabs/root >/dev/null 2>&1
 }
 
 ds_setup() {
@@ -165,6 +163,7 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_crazy_joy_bonus.js		#监控crazyJoy分红狗(默认不运行，欧皇自己设置定时任务)
 	jd_global_mh.js			#京东国际盲盒
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
+	JS_USER_AGENTS.js		#京东极速版UA
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -252,9 +251,8 @@ update_script() {
 
 run_0() {
 	echo -e "$green run_0$start_script $white"
-	ddcs
-	#$node $dir_file_js/cfdtx.js #财富岛提取
 	$node $dir_file_js/jd_car.js #京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
+	ddcs
 	$node $dir_file_js/jd_bean_sign.js #京东多合一签到
 	$node $dir_file_js/jx_sign.js #京喜app签到长期
 	$node $dir_file_js/jd_redPacket.js #京东全民开红包，没时间要求
@@ -1201,8 +1199,13 @@ time() {
 
 npm_install() {
 	echo -e "$green 开始安装npm模块$white"
-	cd $dir_file/git_clone/lxk0301
-	npm install
+	if [ "$dir_file" == "$install_script/JD_Script" ];then
+		cp $install_script/JD_Script/git_clone/lxk0301/package.json $install_script/package.json
+		cd $install_script && npm install
+	else
+		cp $dir_file/git_clone/lxk0301/package.json $dir_file/package.json
+		cd $dir_file && npm install
+	fi
 }
 system_variable() {
 	if [[ ! -d "$dir_file/config" ]]; then
