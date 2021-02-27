@@ -480,7 +480,7 @@ checklog() {
 		if [ ! $SCKEY ];then
 			echo "没找到Server酱key不做操作"
 		else
-			log_sort=$(cat ${log3} | sed "s/$/$wrap$wrap_tab$sort_log/g" |  sed ':t;N;s/\n//;b t' )
+			log_sort=$(cat ${log3} | sed "s/&//g" | sed "s/$/$wrap$wrap_tab$sort_log/g" |  sed ':t;N;s/\n//;b t' )
 			log_sort1=$(echo "${log_sort}${by}" | sed "s/$wrap_tab####/####/g" )
 			if [ ! $log_sort1 ];then
 				echo -e "$red 推送失败$white，请检查 $log3是否存在"
