@@ -153,7 +153,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_daily_egg.js 		#京东金融-天天提鹅
 	jd_sgmh.js			#闪购盲盒长期活动
 	jd_ms.js			#京东秒秒币
-	jd_xgyl.js			#小鸽有礼2 2021年1月28日～2021年2月28日
 	jd_nzmh.js			#女装盲盒 活动时间：2021-2-19至2021-2-25
 	jd_beauty.js			#美丽研究院
 	jd_price.js			#京东保价
@@ -162,13 +161,16 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	jd_crazy_joy_bonus.js		#监控crazyJoy分红狗(默认不运行，欧皇自己设置定时任务)
 	jd_global_mh.js			#京东国际盲盒
-	jd_unbind.js			#注销京东会员卡
+	jd_firecrackers.js		#她的节，享京豆
+	jd_cfd.js			#京喜财富岛
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	JS_USER_AGENTS.js		#京东极速版UA
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
 EOF
+cp  $dir_file/git_clone/lxk0301/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
+
 for script_name in `cat $dir_file/config/lxk0301_script.txt | awk '{print $1}'`
 do
 	echo -e "$yellow copy $green$script_name$white"
@@ -210,9 +212,7 @@ COMMENT
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_entertainment.js -O $dir_file_js/jd_entertainment.js #百变大咖秀
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
-	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_asus_iqiyi.js -O $dir_file_js/jd_asus_iqiyi.js #华硕-爱奇艺
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_fanslove.js -O $dir_file_js/jd_fanslove.js #粉丝互动
-	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_jump-jump.js  -O $dir_file_js/jd_jump-jump.js #母婴-跳一跳
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_shake.js -O $dir_file_js/jd_shake.js #超级摇一摇
 
 cat >>$dir_file/config/collect_script.txt <<EOF
@@ -352,6 +352,7 @@ run_06_18() {
 	$node $dir_file_js/jd_daily_egg.js #天天提鹅蛋，需要有金融app，没有顶多报错问题不大
 	$node $dir_file_js/jd_pigPet.js #金融养猪，需要有金融app，没有顶多报错问题不大
 	$node $dir_file_js/jd_superMarket.js #东东超市,6点 18点多加两场用于收金币
+	$node $dir_file_js/jd_firecrackers.js #她的节，享京豆
 	echo -e "$green run_06_18$stop_script $white"
 }
 
@@ -367,18 +368,15 @@ run_07() {
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
 	$node $dir_file_js/jd_jxnc.js #京喜农场
 	$node $dir_file_js/jd_ms.js #京东秒秒币 一个号大概60
-	$node $dir_file_js/jd_xgyl.js #小鸽有礼2 2021年1月28日～2021年2月28日
 	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
 	$node $dir_file_js/jd_entertainment.js #百变大咖秀
 	$node $dir_file_js/jd_nzmh.js #女装盲盒 活动时间：2021-2-19至2021-2-25
 	$node $dir_file_js/jd_speed_sign.js #京东极速版签到+赚现金任务
 	$node $dir_file_js/jd_speed_redpocke.js	#京东极速版红包
-	$node $dir_file_js/jd_asus_iqiyi.js #华硕-爱奇艺
 	$node $dir_file_js/jd_fanslove.js #粉丝互动
 	$node $dir_file_js/jd_cash.js #签到领现金，每日2毛～5毛长期
-	$node $dir_file_js/jd_jump-jump.js #母婴-跳一跳
 	$node $dir_file_js/jd_shake.js #超级摇一摇
-	#$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
+	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
@@ -397,7 +395,7 @@ run_10_15_20() {
 	echo -e "$green run_10_15_20$start_script $white"
 	$node $dir_file_js/jd_superMarket.js #东东超市,0 10 15 20四场补货加劵
 	$node $dir_file_js/jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
-	$node $dir_file_js/jx_cfd.js #京东财富岛 有一日三餐任务
+	$node $dir_file_js/jd_cfd.js #京东财富岛 有一日三餐任务
 	$node $dir_file_js/jd_beauty.js	#美丽研究院
 	echo -e "$green run_10_15_20$stop_script $white"
 }
@@ -905,7 +903,7 @@ additional_settings() {
 	#sed -i "s/|| 0/|| 20/g" $dir_file_js/jd_blueCoin.js
 
 	#取消店铺从20个改成50个(没有星推官先默认20吧)
-	sed -i "s/|| 20/|| 100/g" $dir_file_js/jd_unsubscribe.js
+	sed -i "s/|| 20/|| 200/g" $dir_file_js/jd_unsubscribe.js
 
 	#宠汪汪积分兑换奖品改成兑换500豆子，个别人会兑换错误(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
 	#sed -i "s/let joyRewardName = 20/let joyRewardName = 500/g" $dir_file_js/jd_joy_reward.js
@@ -1204,10 +1202,10 @@ npm_install() {
 	echo -e "$green 开始安装npm模块$white"
 	if [ "$dir_file" == "$install_script/JD_Script" ];then
 		cp $install_script/JD_Script/git_clone/lxk0301/package.json $install_script/package.json
-		cd $install_script && npm install
+		cd $install_script && npm install && npm install -g request
 	else
 		cp $dir_file/git_clone/lxk0301/package.json $dir_file/package.json
-		cd $dir_file && npm install
+		cd $dir_file && npm -g install && npm install -g request
 	fi
 }
 system_variable() {
@@ -1233,7 +1231,7 @@ system_variable() {
 	fi
 
 	#判断参数
-	if [ ! -d /root/.ssh ];then
+	if [ ! -f /root/.ssh/lxk0301 ];then
 		cp -r $dir_file/.ssh /root/.ssh
 		chmod 600 /root/.ssh/lxk0301
 		sed -i "s/#   StrictHostKeyChecking ask/StrictHostKeyChecking no/g" /etc/ssh/ssh_config
