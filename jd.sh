@@ -47,7 +47,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.84"
+	cron_version="2.86"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -76,6 +76,7 @@ cat >>/etc/crontabs/root <<EOF
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
 0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关#100#
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
+5 11 3 */1 *  $node $dir_file_js/jd_shakeBean.js  >/tmp/jd_shakeBean.log #京东会员-摇京豆,每个月运行一次#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -120,7 +121,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jx_sign.js			#京喜app签到长期
 	jd_fruit.js			#东东农场
 	jd_jxnc.js			#京喜农场
-	jdJxncTokens.js			#京喜农场token
 	jd_pet.js			#东东萌宠
 	jd_plantBean.js			#种豆得豆
 	jd_superMarket.js		#东东超市
@@ -214,6 +214,9 @@ COMMENT
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_fanslove.js -O $dir_file_js/jd_fanslove.js #粉丝互动
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_shake.js -O $dir_file_js/jd_shake.js #超级摇一摇
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_shakeBean.js -O $dir_file_js/jd_shakeBean.js #京东会员-摇京豆,每个月运行一次
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_jump-jump.js -O $dir_file_js/jd_jump-jump.js #母婴-跳一跳
+
 
 cat >>$dir_file/config/collect_script.txt <<EOF
 	jx_products_detail.js		#京喜工厂商品列表详情
@@ -376,6 +379,7 @@ run_07() {
 	$node $dir_file_js/jd_fanslove.js #粉丝互动
 	$node $dir_file_js/jd_cash.js #签到领现金，每日2毛～5毛长期
 	$node $dir_file_js/jd_shake.js #超级摇一摇
+	$node $dir_file_js/jd_jump-jump.js #母婴-跳一跳
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
@@ -523,10 +527,9 @@ that_day() {
 
 
 	git_log=$(git log --format=format:"%ai %an %s" --since="$current_time 00:00:00" --before="$current_time 23:59:59" | sed "s/+0800//g" | sed "s/$current_time //g" | sed "s/ /+/g")
-
-	if [ $(echo $git_log |wc -l) == "0"  ];then
+	if [ $($git_log | wc -l) == "0"  ];then
 		echo "#### JD_Script+$current_time" >>$dir_file/git_log/${current_time}.log
-		echo "作者泡妹子或者干饭去了，今天没有任何更新，不要催佛系玩。。。" >>$dir_file/git_log/${current_time}.log
+		echo "作者泡妹子或者干饭去了$wrap$wrap_tab今天没有任何更新$wrap$wrap_tab不要催佛系玩。。。" >>$dir_file/git_log/${current_time}.log
 		echo "#### 当前脚本是否最新：$Script_status" >>$dir_file/git_log/${current_time}.log
 	else
 		echo "#### JD_Script+$current_time+更新日志" >> $dir_file/git_log/${current_time}.log
@@ -534,8 +537,6 @@ that_day() {
 		echo "$git_log" >> $dir_file/git_log/${current_time}.log
 		echo "#### 当前脚本是否最新：$Script_status" >>$dir_file/git_log/${current_time}.log
 	fi
-
-
 
 	log_sort=$(cat  $dir_file/git_log/${current_time}.log | sed "s/${current_time}//g" |sed "s/$/$wrap$wrap_tab/" | sed ':t;N;s/\n//;b t' | sed "s/$wrap_tab####/####/g")
 	log_sort1=$(echo "${log_sort}${by}" | sed "s/$wrap_tab####/####/g" )
@@ -914,6 +915,8 @@ additional_settings() {
 	new_fruit3="3e6f0b7a2d054331a0b5b956f36645a9@5e54362c4a294f66853d14e777584598@f227e8bb1ea3419e9253682b60e17ae5@f0f5edad899947ac9195bf7319c18c7f@5e567ba1b9bd4389ae19fa09ca276f33"
 	zuoyou_20190516_fr="367e024351fe49acaafec9ee705d3836@3040465d701c4a4d81347bc966725137@82c164278e934d5aaeb1cf19027a88a3@b167fbe380124583a36458e5045ead57@5a1448c1a7944ed78bca2fa7bfeb8440@44ba60178aa04b7895fe60c8f3b80a71@a2504cd52108495496460fc8624ae6d4@7fe23f78c77a47b0aba16b302eedbd3c@3e0769f3bb2042d993194db32513e1b9@dbd7dcdbb75940d3b81282d0f439673f"
 	Javon_20201224_fr="926a1ec44ddd459ab2edc39005628bf4@dcfb05a919ff472680daca4584c832b8@0ce9d3a5f9cd40ccb9741e8f8cf5d801@54ac6b2343314f61bc4a6a24d7a2eba1@bad22aba416d4fffb18ad8534b56ea60@e5a87df07c914457b855cbb2f115d0a4@9a4370f99abb4eda8fa61d08be81c1d7@d535648ffa3b45d79ff66b997ec8b629@8b8b4872ab9d489896391cc5798a56e2"
+	minty_20210114_fr="f6480e96df4e4ddb9629008af9932f8e"	
+	xiaodengzi_20190516_fr="8284c080686b45c89a6c6f7d1ea7baac@f69821dde34540d39f95315c5290eb88@5e753c671d0644c7bb418523d3452975@c6f859ec57d74dda9dafc6b3c2af0a0f@8dda5802f0d54f38af48c4059c591007"
 	cainiao5_20190516_fr="2a9ccd7f32c245d7a4d6c0fe1cafdd4c"
 	whiteboy_20190711_fr="dfb6b5dcc9d24281acbfce5d649924c0@319239c7aed84c1a97092ddbf2564717@45e193df45704b8bb25e04ea86c650bf@49fefaa873c84b398882218588b0647a"
 	jiu_20210110_fr="a413cb9823394d2d91eb8346d2fa4514@96721546e8fd429dbfa1351c907ea0f7"
@@ -935,12 +938,11 @@ additional_settings() {
 	JOSN_20210102_fr="3aaa13bec82041d59e566d35cebb3bc9"
 	snow_20210217_fr="690009b0d5674e85b751838b2fa6241e@5f952ad609b1440b94599eaec41d853f"
 	Lili_20210121_fr="48651377d7544f6bbf32cbd7ef50be30"
-	minty_20210114_fr="f6480e96df4e4ddb9629008af9932f8e"
 	
-	random_fruit="$cainiao5_20190516_fr@$whiteboy_20190711_fr@$jiu_20210110_fr@$Oyeah_20200104_fr@$shisan_20200213_fr@$JOSN_20200807_fr@$Jhone_Potte_20200824_fr@$liandao_20201010_fr@$adong_20201108_fr@$deng_20201120_fr@$gomail_20201125_fr@$baijiezi_20201126_fr@$superbei666_20201124_fr@$yiji_20201125_fr@$mjmdz_20201217_fr@$JDnailao_20201230_fr@$xo_20201229_fr@$xiaobai_20201204_fr@$JOSN_20210102_fr@$snow_20210217_fr@$Lili_20210121_fr@$minty_20210114_fr"
+	random_fruit="$xiaodengzi_20190516_fr@$cainiao5_20190516_fr@$whiteboy_20190711_fr@$jiu_20210110_fr@$Oyeah_20200104_fr@$shisan_20200213_fr@$JOSN_20200807_fr@$Jhone_Potte_20200824_fr@$liandao_20201010_fr@$adong_20201108_fr@$deng_20201120_fr@$gomail_20201125_fr@$baijiezi_20201126_fr@$superbei666_20201124_fr@$yiji_20201125_fr@$mjmdz_20201217_fr@$JDnailao_20201230_fr@$xo_20201229_fr@$xiaobai_20201204_fr@$JOSN_20210102_fr@$snow_20210217_fr@$Lili_20210121_fr"
 	random="$random_fruit"
 	random_array
-	new_fruit_set="'$new_fruit1@$new_fruit2@$new_fruit3@$zuoyou_20190516_fr@$Javon_20201224_fr@$random_set',"
+	new_fruit_set="'$new_fruit1@$new_fruit2@$new_fruit3@$zuoyou_20190516_fr@$Javon_20201224_fr@$minty_20210114_fr@$random_set',"
 	sed -i '32,35d' $dir_file_js/jd_fruit.js
 	sed -i '10,11d' $dir_file_js/jdFruitShareCodes.js
 	sed -i "31a $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jd_fruit.js
@@ -953,6 +955,8 @@ additional_settings() {
 	new_pet3="MTAxODEyOTI4MDAwMDAwMDQwNzYxOTUx@MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzcwMDAwMDAwNDA4MzcyOTU==@MTE1NDQ5OTIwMDAwMDAwNDIxMDIzMzM="
 	zuoyou_20190516_pet="MTEzMzI0OTE0NTAwMDAwMDAzODYzNzU1NQ==@MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzgwMDAwMDAwMzg2Mzc1Nzc=@MTE1NDAxNzgwMDAwMDAwMzg4MzI1Njc=@MTAxODc2NTEzNDAwMDAwMDAyNzAxMjc1NQ==@MTAxODc2NTEzMDAwMDAwMDAyMTIzNjU5Nw==@MTAxODc2NTE0NzAwMDAwMDAyNDk1MDMwMQ==@MTE1NDQ5OTIwMDAwMDAwNDM3MTM3ODc=@MTAxODc2NTEzNTAwMDAwMDAyMjc1OTY1NQ==@MTEzMzI0OTE0NTAwMDAwMDA0MzQ1OTI1MQ==@MTE1NDQ5OTUwMDAwMDAwNDM3MDkyMDc="
 	Javon_20201224_pet="MTE1NDUyMjEwMDAwMDAwNDE2NzYzNjc=@MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzgwMDAwMDAwNDI1MjkxMDU=@MTE1NDQ5OTIwMDAwMDAwNDIxMjgyNjM=@MTE1NDAxNzYwMDAwMDAwMzYwNjg0OTE=@MTE1NDQ5OTIwMDAwMDAwNDI4Nzk3NTE=@MTE1NDQ5OTUwMDAwMDAwNDMwMTIxMzc=@MTE1NDQ5MzYwMDAwMDAwNDQ0NTA5MzM=@MTEzMzI0OTE0NTAwMDAwMDA0NDQ1ODY4NQ=="
+	minty_20210114_pet="MTE1NDQ5OTIwMDAwMDAwNDM2ODM4NDk="	
+	xiaodengzi_20190516_pet="MTE1NDUwMTI0MDAwMDAwMDM5NTc4ODQz@MTAxODExNDYxMTEwMDAwMDAwNDAxMzI0NTk="
 	cainiao5_20190516_pet="MTAxODc2NTEzMzAwMDAwMDAyMTg1ODcwMQ=="
 	wjq_20190516_pet="MTAxODc2NTEzMTAwMDAwMDAyNDM5MjI0Mw=="
 	whiteboy_20190711_pet="MTAxODc2NTEzMzAwMDAwMDAwNjU4NDU4NQ==@MTAxODc2NTE0NzAwMDAwMDAwNDI4ODExMQ=="
@@ -975,12 +979,12 @@ additional_settings() {
 	JOSN_20210102_pet="MTE1NDQ5MzYwMDAwMDAwNDI4MjM0OTE="
 	snow_20210217_pet="MTE1NDQ5OTIwMDAwMDAwNDQzNjYzMTE=@MTE1NDUwMTI0MDAwMDAwMDQ0MzY2NDMx"
 	Lili_20210121_pet="MTE1NDUyMjEwMDAwMDAwNDM4MjYyMDE="
-	minty_20210114_pet="MTE1NDQ5OTIwMDAwMDAwNDM2ODM4NDk="
 	
-	random_pet="$cainiao5_20190516_pet@$wjq_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$Jhone_Potte_20200824_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet@$xiaobai_20201204_pet@$JOSN_20210102_pet@$snow_20210217_pet@$Lili_20210121_pet@$minty_20210114_pet"
+	
+	random_pet="$xiaodengzi_20190516_pet@$cainiao5_20190516_pet@$wjq_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$Jhone_Potte_20200824_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet@$xiaobai_20201204_pet@$JOSN_20210102_pet@$snow_20210217_pet@$Lili_20210121_pet"
 	random="$random_pet"
 	random_array
-	new_pet_set="'$new_pet1@$new_pet2@$new_pet3@$zuoyou_20190516_pet@$Javon_20201224_pet@$random_set',"
+	new_pet_set="'$new_pet1@$new_pet2@$new_pet3@$zuoyou_20190516_pet@$Javon_20201224_pet@$minty_20210114_pet@$random_set',"
 	sed -i '33,36d' $dir_file_js/jd_pet.js
 	sed -i '10,11d' $dir_file_js/jdPetShareCodes.js
 	sed -i "32a $new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set" $dir_file_js/jd_pet.js
@@ -993,6 +997,8 @@ additional_settings() {
 	new_plantBean3="e7lhibzb3zek2zin4gnao3gynqwqgrzjyopvbua@e7lhibzb3zek234ckc2fm2yvkj5cbsdpe7y6p2a@crydelzlvftgpeyuedndyctelq@u72q4vdn3zes24pmx6lh34pdcinjjexdfljybvi@mlrdw3aw26j3w2hy5trqwqmzn6ucqiz2ribf7na"
 	zuoyou_20190516_pb="sz5infcskhz3woqbns6eertieu@mxskszygpa3kaouswi7rele2ji@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi3vk7khql3p7gkpodivnbwjoziga@mlrdw3aw26j3xizu2u66lufwmtn37juiz4xzwmi@e7lhibzb3zek35xkfdysslqi4jy7prkhfvxryma@s7ete3o7zokpafftarfntyydni@cq7ylqusen234wdwxxbkf23g6y@advwde6ogv6oya4md5eieexlfi@ubn2ft6u6wnfxwt6eyxsbcvj44@4npkonnsy7xi3tqkdk2gmzv5vdq4xk4g3cuwp7y"
 	Javon_20201224_pb="wpwzvgf3cyawfvqim3tlebm3evajyxv67k5fsza@qermg6jyrtndlahowraj6265fm@rug64eq6rdioosun4upct64uda5ac3f4ijdgqji@t4ahpnhib7i4hbcqqocijnecby@5a43e5atkvypfxat7paaht76zy@gdi2q3bsj3n4dgcs5lxnn2tyn4@mojrvk5gf5cfszku73tohtuwli@l4ex6vx6yynouzcgilo46gozezzpsoyqvp66rta@beda5sgrp3bnfrynnqutermxoe"
+	minty_20210114_pb="lo3353pm4j5vuzw3ca6oyqfolm"	
+	xiaodengzi_20190516_pb="kcpj4m5kmd4sfdp7ilsvvtkdvu@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi32mpzw3ekc36hh7feakdgbbfjky@j3yggpcyulgljlovo4pwsyi3xa@uvutkok52dcpuntu3gwko34qta@vu2gwcgpheqlm5vzyxutfzc774"
 	cainiao5_20190516_pb="mlrdw3aw26j3wuxtla52mzrnywbtfqzw6bzyi3y"
 	wjq_20190516_pb="sv3wbqzfbzbip22dluyg3kqa5a"
 	whiteboy_20190711_pb="jfbrzo4erngfjdjlvmvpkpgbgie7i7c6gsw54yq@e7lhibzb3zek3uzcrgdebl2uyh3kuh7kap6cwaq"
@@ -1004,7 +1010,7 @@ additional_settings() {
 	liandao_20201010_pb="nxawbkvqldtx4wdwxxbkf23g6y@l4ex6vx6yynouxxefa4hfq6z3in25fmktqqwtca"
 	adong_20201108_pb="qhw4z5vauoy4gfkaybvpmxvjfi@olmijoxgmjuty6wu5iufrhoi6jmzzodszk6xgda"
 	deng_20201120_pb="e7lhibzb3zek3knwnjhrbaadekphavflo22jqii@olmijoxgmjutzfvkt4iu7xobmplveczy2ogou3i@f3er4cqcqgwogenz3dwsg7owhy@eupxefvqt76x2ssddhd35aysfrchgqeijzo2wdi@3en43v3ev6tvx55oefp3vb2xure67mm3kwgsm6a@nkvdrkoit5o657wm7ui35qcu2dmtir7t5h7sema"
-	gomail_20201125_pb="yzhv4vq2u2tan56h4a764rocbe@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi2rducm544znpdzi2gnyg5ygrqei"
+	gomail_20201125_pb="yzhv4vqminty2u2tan56h4a764rocbe@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi2rducm544znpdzi2gnyg5ygrqei"
 	baijiezi_20201126_pb="m6brcm36t5fvxhxnhnjzssq3fauk3bdje2jbnra@mlkc4vnryrhbob7aruocema224@vv3gwhnjzvf5scyicvcrylwldjf2yqvagsa35cy@76gkpqn3nufwjfzgfcv2mxfeimcie5fxpwtraba"
 	superbei666_20201124_pb="gcdr655xfdjq764agedg7f27knlvxw5krpeddfq"
 	yiji_20201125_pb="qm7basnqm6wnqtoyefmgh65nby@mnuvelsb76r27b4ovdbtrrl2u5a53z543epg7hi"
@@ -1015,12 +1021,12 @@ additional_settings() {
 	JOSN_20210102_pb="pmvt25o5pxfjzjmrc7fubka5hu3h7wlwy7o5jii"
 	snow_20210217_pb="5sxiasthesobwa3lehotyqcrd4@b3q5tww6is42gzo3u67hjquj54@b3q5tww6is42gzo3u67hjquj54"
 	Lili_20210121_pb="n24x4hzuumfuu3a26r2o45ydxe"
-	minty_20210114_pb="lo3353pm4j5vuzw3ca6oyqfolm"
 	
-	random_plantBean="$cainiao5_20190516_pb@$wjq_20190516_pb@$whiteboy_20190711_pb@$jiu_20210110_pb@$Oyeah_20200104_pb@$shisan_20200213_pb@$JOSN_20200807_pb@$Jhone_Potte_20200824_pb@$@$liandao_20201010_pb@$adong_20201108_pb@$deng_20201120_pb@$gomail_20201125_pb@$baijiezi_20201126_pb@$superbei666_20201124_pb@$yiji_20201125_pb@$mjmdz_20201217_pb@$JDnailao_20201230_pb@$xo_20201229_pb@$xiaobai_20201204_pb@$JOSN_20210102_pb@$snow_20210217_pb$Lili_20210121_pb@$minty_20210114_pb"
+	
+	random_plantBean="$xiaodengzi_20190516_pb@$cainiao5_20190516_pb@$wjq_20190516_pb@$whiteboy_20190711_pb@$jiu_20210110_pb@$Oyeah_20200104_pb@$shisan_20200213_pb@$JOSN_20200807_pb@$Jhone_Potte_20200824_pb@$@$liandao_20201010_pb@$adong_20201108_pb@$deng_20201120_pb@$gomail_20201125_pb@$baijiezi_20201126_pb@$superbei666_20201124_pb@$yiji_20201125_pb@$mjmdz_20201217_pb@$JDnailao_20201230_pb@$xo_20201229_pb@$xiaobai_20201204_pb@$JOSN_20210102_pb@$snow_20210217_pb$Lili_20210121_pb"
 	random="$random_plantBean"
 	random_array
-	new_plantBean_set="'$new_plantBean1@$new_plantBean2@$new_plantBean3@$zuoyou_20190516_pb@$Javon_20201224_pb@$random_set',"
+	new_plantBean_set="'$new_plantBean1@$new_plantBean2@$new_plantBean3@$zuoyou_20190516_pb@$Javon_20201224_pb@$minty_20210114_pb@$random_set',"
 	sed -i '37,40d' $dir_file_js/jd_plantBean.js
 	sed -i '10,11d' $dir_file_js/jdPlantBeanShareCodes.js
 	sed -i "36a $new_plantBean_set\n$new_plantBean_set\n$new_plantBean_set\n$new_plantBean_set\n$new_plantBean_set\n$new_plantBean_set" $dir_file_js/jd_plantBean.js
@@ -1031,6 +1037,7 @@ additional_settings() {
 	new_dreamFactory="X2poJVLcLoygZX0TgGmkl8EiBIkQe_zrMAZqtgL24-M=@5MIEocu93aHBEq_1DLOFFA==@4HL35B_v85-TsEGQbQTfFg==@q3X6tiRYVGYuAO4OD1-Fcg==@Gkf3Upy3YwQn2K3kO1hFFg==@w8B9d4EVh3e3eskOT5PR1A==@1s8ZZnxD6DVDyjdEUu-zXA==@FyYWfETygv_4XjGtnl2YSg==@us6se4fFC6cSjHDSS_ScMw==@oWcboKZa9XxTSWd28tCEPA==@sboe5PFeXgL2EWpxucrKYw==@rm-j1efPyFU50GBjacgEsw==@1rQLjMF_eWMiQ-RAWARW_w==@bHIVoTmS-fHA6G9ixqnOxfjRNGe1YfJzIbBoF-NEAOw=@6h514zWW6JNRE_Kp-L4cjA==@WFlk160B_Byd-xNNEyRPJQ==@bxUPiWroac-c9PLIPSjnNQ==@P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8=@LTyKtCPGU6v0uv-n1GSwfQ==@y7KhVRopnOwB1qFo2vIefg==@WnaDbsWYwImvOD1CpkeVWA==@Y4r32JTAKNBpMoCXvBf7oA=="
 	zuoyou_20190516_df="oWcboKZa9XxTSWd28tCEPA==@sboe5PFeXgL2EWpxucrKYw==@rm-j1efPyFU50GBjacgEsw==@cA7LmxYoXxJNLnS7j25dxA==@aAwyOK0kb9OSm2oq2JVYMQ==@BprHGWI9w04zUnZPbIzKgw==@tZXnazfKhM0mZd2UGPWeCA==@9whmFTgMFw7ZfXcQdEJ3UA==@zVn3SNiwrEhxQEcbMZA27w==@k7iROwM2-Ha5EA59rRxBTg=="
 	Javon_20201224_df="JuMHWNtZt4Ny_0ltvG6Ipg==@KDhTwFSjylKffc2V7dp5HQ=="
+	minty_20210114_df="AuzMzT5lc_tztwp75jBCWQ=="
 	wjq_20190516_df="43I0xnmtfBvt5qiFm6ftxA=="
 	Jhone_Potte_20200824_df="Q4Rij5_6085kuANMaAvBMA==@gTLa05neWl8UFTGKpFLeog=="
 	whiteboy_20190711_df="U_NgGvEUnbU6IblJUTMQV3F7G5ihingk9kVobx99yrY=@BXXbkqJN7sr-0Qkid6v27A=="
@@ -1039,12 +1046,12 @@ additional_settings() {
 	JOSN_20210102_df="Y1heEn9Iva97i-IjTtfI9Q=="
 	snow_20210217_df="jwk7hHoEWAsvQyBkNrBS1Q==@iqAUAWEQx86GvVthAu7-jQ=="
 	Lili_20210121_df="HQTSebNAjuGe4igMSpHeog=="
-	minty_20210114_df="AuzMzT5lc_tztwp75jBCWQ=="
 	
-	random_dreamFactory="$wjq_20190516_df@$Jhone_Potte_20200824_df@$whiteboy_20190711_df@$adong_20201108_df@$cainiao5_20201209_df@$JOSN_20210102_df@$snow_20210217_df@$Lili_20210121_df@$minty_20210114_df"
+	
+	random_dreamFactory="$wjq_20190516_df@$Jhone_Potte_20200824_df@$whiteboy_20190711_df@$adong_20201108_df@$cainiao5_20201209_df@$JOSN_20210102_df@$snow_20210217_df@$Lili_20210121_df"
 	random="$random_dreamFactory"
 	random_array
-	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$random_set',"
+	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$minty_20210114_df@$random_set',"
 
 	sed -i '44,47d' $dir_file_js/jd_dreamFactory.js
 	sed -i '10,11d' $dir_file_js/jdDreamFactoryShareCodes.js
@@ -1170,15 +1177,20 @@ COMMENT
 }
 
 random_array() {
-	echo "random_array" > /tmp/random.txt
+	#彻底完善，感谢minty大力支援
 	length=$(echo $random | awk -F '[@]' '{print NF}') #获取变量长度
-	random_num=$(awk -va=$length+1 'BEGIN {for (i = 1; i <= 30; i++)print int( a * rand() )}' | grep -v 0 | sort -u) #生成随机数(未完成还有点问题，数字太小重复太多了)
-	for i in `echo $random_num`
-	do
-		echo $random | awk -va=$i -F '[@]' '{print $a}'  >>/tmp/random.txt
-	done
+	if [ "$length" -ge "20" ];then
+		echo "random_array" > /tmp/random.txt
+		random_num=$(python3 $dir_file/jd_random.py $length,20  | sed "s/,/\n/g")
+		for i in `echo $random_num`
+		do
+			echo $random | awk -va=$i -F '[@]' '{print $a}'  >>/tmp/random.txt
+		done
 
-	random_set=$(cat /tmp/random.txt | sed  "/random_array/d"| sed "s/$/@/" | sed ':t;N;s/\n//;b t' |sed 's/.$//g')
+		random_set=$(cat /tmp/random.txt | sed  "/random_array/d"| sed "s/$/@/" | sed ':t;N;s/\n//;b t' |sed 's/.$//g')
+	else
+		random_set="$random"
+	fi
 }
 
 time() {
@@ -1221,12 +1233,19 @@ system_variable() {
 	openssh_if=$(opkg list-installed | grep 'openssh-client' | awk '{print $1}')
 	openssh_if1=$(opkg list-installed | grep 'openssh-keygen' | awk '{print $1}')
 	if [ ! $openssh_if ];then
-		echo -e "未找到$green openssh-client$white，请安装以后再使用本脚本"
+		echo -e "缺少$green openssh-client$white依赖，请安装以后再使用本脚本"
 		exit 0
 	fi
 	
 	if [ ! $openssh_if1 ];then
-		echo -e "未找到$green openssh-keygen$white，请安装以后再使用本脚本"
+		echo -e "缺少$green openssh-keygen$white依赖，请安装以后再使用本脚本"
+		exit 0
+	fi
+
+	#判断python
+	python_if=$(opkg list-installed | grep 'python3' | awk 'NR==1 {print $1}')
+	if [ ! $python_if ];then
+		echo -e "缺少$green python3$white依赖，请安装以后再使用本脚本"
 		exit 0
 	fi
 
