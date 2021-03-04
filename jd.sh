@@ -36,7 +36,8 @@ line="%0D%0A%0D%0A---%0D%0A%0D%0A"
 current_time=$(date +"%Y-%m-%d")
 by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script"
 SCKEY=$(grep "let SCKEY" $script_dir/sendNotify.js  | awk -F "'" '{print $2}')
-uname_version=$(uname -a | awk -v i="_" '{print $1i $2i $3}')
+sys_model=$(cat /tmp/sysinfo/model | awk -v i="+" '{print $1i$2i$3}')
+uname_version=$(uname -a | awk -v i="+" '{print $1i $2i $3}')
 wan_ip=$(ubus call network.interface.wan status | grep \"address\" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
 
 red="\033[31m"
@@ -160,7 +161,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_beauty.js			#美丽研究院
 	jd_price.js			#京东保价
 	jd_speed_sign.js		#京东极速版签到+赚现金任务
-	jd_speed_redpocke.js		#京东极速版红包
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	jd_crazy_joy_bonus.js		#监控crazyJoy分红狗(默认不运行，欧皇自己设置定时任务)
 	jd_global_mh.js			#京东国际盲盒
@@ -219,6 +219,7 @@ COMMENT
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_shake.js -O $dir_file_js/jd_shake.js #超级摇一摇
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_shakeBean.js -O $dir_file_js/jd_shakeBean.js #京东会员-摇京豆,每个月运行一次
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_jump-jump.js -O $dir_file_js/jd_jump-jump.js #母婴-跳一跳
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_xmf.js -O $dir_file_js/jd_xmf.js #京东小魔方
 
 
 cat >>$dir_file/config/collect_script.txt <<EOF
@@ -259,9 +260,9 @@ update_script() {
 
 run_0() {
 	echo -e "$green run_0$start_script $white"
+	$node $dir_file_js/jd_bean_sign.js #京东多合一签到
 	$node $dir_file_js/jd_car.js #京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	ddcs
-	$node $dir_file_js/jd_bean_sign.js #京东多合一签到
 	$node $dir_file_js/jx_sign.js #京喜app签到长期
 	$node $dir_file_js/jd_redPacket.js #京东全民开红包，没时间要求
 	$node $dir_file_js/jd_lotteryMachine.js #京东抽奖机
@@ -378,11 +379,11 @@ run_07() {
 	$node $dir_file_js/jd_entertainment.js #百变大咖秀
 	$node $dir_file_js/jd_nzmh.js #女装盲盒 活动时间：2021-2-19至2021-2-25
 	$node $dir_file_js/jd_speed_sign.js #京东极速版签到+赚现金任务
-	$node $dir_file_js/jd_speed_redpocke.js	#京东极速版红包
 	$node $dir_file_js/jd_fanslove.js #粉丝互动
 	$node $dir_file_js/jd_cash.js #签到领现金，每日2毛～5毛长期
 	$node $dir_file_js/jd_shake.js #超级摇一摇
 	$node $dir_file_js/jd_jump-jump.js #母婴-跳一跳
+	$node $dir_file_js/jd_xmf.js #京东小魔方
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
@@ -411,7 +412,7 @@ ddcs() {
 	ddcs_left=3
 	while [[ ${ddcs_left} -gt 0 ]]; do
 		echo -e "$green正在循环运行脚本，大概$ddcs_left次结束这个循环，然后跑下一个，不需要理这个,这个是正常的$white"
-		#$node $dir_file_js/jd_blueCoin.js  &	#东东超市兑换，有次数限制，没时间要求
+		$node $dir_file_js/jd_blueCoin.js  	#东东超市兑换，有次数限制，没时间要求
 		$node $dir_file_js/jd_car_exchange.js   #京东汽车兑换，500赛点兑换500京豆
 		sleep 1
 		ddcs_left=$(($ddcs_left - 1))
@@ -457,13 +458,12 @@ checklog() {
 	ls ./ | grep -E "^j" | sort >$log1
 
 	#筛选jd log 里面有几个是带错误的
-	echo "#### Wan口IP地址：$wan_ip" >>$log3
-	echo "#### 当前的系统版本:$uname_version" >>$log3
+	echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line" >>$log3
 	echo "#### $current_time+检测到错误日志的文件" >>$log3
 	for i in `cat $log1`
 	do
-		grep -Elrn  "错误|失败|依赖|error|taskVos|module" $i >> $log2
-		grep -Elrn  "错误|失败|依赖|error|taskVos|module" $i >> $log3
+		grep -Elrn  "错误|失败|依赖|error|module" $i >> $log2
+		grep -Elrn  "错误|失败|依赖|error|module" $i >> $log3
 	done
 	cat_log=$(cat $log2 | wc -l)
 	if [ $cat_log -ge "1" ];then
@@ -476,7 +476,7 @@ checklog() {
 	for i in `cat $log2`
 	do
 		echo "#### ${i}详细的错误" >> $log3
-		grep -E  "错误|失败|依赖|error|taskVos|module" $i | grep -v '京东天天\|京东商城\|京东拍拍\|京东现金\|京东秒杀\|京东日历\|京东金融\|京东金贴\|金融京豆\|检测\|参加团主\|参团失败' | sort -u >> $log3
+		grep -E  "错误|失败|依赖|error|module" $i | grep -v '京东天天\|京东商城\|京东拍拍\|京东现金\|京东秒杀\|京东日历\|京东金融\|京东金贴\|金融京豆\|检测\|参加团主\|参团失败\|node_modules\|sgmodulse' | sort -u >> $log3
 	done
 
 	if [ $num = "no_eeror" ]; then
@@ -534,15 +534,11 @@ that_day() {
 
 	git_log=$(git log --format=format:"%ai %an %s" --since="$current_time 00:00:00" --before="$current_time 23:59:59" | sed "s/+0800//g" | sed "s/$current_time //g" | sed "s/ /+/g")
 	if [ `echo "$git_log" | wc -l` == "0"  ];then
-		echo "#### JD_Script+$current_time+更新日志" >> $dir_file/git_log/${current_time}.log
+		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
 		echo "作者泡妹子或者干饭去了$wrap$wrap_tab今天没有任何更新$wrap$wrap_tab不要催佛系玩。。。" >>$dir_file/git_log/${current_time}.log
-		echo "#### Wan口IP地址：$wan_ip" >>$dir_file/git_log/${current_time}.log
-		echo "#### 当前的系统版本:$uname_version" >>$dir_file/git_log/${current_time}.log
 		echo "#### 当前脚本是否最新：$Script_status" >>$dir_file/git_log/${current_time}.log
 	else
-		echo "#### JD_Script+$current_time+更新日志" >> $dir_file/git_log/${current_time}.log
-		echo "#### Wan口IP地址：$wan_ip" >>$dir_file/git_log/${current_time}.log
-		echo "#### 当前的系统版本:$uname_version" >>$dir_file/git_log/${current_time}.log
+		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
 		echo "  时间       +作者          +操作" >> $dir_file/git_log/${current_time}.log
 		echo "$git_log" >> $dir_file/git_log/${current_time}.log
 		echo "#### 当前脚本是否最新：$Script_status" >>$dir_file/git_log/${current_time}.log
@@ -1257,8 +1253,8 @@ system_variable() {
 	fi
 
 	#判断openssh
-	openssh_if=$(opkg list-installed | grep 'openssh-client' | awk '{print $1}')
-	openssh_if1=$(opkg list-installed | grep 'openssh-keygen' | awk '{print $1}')
+	openssh_if=$(opkg list-installed | grep "openssh-client" | awk '{print $1}')
+	openssh_if1=$(opkg list-installed | grep "openssh-keygen" | awk '{print $1}')
 	if [ ! $openssh_if ];then
 		echo -e "缺少$green openssh-client$white依赖，请安装以后再使用本脚本"
 		sleep 5
@@ -1270,7 +1266,7 @@ system_variable() {
 	fi
 
 	#判断python
-	python_if=$(opkg list-installed | grep 'python3' | awk 'NR==1 {print $1}')
+	python_if=$(opkg list-installed | grep "python3" | awk 'NR==1 {print $1}')
 	if [ ! $python_if ];then
 		echo -e "缺少$green python3$white依赖，请安装以后再使用本脚本"
 		sleep 5
