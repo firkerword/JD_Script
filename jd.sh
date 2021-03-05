@@ -7,8 +7,7 @@
 #
 #set -x
 
-version="2.0"
-cron_file="/etc/crontabs/root"
+
 #url=https://gitee.com/lxk0301/jd_scripts/raw/master
 
 #获取当前脚本目录copy脚本之家
@@ -21,24 +20,40 @@ done
 dir_file="$( cd -P "$( dirname "$Source"  )" && pwd  )"
 dir_file_js="$dir_file/js"
 
-node="/usr/bin/node"
+
+
+#检测当前位置
 install_script="/usr/share/Install_script"
 install_script_config="/usr/share/Install_script/script_config"
+
+openwrt_script="/usr/share/jd_openwrt_script"
+openwrt_script_config="/usr/share/jd_openwrt_script/script_config"
+
 if [ "$dir_file" == "$install_script/JD_Script" ];then
 	script_dir="$install_script_config"
+elif [ "$dir_file" == "$openwrt_script/JD_Script" ];then
+	script_dir="$openwrt_script_config"
 else
 	script_dir="$dir_file"
 fi
 
+
+
+version="2.0"
+cron_file="/etc/crontabs/root"
+node="/usr/bin/node"
+sys_model=$(cat /tmp/sysinfo/model | awk -v i="+" '{print $1i$2i$3}')
+uname_version=$(uname -a | awk -v i="+" '{print $1i $2i $3}')
+wan_ip=$(ubus call network.interface.wan status | grep \"address\" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+
+#Server酱
 wrap="%0D%0A%0D%0A" #Server酱换行
 wrap_tab="     "
 line="%0D%0A%0D%0A---%0D%0A%0D%0A"
 current_time=$(date +"%Y-%m-%d")
 by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script"
 SCKEY=$(grep "let SCKEY" $script_dir/sendNotify.js  | awk -F "'" '{print $2}')
-sys_model=$(cat /tmp/sysinfo/model | awk -v i="+" '{print $1i$2i$3}')
-uname_version=$(uname -a | awk -v i="+" '{print $1i $2i $3}')
-wan_ip=$(ubus call network.interface.wan status | grep \"address\" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+
 
 red="\033[31m"
 green="\033[32m"
@@ -47,11 +62,10 @@ white="\033[0m"
 
 start_script="脚本开始运行，当前时间：`date "+%Y-%m-%d %H:%M"`"
 stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
-
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.86"
+	cron_version="2.87"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -462,24 +476,24 @@ checklog() {
 	echo "#### $current_time+检测到错误日志的文件" >>$log3
 	for i in `cat $log1`
 	do
-		grep -Elrn  "错误|失败|依赖|error|module" $i >> $log2
-		grep -Elrn  "错误|失败|依赖|error|module" $i >> $log3
+		grep -Elrn  "错误|失败|module" $i >> $log2
+		grep -Elrn  "错误|失败|module" $i >> $log3
 	done
 	cat_log=$(cat $log2 | wc -l)
 	if [ $cat_log -ge "1" ];then
 		num="JD_Script发现有$cat_log个日志包含错误信息"
 	else
-		num="no_eeror"
+		num="no_error"
 	fi
 
 	#将详细错误信息输出log3
 	for i in `cat $log2`
 	do
 		echo "#### ${i}详细的错误" >> $log3
-		grep -E  "错误|失败|依赖|error|module" $i | grep -v '京东天天\|京东商城\|京东拍拍\|京东现金\|京东秒杀\|京东日历\|京东金融\|京东金贴\|金融京豆\|检测\|参加团主\|参团失败\|node_modules\|sgmodulse' | sort -u >> $log3
+		grep -E  "错误|失败|module" $i | grep -v '京东天天\|京东商城\|京东拍拍\|京东现金\|京东秒杀\|京东日历\|京东金融\|京东金贴\|金融京豆\|检测\|参加团主\|参团失败\|node_modules\|sgmodule' | sort -u >> $log3
 	done
 
-	if [ $num = "no_eeror" ]; then
+	if [ $num = "no_error" ]; then
 		echo "**********************************************"
 		echo -e "$green log日志没有发现错误，一切风平浪静$white"
 		echo "**********************************************"
@@ -569,6 +583,12 @@ backnas() {
 		backnas_config_file="$install_script_config/backnas_config.txt"
 		back_file_patch="$install_script"
 		if [ ! -f "$install_script_config/backnas_config.txt" ]; then
+			backnas_config
+		fi
+	elif [ "$dir_file" == "$openwrt_script/JD_Script" ];then
+		backnas_config_file="$openwrt_script_config/backnas_config.txt"
+		back_file_patch="$openwrt_script"
+		if [ ! -f "$openwrt_script_config/backnas_config.txt" ]; then
 			backnas_config
 		fi
 	else
@@ -753,6 +773,15 @@ script_black() {
 		if [ ! -f "$dir_file/config/Script_blacklist.txt" ]; then
 			ln -s $script_black_file $dir_file/config/Script_blacklist.txt
 		fi
+	elif [ "$dir_file" == "$openwrt_script/JD_Script" ];then
+		script_black_file="$openwrt_script_config/Script_blacklist.txt"
+		if [ ! -f "$script_black_file" ]; then
+			script_black_Description
+		fi
+		#script_black用于升级以后恢复链接
+		if [ ! -f "$dir_file/config/Script_blacklist.txt" ]; then
+			ln -s $script_black_file $dir_file/config/Script_blacklist.txt
+		fi
 	else
 		script_black_file="$dir_file/config/Script_blacklist.txt"
 		if [ ! -f "$script_black_file" ]; then
@@ -929,7 +958,10 @@ additional_settings() {
 	sed -i "s/|| 20/|| 200/g" $dir_file_js/jd_unsubscribe.js
 
 	#宠汪汪积分兑换奖品改成兑换500豆子，个别人会兑换错误(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
-	#sed -i "s/let joyRewardName = 20/let joyRewardName = 500/g" $dir_file_js/jd_joy_reward.js
+	sed -i "s/let joyRewardName = 20/let joyRewardName = 500/g" $dir_file_js/jd_joy_reward.js
+
+	#宠汪汪喂食改成80
+	sed -i "s/|| 10/|| 80/g" $dir_file_js/jd_joy_feedPets.js
 
 	#东东农场
 	new_fruit1="0763443f7d6f4f5ea5e54adc1c6112ed@e61135aa1963447fa136f293a9d161c1@f9e6a916ad634475b8e77a7704b5c3d8@6632c8135d5c4e2c9ad7f4aa964d4d11@31a2097b10db48429013103077f2f037@5aa64e466c0e43a98cbfbbafcc3ecd02@bf0cbdb0083d443499a571796af20896@9046fbd8945f48cb8e36a17fff9b0983"
@@ -1238,6 +1270,9 @@ npm_install() {
 	if [ "$dir_file" == "$install_script/JD_Script" ];then
 		cp $install_script/JD_Script/git_clone/lxk0301/package.json $install_script/package.json
 		cd $install_script && npm install && npm install -g request
+	elif [ "$dir_file" == "$openwrt_script/JD_Script" ];then
+		cp $openwrt_script/JD_Script/git_clone/lxk0301/package.json $openwrt_script/package.json
+		cd $openwrt_script && npm install && npm install -g request
 	else
 		cp $dir_file/git_clone/lxk0301/package.json $dir_file/package.json
 		cd $dir_file && npm -g install && npm install -g request
@@ -1287,7 +1322,7 @@ system_variable() {
 			rm -rf $dir_file_js/jdCookie.js #用于删除旧的链接
 			ln -s $install_script_config/jdCookie.js $dir_file_js/jdCookie.js
 		fi
-		
+
 		#jdCookie.js用于升级以后恢复链接
 		if [ ! -f "$dir_file_js/jdCookie.js" ]; then
 			ln -s $install_script_config/jdCookie.js $dir_file_js/jdCookie.js
@@ -1316,7 +1351,42 @@ system_variable() {
 		if [ ! -f "$dir_file_js/USER_AGENTS.js" ]; then
 			ln -s $install_script_config/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
+	elif [ "$dir_file" == "$openwrt_script/JD_Script" ];then
+		#jdCookie.js
+		if [ ! -f "$openwrt_script_config/jdCookie.js" ]; then
+			cp  $dir_file/git_clone/lxk0301/jdCookie.js  $openwrt_script_config/jdCookie.js
+			rm -rf $dir_file_js/jdCookie.js #用于删除旧的链接
+			ln -s $openwrt_script_config/jdCookie.js $dir_file_js/jdCookie.js
+		fi
 
+		#jdCookie.js用于升级以后恢复链接
+		if [ ! -f "$dir_file_js/jdCookie.js" ]; then
+			ln -s $openwrt_script_config/jdCookie.js $dir_file_js/jdCookie.js
+		fi
+
+		#sendNotify.js
+		if [ ! -f "$openwrt_script_config/sendNotify.js" ]; then
+			cp  $dir_file/git_clone/lxk0301/sendNotify.js $openwrt_script_config/sendNotify.js
+			rm -rf $dir_file_js/sendNotify.js  #用于删除旧的链接
+			ln -s $openwrt_script_config/sendNotify.js $dir_file_js/sendNotify.js
+		fi
+
+		#sendNotify.js用于升级以后恢复链接
+		if [ ! -f "$dir_file_js/sendNotify.js" ]; then
+			ln -s $openwrt_script_config/sendNotify.js $dir_file_js/sendNotify.js
+		fi
+
+		#USER_AGENTS.js
+		if [ ! -f "$openwrt_script_config/USER_AGENTS.js" ]; then
+			cp  $dir_file/git_clone/lxk0301/USER_AGENTS.js $openwrt_script_config/USER_AGENTS.js
+			rm -rf $dir_file_js/USER_AGENTS.js #用于删除旧的链接
+			ln -s $openwrt_script_config/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
+		fi
+
+		#USER_AGENTS.js用于升级以后恢复链接
+		if [ ! -f "$dir_file_js/USER_AGENTS.js" ]; then
+			ln -s $openwrt_script_config/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
+		fi
 	else
 		if [ ! -f "$dir_file/jdCookie.js" ]; then
 			cp  $dir_file/git_clone/lxk0301/jdCookie.js $dir_file/jdCookie.js
