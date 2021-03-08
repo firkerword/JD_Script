@@ -994,8 +994,9 @@ additional_settings() {
 	JOSN_20210102_fr="3aaa13bec82041d59e566d35cebb3bc9"
 	snow_20210217_fr="690009b0d5674e85b751838b2fa6241e@5f952ad609b1440b94599eaec41d853f"
 	Lili_20210121_fr="48651377d7544f6bbf32cbd7ef50be30"
+	tanherongyi_20210121_fr="24156b43b0664cff955e2bedea49e2b5"
 	
-	random_fruit="$xiaodengzi_20190516_fr@$cainiao5_20190516_fr@$whiteboy_20190711_fr@$jiu_20210110_fr@$Oyeah_20200104_fr@$shisan_20200213_fr@$JOSN_20200807_fr@$Jhone_Potte_20200824_fr@$liandao_20201010_fr@$adong_20201108_fr@$deng_20201120_fr@$gomail_20201125_fr@$baijiezi_20201126_fr@$superbei666_20201124_fr@$yiji_20201125_fr@$mjmdz_20201217_fr@$JDnailao_20201230_fr@$xo_20201229_fr@$xiaobai_20201204_fr@$JOSN_20210102_fr@$snow_20210217_fr@$Lili_20210121_fr"
+	random_fruit="$xiaodengzi_20190516_fr@$cainiao5_20190516_fr@$whiteboy_20190711_fr@$jiu_20210110_fr@$Oyeah_20200104_fr@$shisan_20200213_fr@$JOSN_20200807_fr@$Jhone_Potte_20200824_fr@$liandao_20201010_fr@$adong_20201108_fr@$deng_20201120_fr@$gomail_20201125_fr@$baijiezi_20201126_fr@$superbei666_20201124_fr@$yiji_20201125_fr@$mjmdz_20201217_fr@$JDnailao_20201230_fr@$xo_20201229_fr@$xiaobai_20201204_fr@$JOSN_20210102_fr@$snow_20210217_fr@$Lili_20210121_fr@$tanherongyi_20210121_fr"
 	random="$random_fruit"
 	random_array
 	new_fruit_set="'$new_fruit1@$new_fruit2@$new_fruit3@$zuoyou_20190516_fr@$Javon_20201224_fr@$minty_20210114_fr@$random_set',"
@@ -1035,9 +1036,9 @@ additional_settings() {
 	JOSN_20210102_pet="MTE1NDQ5MzYwMDAwMDAwNDI4MjM0OTE="
 	snow_20210217_pet="MTE1NDQ5OTIwMDAwMDAwNDQzNjYzMTE=@MTE1NDUwMTI0MDAwMDAwMDQ0MzY2NDMx"
 	Lili_20210121_pet="MTE1NDUyMjEwMDAwMDAwNDM4MjYyMDE="
+	tanherongyi_20210121_pet="MTAxODc2NTEzNDAwMDAwMDAwNTgyNjI2Nw=="
 	
-	
-	random_pet="$xiaodengzi_20190516_pet@$cainiao5_20190516_pet@$wjq_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$Jhone_Potte_20200824_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet@$xiaobai_20201204_pet@$JOSN_20210102_pet@$snow_20210217_pet@$Lili_20210121_pet"
+	random_pet="$xiaodengzi_20190516_pet@$cainiao5_20190516_pet@$wjq_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$Jhone_Potte_20200824_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet@$xiaobai_20201204_pet@$JOSN_20210102_pet@$snow_20210217_pet@$Lili_20210121_pet@$tanherongyi_20210121_pet"
 	random="$random_pet"
 	random_array
 	new_pet_set="'$new_pet1@$new_pet2@$new_pet3@$zuoyou_20190516_pet@$Javon_20201224_pet@$minty_20210114_pet@$random_set',"
@@ -1077,9 +1078,9 @@ additional_settings() {
 	JOSN_20210102_pb="pmvt25o5pxfjzjmrc7fubka5hu3h7wlwy7o5jii"
 	snow_20210217_pb="5sxiasthesobwa3lehotyqcrd4@b3q5tww6is42gzo3u67hjquj54@b3q5tww6is42gzo3u67hjquj54"
 	Lili_20210121_pb="n24x4hzuumfuu3a26r2o45ydxe"
+	tanherongyi_20210121_pb="pmxp2qr7mydqspc3tkg77sgvvq"
 	
-	
-	random_plantBean="$xiaodengzi_20190516_pb@$cainiao5_20190516_pb@$wjq_20190516_pb@$whiteboy_20190711_pb@$jiu_20210110_pb@$Oyeah_20200104_pb@$shisan_20200213_pb@$JOSN_20200807_pb@$Jhone_Potte_20200824_pb@$@$liandao_20201010_pb@$adong_20201108_pb@$deng_20201120_pb@$gomail_20201125_pb@$baijiezi_20201126_pb@$superbei666_20201124_pb@$yiji_20201125_pb@$mjmdz_20201217_pb@$JDnailao_20201230_pb@$xo_20201229_pb@$xiaobai_20201204_pb@$JOSN_20210102_pb@$snow_20210217_pb$Lili_20210121_pb"
+	random_plantBean="$xiaodengzi_20190516_pb@$cainiao5_20190516_pb@$wjq_20190516_pb@$whiteboy_20190711_pb@$jiu_20210110_pb@$Oyeah_20200104_pb@$shisan_20200213_pb@$JOSN_20200807_pb@$Jhone_Potte_20200824_pb@$@$liandao_20201010_pb@$adong_20201108_pb@$deng_20201120_pb@$gomail_20201125_pb@$baijiezi_20201126_pb@$superbei666_20201124_pb@$yiji_20201125_pb@$mjmdz_20201217_pb@$JDnailao_20201230_pb@$xo_20201229_pb@$xiaobai_20201204_pb@$JOSN_20210102_pb@$snow_20210217_pb$Lili_20210121_pb@$tanherongyi_20210121_pb"
 	random="$random_plantBean"
 	random_array
 	new_plantBean_set="'$new_plantBean1@$new_plantBean2@$new_plantBean3@$zuoyou_20190516_pb@$Javon_20201224_pb@$minty_20210114_pb@$random_set',"
@@ -1102,9 +1103,9 @@ additional_settings() {
 	JOSN_20210102_df="Y1heEn9Iva97i-IjTtfI9Q=="
 	snow_20210217_df="jwk7hHoEWAsvQyBkNrBS1Q==@iqAUAWEQx86GvVthAu7-jQ=="
 	Lili_20210121_df="HQTSebNAjuGe4igMSpHeog=="
+	tanherongyi_20210121_df="6FDe4u9M6bpexYt56q3tkA=="
 	
-	
-	random_dreamFactory="$wjq_20190516_df@$Jhone_Potte_20200824_df@$whiteboy_20190711_df@$adong_20201108_df@$cainiao5_20201209_df@$JOSN_20210102_df@$snow_20210217_df@$Lili_20210121_df"
+	random_dreamFactory="$wjq_20190516_df@$Jhone_Potte_20200824_df@$whiteboy_20190711_df@$adong_20201108_df@$cainiao5_20201209_df@$JOSN_20210102_df@$snow_20210217_df@$Lili_20210121_df@$tanherongyi_20210121_df"
 	random="$random_dreamFactory"
 	random_array
 	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$minty_20210114_df@$random_set',"
