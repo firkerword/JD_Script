@@ -182,6 +182,7 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_firecrackers.js		#她的节，享京豆
 	jd_cfd.js			#京喜财富岛
 	jd_live.js			#京东直播
+	jd_jxd.js			#京小兑
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	JS_USER_AGENTS.js		#京东极速版UA
 	jd_get_share_code.js		#获取jd所有助力码脚本
@@ -400,6 +401,7 @@ run_07() {
 	$node $dir_file_js/jd_shake.js #超级摇一摇
 	$node $dir_file_js/jd_jump-jump.js #母婴-跳一跳
 	$node $dir_file_js/jd_xmf.js #京东小魔方
+	$node $dir_file_js/jd_jxd.js #京小兑
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
