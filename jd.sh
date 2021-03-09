@@ -65,7 +65,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.87"
+	cron_version="2.88"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -96,6 +96,7 @@ cat >>/etc/crontabs/root <<EOF
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 5 11 3 */1 *  $node $dir_file_js/jd_shakeBean.js  >/tmp/jd_shakeBean.log #京东会员-摇京豆,每个月运行一次#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播
+30,31 20-23/1 9,12 3 * $node $dir_file_js/jd_live_redrain.js >/tmp/jd_live_redrain.log	#超级直播间红包雨
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -182,6 +183,8 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_live.js			#京东直播
 	jd_jxd.js			#京小兑
 	jd_global.js			#环球挑战赛
+	jd_live_redrain.js 		#超级直播间红包雨
+	jd_nzmh.js			#女装盲盒 2021-3-8至2021-3-20
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	JS_USER_AGENTS.js		#京东极速版UA
 	jd_get_share_code.js		#获取jd所有助力码脚本
@@ -234,16 +237,16 @@ COMMENT
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_fanslove.js -O $dir_file_js/jd_fanslove.js #粉丝互动
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_shake.js -O $dir_file_js/jd_shake.js #超级摇一摇
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_shakeBean.js -O $dir_file_js/jd_shakeBean.js #京东会员-摇京豆,每个月运行一次
-	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_jump-jump.js -O $dir_file_js/jd_jump-jump.js #母婴-跳一跳
-	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_xmf.js -O $dir_file_js/jd_xmf.js #京东小魔方
-jd_global.js			#环球挑战赛
+	rm -rf $dir_file_js/jd_jump-jump.js #母婴-跳一跳
+	rm -rf $dir_file_js/jd_xmf.js #京东小魔方
+
 
 cat >>$dir_file/config/collect_script.txt <<EOF
 	jx_products_detail.js		#京喜工厂商品列表详情
 	jd_entertainment.js 		#百变大咖秀
 	jd_try.js 			#京东试用
 	jdDreamFactoryShareCodes.js	#京喜工厂ShareCodes
-	jdFruitShareCodes.js		#东东农场ShareCodesjd_global.js			#环球挑战赛
+	jdFruitShareCodes.js		#东东农场ShareCodes
 	jdPetShareCodes.js		#东东萌宠ShareCodes
 	jdPlantBeanShareCodes.js	#种豆得豆ShareCodes
 	jdFactoryShareCodes.js		#东东工厂ShareCodes
@@ -396,9 +399,8 @@ run_07() {
 	$node $dir_file_js/jd_fanslove.js #粉丝互动
 	$node $dir_file_js/jd_cash.js #签到领现金，每日2毛～5毛长期
 	$node $dir_file_js/jd_shake.js #超级摇一摇
-	$node $dir_file_js/jd_jump-jump.js #母婴-跳一跳
-	$node $dir_file_js/jd_xmf.js #京东小魔方
 	$node $dir_file_js/jd_jxd.js #京小兑
+	$node $dir_file_js/jd_nzmh.js #女装盲盒 2021-3-8至2021-3-20
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
@@ -1256,7 +1258,7 @@ COMMENT
 	random_array
 	new_jdglobal_set="'$new_jdglobal@$zuoyou_20190516_gb@$jidiyangguang_20190516_gb@$random_set',"
 	sed -i '46,47d' $dir_file_js/jd_global.js
-	sed -i "45a $new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set" $dir_file_js/jd_global.
+	sed -i "45a $new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set" $dir_file_js/jd_global.js
 
 	#脚本黑名单
 	script_black
