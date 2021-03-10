@@ -173,7 +173,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_daily_egg.js 		#京东金融-天天提鹅
 	jd_sgmh.js			#闪购盲盒长期活动
 	jd_ms.js			#京东秒秒币
-	jd_beauty.js			#美丽研究院
 	jd_price.js			#京东保价
 	jd_speed_sign.js		#京东极速版签到+赚现金任务
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
@@ -186,7 +185,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_live_redrain.js 		#超级直播间红包雨
 	jd_nzmh.js			#女装盲盒 2021-3-8至2021-3-20
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
-	JS_USER_AGENTS.js		#京东极速版UA
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -288,7 +286,6 @@ run_0() {
 	$node $dir_file_js/jd_cash.js #签到领现金，每日2毛～5毛长期
 	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
 	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
-	rm -rf  $dir_file_js/jd_global.js #京东国际环球赛事
 	run_08_12_16
 	$node $dir_file_js/jd_small_home.js #东东小窝
 	run_06_18
@@ -422,7 +419,6 @@ run_10_15_20() {
 	$node $dir_file_js/jd_superMarket.js #东东超市,0 10 15 20四场补货加劵
 	$node $dir_file_js/jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
 	$node $dir_file_js/jd_cfd.js #京东财富岛 有一日三餐任务
-	$node $dir_file_js/jd_beauty.js	#美丽研究院
 	echo -e "$green run_10_15_20$stop_script $white"
 }
 
@@ -480,8 +476,8 @@ checklog() {
 	echo "#### $current_time+检测到错误日志的文件" >>$log3
 	for i in `cat $log1`
 	do
-		grep -Elrn  "错误|失败|module" $i >> $log2
-		grep -Elrn  "错误|失败|module" $i >> $log3
+		grep -Elrn  "错误|失败" $i  >> $log2
+		grep -Elrn  "错误|失败" $i  >> $log3
 	done
 	cat_log=$(cat $log2 | wc -l)
 	if [ $cat_log -ge "1" ];then
@@ -880,7 +876,8 @@ help() {
 	echo ""
 	echo -e "$green  $script_dir/jdCookie.js $white 在此脚本内填写JD Cookie 脚本内有说明"
 	echo -e "$green  $script_dir/sendNotify.js $white 在此脚本内填写推送服务的KEY，可以不填"
-	echo -e "$green  $script_dir/USER_AGENTS.js $white UA文件可以自定义也可以默认 ，自定义需要抓包本机UA，然后修改删掉里面的UA，改成自己的"
+	echo -e "$green  $script_dir/USER_AGENTS.js $white 京东UA文件可以自定义也可以默认"
+	echo -e "$green  $script_dir/JS_USER_AGENTS.js $white 京东极速版UA文件可以自定义也可以默认"
 	echo -e "$green  $script_dir/config/Script_blacklist.txt $white 脚本黑名单，用法去看这个文件"
 	echo ""
 	echo -e "$yellow JS脚本活动列表：$green $dir_file/git_clone/lxk0301/README.md $white"
@@ -1386,6 +1383,19 @@ system_variable() {
 		if [ ! -f "$dir_file_js/USER_AGENTS.js" ]; then
 			ln -s $install_script_config/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
+
+		#JS_USER_AGENTS.js
+		if [ ! -f "$install_script_config/JS_USER_AGENTS.js" ]; then
+			cp  $dir_file/git_clone/lxk0301/JS_USER_AGENTS.js $install_script_config/JS_USER_AGENTS.js
+			rm -rf $dir_file_js/JS_USER_AGENTS.js #用于删除旧的链接
+			ln -s $install_script_config/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
+		fi
+
+		#JS_USER_AGENTS.js用于升级以后恢复链接
+		if [ ! -f "$dir_file_js/JS_USER_AGENTS.js" ]; then
+			ln -s $install_script_config/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
+		fi
+
 	elif [ "$dir_file" == "$openwrt_script/JD_Script" ];then
 		#jdCookie.js
 		if [ ! -f "$openwrt_script_config/jdCookie.js" ]; then
@@ -1422,6 +1432,18 @@ system_variable() {
 		if [ ! -f "$dir_file_js/USER_AGENTS.js" ]; then
 			ln -s $openwrt_script_config/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
+
+		#JS_USER_AGENTS.js
+		if [ ! -f "$openwrt_script_config/JS_USER_AGENTS.js" ]; then
+			cp  $dir_file/git_clone/lxk0301/JS_USER_AGENTS.js $openwrt_script_config/JS_USER_AGENTS.js
+			rm -rf $dir_file_js/JS_USER_AGENTS.js #用于删除旧的链接
+			ln -s $openwrt_script_config/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
+		fi
+
+		#JS_USER_AGENTS.js用于升级以后恢复链接
+		if [ ! -f "$dir_file_js/JS_USER_AGENTS.js" ]; then
+			ln -s $openwrt_script_config/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
+		fi
 	else
 		if [ ! -f "$dir_file/jdCookie.js" ]; then
 			cp  $dir_file/git_clone/lxk0301/jdCookie.js $dir_file/jdCookie.js
@@ -1438,6 +1460,10 @@ system_variable() {
 			ln -s $dir_file/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
 
+		if [ ! -f "$dir_file/JS_USER_AGENTS.js" ]; then
+			cp  $dir_file/git_clone/lxk0301/JS_USER_AGENTS.js $dir_file/JS_USER_AGENTS.js
+			ln -s $dir_file/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
+		fi
 	fi
 
 	#判断node版本是大于10
