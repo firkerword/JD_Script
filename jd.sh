@@ -10,6 +10,11 @@
 
 #url=https://gitee.com/lxk0301/jd_scripts/raw/master
 
+red="\033[31m"
+green="\033[32m"
+yellow="\033[33m"
+white="\033[0m"
+
 #获取当前脚本目录copy脚本之家
 Source="$0"
 while [ -h "$Source"  ]; do
@@ -31,15 +36,18 @@ openwrt_script_config="/usr/share/jd_openwrt_script/script_config"
 
 if [ "$dir_file" == "$install_script/JD_Script" ];then
 	script_dir="$install_script_config"
+	prompt="检测到你使用Install_script插件安装脚本，此插件后面会逐渐放弃，请按github：https://github.com/ITdesk01/jd_openwrt_script 重新编译插件"
 elif [ "$dir_file" == "$openwrt_script/JD_Script" ];then
 	script_dir="$openwrt_script_config"
+	prompt=""
 else
 	script_dir="$dir_file"
+	prompt="检测到你使用本地安装方式安装脚本，此插件后面会逐渐放弃，请按github：https://github.com/ITdesk01/jd_openwrt_script 重新编译插件"
 fi
 
 
 
-version="2.0"
+version="2.1"
 cron_file="/etc/crontabs/root"
 node="/usr/bin/node"
 sys_model=$(cat /tmp/sysinfo/model | awk -v i="+" '{print $1i$2i$3i$4}')
@@ -51,14 +59,11 @@ wrap="%0D%0A%0D%0A" #Server酱换行
 wrap_tab="     "
 line="%0D%0A%0D%0A---%0D%0A%0D%0A"
 current_time=$(date +"%Y-%m-%d")
-by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script"
+by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script/tree/main"
 SCKEY=$(grep "let SCKEY" $script_dir/sendNotify.js  | awk -F "'" '{print $2}')
 
 
-red="\033[31m"
-green="\033[32m"
-yellow="\033[33m"
-white="\033[0m"
+
 
 start_script="脚本开始运行，当前时间：`date "+%Y-%m-%d %H:%M"`"
 stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
@@ -550,12 +555,12 @@ that_day() {
 	echo $git_log >/tmp/git_log_if.log
 	git_log_if=$(grep -Eo "Zhang|ITdesk" /tmp/git_log_if.log | sort -u | wc -l )
 	if [ $git_log_if -ge 1  ];then
-		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
+		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line#### $prompt\n#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
 		echo "  时间       +作者          +操作" >> $dir_file/git_log/${current_time}.log
 		echo "$git_log" >> $dir_file/git_log/${current_time}.log
 		echo "#### 当前脚本是否最新：$Script_status" >>$dir_file/git_log/${current_time}.log
 	else
-		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
+		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$linee#### $prompt\n#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
 		echo "作者泡妹子或者干饭去了$wrap$wrap_tab今天没有任何更新$wrap$wrap_tab不要催佛系玩。。。" >>$dir_file/git_log/${current_time}.log
 		echo "#### 当前脚本是否最新：$Script_status" >>$dir_file/git_log/${current_time}.log
 	fi
@@ -931,6 +936,8 @@ help() {
 	echo -e "$yellow 5.检测脚本是否最新:$white $Script_status "
 	echo ""
 	echo -e "$yellow 6.JD_Script报错你可以反馈到这里:$white$green https://github.com/ITdesk01/JD_Script/issues$white"
+	echo ""
+	echo -e "$prompt"
 	echo ""
 	echo -e "本脚本基于$green x86主机测试$white，一切正常，其他的机器自行测试，满足依赖一般问题不大"
 	echo ----------------------------------------------------
