@@ -240,6 +240,10 @@ COMMENT
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_fanslove.js -O $dir_file_js/jd_fanslove.js #粉丝互动
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_shake.js -O $dir_file_js/jd_shake.js #超级摇一摇
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_shakeBean.js -O $dir_file_js/jd_shakeBean.js #京东会员-摇京豆,每个月运行一次
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/z_marketLottery.js -O $dir_file_js/z_marketLottery.js #京东超市-大转盘
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/z_superDay.js -O $dir_file_js/z_superDay.js #洗护发超级品类日2021-03-08 - 2021-03-15
+	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/z_unionPoster.js -O $dir_file_js/z_unionPoster.js #美的家电节
+
 	rm -rf $dir_file_js/jd_jump-jump.js #母婴-跳一跳
 	rm -rf $dir_file_js/jd_xmf.js #京东小魔方
 
@@ -403,6 +407,9 @@ run_07() {
 	$node $dir_file_js/jd_shake.js #超级摇一摇
 	$node $dir_file_js/jd_jxd.js #京小兑
 	$node $dir_file_js/jd_nzmh.js #女装盲盒 2021-3-8至2021-3-20
+	$node $dir_file_js/z_marketLottery.js #京东超市-大转盘
+	$node $dir_file_js/z_superDay.js #洗护发超级品类日2021-03-08 - 2021-03-15
+	$node $dir_file_js/z_unionPoster.js #美的家电节
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
