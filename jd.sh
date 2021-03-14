@@ -243,7 +243,6 @@ COMMENT
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/z_marketLottery.js -O $dir_file_js/z_marketLottery.js #京东超市-大转盘
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/z_superDay.js -O $dir_file_js/z_superDay.js #洗护发超级品类日2021-03-08 - 2021-03-15
 	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/z_unionPoster.js -O $dir_file_js/z_unionPoster.js #美的家电节
-	wget https://raw.githubusercontent.com/i-chenzhe/qx/main/jd_xmf.js -O $dir_file_js/jd_xmf.js #京东小魔方
 
 
 
@@ -257,7 +256,6 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	z_marketLottery.js 		#京东超市-大转盘
 	z_superDay.js 			#洗护发超级品类日2021-03-08 - 2021-03-15
 	z_unionPoster.js 		#美的家电节
-	jd_xmf.js 			#京东小魔方
 	jdDreamFactoryShareCodes.js	#京喜工厂ShareCodes
 	jdFruitShareCodes.js		#东东农场ShareCodes
 	jdPetShareCodes.js		#东东萌宠ShareCodes
@@ -416,7 +414,6 @@ run_07() {
 	$node $dir_file_js/z_marketLottery.js #京东超市-大转盘
 	$node $dir_file_js/z_superDay.js #洗护发超级品类日2021-03-08 - 2021-03-15
 	$node $dir_file_js/z_unionPoster.js #美的家电节
-	$node $dir_file_js/jd_xmf.js #京东小魔方
 	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	$node $dir_file_js/jd_bean_change.js #京豆变更
@@ -468,7 +465,53 @@ jx() {
 jd_sharecode() {
 	echo -e "$green 查询京东助力码$start_script $white"
 	$node $dir_file_js/jd_get_share_code.js #获取jd所有助力码脚本
-	echo -e "$green 查询完成$start_script $white"
+	echo -e "$green查询完成$start_script $white"
+	echo ""
+	jd_sharecode_if
+}
+jd_sharecode_if() {
+	echo -e "$green============是否生成提交助力码格式，方便提交助力码，1.生成 2.不生成============$white"
+	read -p "请输入：" code_Decide
+	if [ "$code_Decide" == "1" ];then
+		jd_sharecode_generate
+	elif [ "$code_Decide" == "2" ];then
+		echo "不做任何操作"
+	else
+		echo "请不要随便乱输！！！"
+		jd_sharecode_if
+	fi
+
+}
+jd_sharecode_generate() {
+read -p "请输入你的名字和进群时间（例子：zhangsan_20210314）：" you_name
+$node $dir_file_js/jd_get_share_code.js >/tmp/get_share_code
+
+cat > /tmp/code_name <<EOF
+京东农场 fr
+京东萌宠 pet
+种豆得豆 pb
+京喜工厂 df
+京东赚赚 jdzz
+crazyJoy crazyJoy
+签到领现金 jdcash
+闪购盲盒 jdsgmh
+EOF
+
+
+code_number="0"
+echo -e "$green============整理$you_name的Code============$white"
+
+for i in `cat /tmp/code_name | awk '{print $1}'`
+do
+	code_number=$(expr $code_number + 1)
+	o=$(cat /tmp/get_share_code | grep  "$i" | wc -l)
+	p=$(cat /tmp/code_name | awk -v  a="$code_number" -v b="$you_name"  -v c="_" 'NR==a{print b c$2}')
+	echo ""
+	cat /tmp/get_share_code | grep  "$i" | awk -F '】' '{print $2}' | sed ':t;N;s/\n/@/;b t'  | sed "s/$/\"/" | sed "s/^/$i有$o个\Code：$p=\"/"
+	echo ""
+done
+echo -e "$green============整理完成，可以提交了（没加群的忽略）======$white"
+
 }
 
 stop_notice() {
@@ -981,6 +1024,8 @@ additional_settings() {
 	#取消店铺从20个改成50个(没有星推官先默认20吧)
 	sed -i "s/|| 20/|| 200/g" $dir_file_js/jd_unsubscribe.js
 
+	sed -i "s/本脚本开源免费使用 By：https:\/\/gitee.com\/lxk0301\/jd_docker/JD_Script 采用lxk0301开源JS脚本/g" $dir_file_js/sendNotify.js
+
 
 	#东东农场
 	new_fruit1="0763443f7d6f4f5ea5e54adc1c6112ed@e61135aa1963447fa136f293a9d161c1@f9e6a916ad634475b8e77a7704b5c3d8@6632c8135d5c4e2c9ad7f4aa964d4d11@31a2097b10db48429013103077f2f037@5aa64e466c0e43a98cbfbbafcc3ecd02@bf0cbdb0083d443499a571796af20896@9046fbd8945f48cb8e36a17fff9b0983"
@@ -1283,8 +1328,8 @@ COMMENT
 	random="$random_jdglobal"
 	random_array
 	new_jdglobal_set="'$new_jdglobal@$zuoyou_20190516_gb@$jidiyangguang_20190516_gb@$random_set',"
-	sed -i '46,47d' $dir_file_js/jd_global.js
-	sed -i "45a $new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set" $dir_file_js/jd_global.js
+	sed -i '47,48d' $dir_file_js/jd_global.js
+	sed -i "46a $new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set" $dir_file_js/jd_global.js
 
 	#脚本黑名单
 	script_black
