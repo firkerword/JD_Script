@@ -53,13 +53,14 @@ node="/usr/bin/node"
 sys_model=$(cat /tmp/sysinfo/model | awk -v i="+" '{print $1i$2i$3i$4}')
 uname_version=$(uname -a | awk -v i="+" '{print $1i $2i $3}')
 wan_ip=$(ubus call network.interface.wan status | grep \"address\" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+pt_pin_number=$(cat $script_dir/jdCookie.js | grep "pt_pin" |wc -l) #获取当前有多少账号
 
 #Server酱
 wrap="%0D%0A%0D%0A" #Server酱换行
 wrap_tab="     "
 line="%0D%0A%0D%0A---%0D%0A%0D%0A"
 current_time=$(date +"%Y-%m-%d")
-by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script/tree/main"
+by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script/tree/main,核心JS采用lxk0301开源JS脚本"
 SCKEY=$(grep "let SCKEY" $script_dir/sendNotify.js  | awk -F "'" '{print $2}')
 
 
@@ -189,6 +190,7 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_global.js			#环球挑战赛
 	jd_live_redrain.js 		#超级直播间红包雨
 	jd_nzmh.js			#女装盲盒 2021-3-8至2021-3-20
+	jd_xtg.js			#手机尚学季
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
@@ -289,18 +291,26 @@ update_script() {
 
 
 run_0() {
+cat >/tmp/jd_tmp/run_0 <<EOF
+	jd_bean_sign.js #京东多合一签到
+	jd_car.js #京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
+	jx_sign.js #京喜app签到长期
+	jd_redPacket.js #京东全民开红包，没时间要求
+	jd_lotteryMachine.js #京东抽奖机
+	jd_cash.js #签到领现金，每日2毛～5毛长期
+	jd_sgmh.js #闪购盲盒长期活动
+	jd_jdzz.js #京东赚赚长期活动
+	jd_small_home.js #东东小窝
+EOF
 	echo -e "$green run_0$start_script $white"
-	$node $dir_file_js/jd_bean_sign.js #京东多合一签到
-	$node $dir_file_js/jd_car.js #京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
+
+	for i in `cat /tmp/jd_tmp/run_0 | awk '{print $1}'`
+	do
+		$node $dir_file_js/$i
+	done
+
 	ddcs
-	$node $dir_file_js/jx_sign.js #京喜app签到长期
-	$node $dir_file_js/jd_redPacket.js #京东全民开红包，没时间要求
-	$node $dir_file_js/jd_lotteryMachine.js #京东抽奖机
-	$node $dir_file_js/jd_cash.js #签到领现金，每日2毛～5毛长期
-	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
-	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
 	run_08_12_16
-	$node $dir_file_js/jd_small_home.js #东东小窝
 	run_06_18
 	run_10_15_20
 	run_01
@@ -378,64 +388,102 @@ run_03() {
 
 
 run_06_18() {
+cat >/tmp/jd_tmp/run_06_18 <<EOF
+	jd_blueCoin.js  #东东超市兑换，有次数限制，没时间要求
+	jd_shop.js #进店领豆，早点领，一天也可以执行两次以上
+	jd_fruit.js #东东水果，6-9点 11-14点 17-21点可以领水滴
+	jd_joy.js #jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
+	jd_pet.js #东东萌宠，跟手机商城同一时间
+	jd_joy_steal.js #可偷好友积分，零点开始，六点再偷一波狗粮
+	jd_daily_egg.js #天天提鹅蛋，需要有金融app，没有顶多报错问题不大
+	jd_pigPet.js #金融养猪，需要有金融app，没有顶多报错问题不大
+	jd_superMarket.js #东东超市,6点 18点多加两场用于收金币
+EOF
 	echo -e "$green run_06_18$start_script $white"
-	$node $dir_file_js/jd_blueCoin.js  #东东超市兑换，有次数限制，没时间要求
-	$node $dir_file_js/jd_shop.js #进店领豆，早点领，一天也可以执行两次以上
-	$node $dir_file_js/jd_fruit.js #东东水果，6-9点 11-14点 17-21点可以领水滴
-	$node $dir_file_js/jd_joy.js #jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
-	$node $dir_file_js/jd_pet.js #东东萌宠，跟手机商城同一时间
-	$node $dir_file_js/jd_joy_steal.js #可偷好友积分，零点开始，六点再偷一波狗粮
-	$node $dir_file_js/jd_daily_egg.js #天天提鹅蛋，需要有金融app，没有顶多报错问题不大
-	$node $dir_file_js/jd_pigPet.js #金融养猪，需要有金融app，没有顶多报错问题不大
-	$node $dir_file_js/jd_superMarket.js #东东超市,6点 18点多加两场用于收金币
+
+	for i in `cat /tmp/jd_tmp/run_06_18 | awk '{print $1}'`
+	do
+		$node $dir_file_js/$i
+	done
+
 	echo -e "$green run_06_18$stop_script $white"
 }
 
 run_07() {
+cat >/tmp/jd_tmp/run_07 <<EOF
+	jd_bean_sign.js #京东多合一签到
+	jx_sign.js #京喜app签到长期
+	jd_rankingList.js #京东排行榜签到领京豆
+	jd_syj.js #十元街签到,一天一次即可，一周30豆子
+	jd_kd.js #京东快递签到 一天运行一次即可
+	jd_bean_home.js #领京豆额外奖励
+	jd_club_lottery.js #摇京豆，没时间要求
+	jd_jdzz.js #京东赚赚长期活动
+	jd_jxnc.js #京喜农场
+	jd_ms.js #京东秒秒币 一个号大概60
+	jd_sgmh.js #闪购盲盒长期活动
+	jd_entertainment.js #百变大咖秀
+	jd_speed_sign.js #京东极速版签到+赚现金任务
+	jd_fanslove.js #粉丝互动
+	jd_cash.js #签到领现金，每日2毛～5毛长期
+	jd_shake.js #超级摇一摇
+	jd_jxd.js #京小兑
+	jd_nzmh.js #女装盲盒 2021-3-8至2021-3-20
+	z_marketLottery.js #京东超市-大转盘
+	z_superDay.js #洗护发超级品类日2021-03-08 - 2021-03-15
+	z_unionPoster.js #美的家电节
+	jd_xtg.js #手机尚学季
+	jd_unsubscribe.js #取关店铺，没时间要求
+	jd_bean_change.js #京豆变更
+EOF
 	echo -e "$green run_07$start_script $white"
-	$node $dir_file_js/jd_bean_sign.js #京东多合一签到
-	$node $dir_file_js/jx_sign.js #京喜app签到长期
-	$node $dir_file_js/jd_rankingList.js #京东排行榜签到领京豆
-	$node $dir_file_js/jd_syj.js #十元街签到,一天一次即可，一周30豆子
-	$node $dir_file_js/jd_kd.js #京东快递签到 一天运行一次即可
-	$node $dir_file_js/jd_bean_home.js #领京豆额外奖励
-	$node $dir_file_js/jd_club_lottery.js #摇京豆，没时间要求
-	$node $dir_file_js/jd_jdzz.js #京东赚赚长期活动
-	$node $dir_file_js/jd_jxnc.js #京喜农场
-	$node $dir_file_js/jd_ms.js #京东秒秒币 一个号大概60
-	$node $dir_file_js/jd_sgmh.js #闪购盲盒长期活动
-	$node $dir_file_js/jd_entertainment.js #百变大咖秀
-	$node $dir_file_js/jd_speed_sign.js #京东极速版签到+赚现金任务
-	$node $dir_file_js/jd_fanslove.js #粉丝互动
-	$node $dir_file_js/jd_cash.js #签到领现金，每日2毛～5毛长期
-	$node $dir_file_js/jd_shake.js #超级摇一摇
-	$node $dir_file_js/jd_jxd.js #京小兑
-	$node $dir_file_js/jd_nzmh.js #女装盲盒 2021-3-8至2021-3-20
-	$node $dir_file_js/z_marketLottery.js #京东超市-大转盘
-	$node $dir_file_js/z_superDay.js #洗护发超级品类日2021-03-08 - 2021-03-15
-	$node $dir_file_js/z_unionPoster.js #美的家电节
-	$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
+
+	for i in `cat /tmp/jd_tmp/run_07 | awk '{print $1}'`
+	do
+		$node $dir_file_js/$i
+	done
+
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
-	$node $dir_file_js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
 	echo -e "$green run_07$stop_script $white"
 }
 
 run_08_12_16() {
+cat >/tmp/jd_tmp/run_08_12_16 <<EOF
+	jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
+	jd_bookshop.js #口袋书店
+	jd_global_mh.js #京东国际盲盒
+	jd_global.js	#环球挑战赛
+EOF
 	echo -e "$green run_08_12_16$start_script $white"
-	$node $dir_file_js/jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
-	$node $dir_file_js/jd_bookshop.js #口袋书店
-	$node $dir_file_js/jd_global_mh.js #京东国际盲盒
-	$node $dir_file_js/jd_global.js	#环球挑战赛
+
+	for i in `cat /tmp/jd_tmp/run_08_12_16 | awk '{print $1}'`
+	do
+		$node $dir_file_js/$i
+	done
+
 	echo -e "$green run_08_12_16$stop_script $white"
 }
 
 run_10_15_20() {
+cat >/tmp/jd_tmp/run_10_15_20 <<EOF
+	jd_superMarket.js #东东超市,0 10 15 20四场补货加劵
+	jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
+	jd_cfd.js #京东财富岛 有一日三餐任务
+EOF
+
 	echo -e "$green run_10_15_20$start_script $white"
-	$node $dir_file_js/jd_superMarket.js #东东超市,0 10 15 20四场补货加劵
-	$node $dir_file_js/jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
-	$node $dir_file_js/jd_cfd.js #京东财富岛 有一日三餐任务
+
+	for i in `cat /tmp/jd_tmp/run_10_15_20 | awk '{print $1}'`
+	do
+		$node $dir_file_js/$i
+	done
+
 	echo -e "$green run_10_15_20$stop_script $white"
+}
+
+Concurrency_detection() {
+	script_number=$(expr $code_number + 1)
 }
 
 ddcs() {
@@ -1024,7 +1072,8 @@ additional_settings() {
 	#取消店铺从20个改成50个(没有星推官先默认20吧)
 	sed -i "s/|| 20/|| 200/g" $dir_file_js/jd_unsubscribe.js
 
-	sed -i "s/本脚本开源免费使用 By：https:\/\/gitee.com\/lxk0301\/jd_docker/JD_Script 采用lxk0301开源JS脚本/g" $dir_file_js/sendNotify.js
+	sed -i "s/本脚本开源免费使用 By：https:\/\/gitee.com\/lxk0301\/jd_docker/$by/g" $dir_file_js/sendNotify.js
+	sed -i "s/本脚本开源免费使用 By：https:\/\/github.com\/LXK9301\/jd_scripts/$by/g" $dir_file_js/sendNotify.js
 
 
 	#东东农场
@@ -1393,6 +1442,10 @@ system_variable() {
 		mkdir  $dir_file/js
 	fi
 
+	if [[ ! -d "/tmp/jd_tmp" ]]; then
+		mkdir  /tmp/jd_tmp
+	fi
+
 	#判断openssh
 	openssh_if=$(opkg list-installed | grep "openssh-client" | awk '{print $1}')
 	openssh_if1=$(opkg list-installed | grep "openssh-keygen" | awk '{print $1}')
@@ -1539,6 +1592,7 @@ system_variable() {
 			ln -s $dir_file/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
 		fi
 	fi
+
 
 	#判断node版本是大于10
 	node_if=$(opkg list-installed | grep 'node -' | awk -F "." '{print $1}' | awk -F v '{print $2}')
