@@ -37,7 +37,7 @@ else
 fi
 
 ccr_js_file="$dir_file/ccr_js"
-ps_if=$(ps -ww | grep "JD_Script" | grep -v "grep\|jd_crazy_joy_coin.js\|jd.sh run_0 run_07" |wc -l)
+ps_if=$(ps -ww | grep "JD_Script" | grep -v "grep\|jd_crazy_joy_coin.js\|jd.sh run_" |wc -l)
 
 
 version="2.2"
@@ -615,11 +615,21 @@ concurrent_js_update() {
 }
 
 if_ps() {
+	sleep 2
+	echo ""
+	echo -e "$green>>稍等检测一下上一个并发程序是否结束$white"
 	if [ "$ps_if" == "0" ];then
+		sleep 2
 		echo -e "$green上一个并发程序已经结束$white"
 	else
-		echo -e "$green检测到并发程序还在继续，休息一会，等会再回来检测$white"
-		sleep 60
+		sleep 2
+		seconds_left=30
+		while [[ ${seconds_left} -gt 0 ]]; do
+			echo -ne "$green检测到并发程序还在继续，${seconds_left}秒回来检测$white"
+			sleep 1
+			seconds_left=$(($seconds_left - 1))
+			echo -ne "\r"
+		done
 		if_ps
 	fi
 }
