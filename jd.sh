@@ -36,7 +36,11 @@ else
 	prompt="检测到你使用本地安装方式安装脚本，此方式后面会逐渐放弃，请按github：https://github.com/ITdesk01/jd_openwrt_script 重新编译插件"
 fi
 
-version="2.1"
+ccr_js_file="$dir_file/ccr_js"
+ps_if=$(ps -ww | grep "JD_Script" | grep -v "grep\|jd_crazy_joy_coin.js\|jd.sh run_0 run_07" |wc -l)
+
+
+version="2.2"
 cron_file="/etc/crontabs/root"
 node="/usr/bin/node"
 sys_model=$(cat /tmp/sysinfo/model | awk -v i="+" '{print $1i$2i$3i$4}')
@@ -48,7 +52,7 @@ wrap="%0D%0A%0D%0A" #Server酱换行
 wrap_tab="     "
 line="%0D%0A%0D%0A---%0D%0A%0D%0A"
 current_time=$(date +"%Y-%m-%d")
-by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script/tree/main,核心JS采用lxk0301开源JS脚本"
+by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script/tree/main 核心JS采用lxk0301开源JS脚本"
 SCKEY=$(grep "let SCKEY" $script_dir/sendNotify.js  | awk -F "'" '{print $2}')
 
 
@@ -245,8 +249,8 @@ EOF
 	fi
 	chmod 755 $dir_file_js/*
 	additional_settings
+	concurrent_js_update
 	echo -e "$green update$stop_script $white"
-
 	task #更新完全部脚本顺便检查一下计划任务是否有变
 
 }
@@ -262,7 +266,6 @@ update_script() {
 
 run_0() {
 cat >/tmp/jd_tmp/run_0 <<EOF
-	jd_bean_sign.js #京东多合一签到
 	jd_car.js #京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	jx_sign.js #京喜app签到长期
 	jd_redPacket.js #京东全民开红包，没时间要求
@@ -288,32 +291,6 @@ EOF
 	run_045
 	$node $dir_file_js/jd_crazy_joy.js #crazyJoy任务
 	echo -e "$green run_0$stop_script $white"
-}
-
-joy(){
-	#crazy joy挂机领金币/宝箱专用
-	echo -e "$green joy挂机领金币$start_script $white"
-	kill_joy
-	$node $dir_file_js/jd_crazy_joy_coin.js &
-	echo -e "$green joy挂机领金币$stop_script $white"
-}
-
-kill_joy() {
-	echo -e "$green  执行kill_joy$start_script $white"
-	pid=$(ps -ww | grep "jd_crazy_joy_coin.js" | grep -v grep | awk '{print $1}')
-	if [ $(echo $pid |wc -l ) == "1" ];then
-		echo -e "$yellow发现joy后台程序开始清理，请稍等$white"
-		for joy_pid in `echo $pid`
-		do
-			echo "kill $joy_pid"
-			kill -9 $joy_pid
-			sleep 2
-		done
-		echo -e "$green joy后台程序清理完成$white"
-	else
-		echo "$green没有运行的joy后台$white"
-	fi
-	echo -e "$green 执行kill_joy$stop_script $white"
 }
 
 run_020() {
@@ -381,7 +358,6 @@ EOF
 
 run_07() {
 cat >/tmp/jd_tmp/run_07 <<EOF
-	jd_bean_sign.js #京东多合一签到
 	jx_sign.js #京喜app签到长期
 	jd_rankingList.js #京东排行榜签到领京豆
 	jd_syj.js #十元街签到,一天一次即可，一周30豆子
@@ -403,8 +379,6 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	z_superDay.js #洗护发超级品类日2021-03-08 - 2021-03-15
 	z_unionPoster.js #美的家电节
 	jd_xtg.js #手机尚学季
-	jd_unsubscribe.js #取关店铺，没时间要求
-	jd_bean_change.js #京豆变更
 EOF
 	echo -e "$green run_07$start_script $white"
 
@@ -414,7 +388,6 @@ EOF
 	done
 
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
-	checklog #检测log日志是否有错误并推送
 	echo -e "$green run_07$stop_script $white"
 }
 
@@ -450,6 +423,32 @@ EOF
 	done
 
 	echo -e "$green run_10_15_20$stop_script $white"
+}
+
+joy(){
+	#crazy joy挂机领金币/宝箱专用
+	echo -e "$green joy挂机领金币$start_script $white"
+	kill_joy
+	$node $dir_file_js/jd_crazy_joy_coin.js &
+	echo -e "$green joy挂机领金币$stop_script $white"
+}
+
+kill_joy() {
+	echo -e "$green  执行kill_joy$start_script $white"
+	pid=$(ps -ww | grep "jd_crazy_joy_coin.js" | grep -v grep | awk '{print $1}')
+	if [ $(echo $pid |wc -l ) == "1" ];then
+		echo -e "$yellow发现joy后台程序开始清理，请稍等$white"
+		for joy_pid in `echo $pid`
+		do
+			echo "kill $joy_pid"
+			kill -9 $joy_pid
+			sleep 2
+		done
+		echo -e "$green joy后台程序清理完成$white"
+	else
+		echo "$green没有运行的joy后台$white"
+	fi
+	echo -e "$green 执行kill_joy$stop_script $white"
 }
 
 ddcs() {
@@ -534,6 +533,93 @@ stop_notice() {
 	sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_pet.js
 	echo "时间大于两点开始关闭农场和萌宠提示请稍等"
 	echo -e "$green农场和萌宠提示关闭成功$white"
+}
+
+concurrent_js() {
+	if [ $(ls $ccr_js_file/ | wc -l ) -gt "0" ];then
+		for i in `ls $ccr_js_file/`
+		do
+			dir_file_js="$ccr_js_file/$i"
+			$action &
+		done
+	else
+		echo -e "$green>>并发文件夹为空开始下载$white"
+			update
+			concurrent_js_if
+	fi
+}
+
+concurrent_js_if() {
+	if [ "$ccr_if" == "yes" ];then
+		echo -e "$green>>检测到开启了账号并发模式$white"
+		case "$action1" in
+		run_0)
+			action="$action1"
+			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+			concurrent_js
+			if [ ! $action2 ];then
+				echo ""
+			else
+				case "$action2" in
+				run_07)
+					action="$action2"
+					if_ps
+					$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+					concurrent_js
+					if_ps
+					$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
+					$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
+					checklog #检测log日志是否有错误并推送
+				;;
+				esac
+			fi
+		;;
+		run_07)
+			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+			concurrent_js
+			if_ps
+			$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
+			$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
+			checklog #检测log日志是否有错误并推送
+		;;
+		*)
+			concurrent_js
+		;;
+		esac
+	else
+		$action1
+	fi
+}
+
+concurrent_js_update() {
+	rm -rf $ccr_js_file/*
+	js_amount=$(cat $script_dir/jdCookie.js | grep "pt_pin" | grep -v "//'" | grep -v "// '" |wc -l)
+
+	while [[ ${js_amount} -gt 0 ]]; do
+		mkdir $ccr_js_file/js_$js_amount
+		cp $script_dir/jdCookie.js $ccr_js_file/js_$js_amount/jdCookie.js
+
+		js_cookie=$(cat $openwrt_script_config/jdCookie.js |  grep "pt_pin" | grep -v "//'" | grep -v "// '" | awk -v a="$js_amount" 'NR==a{ print $0}') #获取pt
+		sed -i '/pt_pin/d' $ccr_js_file/js_$js_amount/jdCookie.js >/dev/null 2>&1
+		sed -i "6a $js_cookie" $ccr_js_file/js_$js_amount/jdCookie.js
+
+		for i in `ls $dir_file_js | grep -v "jdCookie.js"`
+		do
+			cp $dir_file_js/$i $ccr_js_file/js_$js_amount/$i
+		done
+
+		js_amount=$(($js_amount - 1))
+	done
+}
+
+if_ps() {
+	if [ "$ps_if" == "0" ];then
+		echo -e "$green上一个并发程序已经结束$white"
+	else
+		echo -e "$green检测到并发程序还在继续，休息一会，等会再回来检测$white"
+		sleep 60
+		if_ps
+	fi
 }
 
 checklog() {
@@ -973,9 +1059,6 @@ help() {
 	echo ""
 	echo -e "$green  sh \$jd stop_script $white  			#删除定时任务停用所用脚本"
 	echo ""
-	echo " #京东试用默认不开启有需要将这个定时任务添加到计划任务里面去"
-	echo " 0 10 * * * $node $dir_file/js/jd_try.js >/tmp/jd_try.log "
-	echo ""
 	echo -e " 如果不喜欢这样，你也可以直接$green cd \$jd_file/js$white,然后用$green node 脚本名字.js$white "
 	echo ""
 	echo -e "$yellow 3.检测定时任务:$white $cron_help"
@@ -991,9 +1074,10 @@ help() {
 	echo ""
 	echo -e "$yellow 5.检测脚本是否最新:$white $Script_status "
 	echo ""
-	echo -e "$yellow 6.JD_Script报错你可以反馈到这里:$white$green https://github.com/ITdesk01/JD_Script/issues$white"
+	echo -e "$yellow 6.个性化配置：$white $jd_config_version"
 	echo ""
-	echo -e "$prompt"
+	echo -e "$yellow 7.JD_Script报错你可以反馈到这里:$white$green https://github.com/ITdesk01/JD_Script/issues$white"
+	echo ""
 	echo ""
 	echo -e "本脚本基于$green x86主机测试$white，一切正常，其他的机器自行测试，满足依赖一般问题不大"
 	echo ----------------------------------------------------
@@ -1011,14 +1095,14 @@ additional_settings() {
 		sed -i "s/$.isNode() ? 20 : 5/0/g" $dir_file_js/$i
 	done
 
-	#京小超默认兑换20豆子(JS已经默认兑换20了)
-	#sed -i "s/|| 0/|| 20/g" $dir_file_js/jd_blueCoin.js
+	#京小超兑换豆子
+	sed -i "s/|| 20/|| $jd_blueCoin/g" $dir_file_js/jd_blueCoin.js
 
 	#取消店铺从20个改成50个(没有星推官先默认20吧)
-	sed -i "s/|| 20/|| 200/g" $dir_file_js/jd_unsubscribe.js
+	sed -i "s/|| 20/|| $jd_unsubscribe/g" $dir_file_js/jd_unsubscribe.js
 
-	sed -i "s/本脚本开源免费使用 By：https:\/\/gitee.com\/lxk0301\/jd_docker/#### 脚本仓库地址:https:\/\/github.com\/ITdesk01\/JD_Script\/tree\/main,核心JS采用lxk0301开源JS脚本/g" $dir_file_js/sendNotify.js
-	sed -i "s/本脚本开源免费使用 By：https:\/\/github.com\/LXK9301\/jd_scripts/#### 脚本仓库地址:https:\/\/github.com\/ITdesk01\/JD_Script\/tree\/main,核心JS采用lxk0301开源JS脚本/g" $dir_file_js/sendNotify.js
+	sed -i "s/本脚本开源免费使用 By：https:\/\/gitee.com\/lxk0301\/jd_docker/#### 脚本仓库地址:https:\/\/github.com\/ITdesk01\/JD_Script\/tree\/main 核心JS采用lxk0301开源JS脚本/g" $dir_file_js/sendNotify.js
+	sed -i "s/本脚本开源免费使用 By：https:\/\/github.com\/LXK9301\/jd_scripts/#### 脚本仓库地址:https:\/\/github.com\/ITdesk01\/JD_Script\/tree\/main 核心JS采用lxk0301开源JS脚本/g" $dir_file_js/sendNotify.js
 
 
 	#东东农场
@@ -1063,7 +1147,8 @@ additional_settings() {
 	sed -i '10,11d' $dir_file_js/jdFruitShareCodes.js
 	sed -i "31a $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jd_fruit.js
 	sed -i "9a $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jdFruitShareCodes.js
-	#sed -i "s/dFruitBeanCard = false/dFruitBeanCard = true/g" $dir_file_js/jd_fruit.js #年底不浇水开始换豆
+
+	sed -i "s/dFruitBeanCard = false/dFruitBeanCard = $jd_fruit/g" $dir_file_js/jd_fruit.js #农场不浇水开始换豆
 
 	#萌宠
 	new_pet1="MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzcwMDAwMDAwMzk1OTQ4Njk==@MTE1NDQ5OTUwMDAwMDAwMzk3NDgyMDE==@MTAxODEyOTI4MDAwMDAwMDQwMTIzMzcx@MTEzMzI0OTE0NTAwMDAwMDA0MzI3NzE3MQ==@MTEzMzI0OTE0NTAwMDAwMDAzOTk5ODU1MQ==@MTAxODc2NTEzMzAwMDAwMDAxOTkzMzM1MQ=="
@@ -1110,13 +1195,13 @@ additional_settings() {
 	sed -i "9a $new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set" $dir_file_js/jdPetShareCodes.js
 
 	#宠汪汪积分兑换奖品改成兑换500豆子，个别人会兑换错误(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
-	sed -i "s/let joyRewardName = 20/let joyRewardName = 500/g" $dir_file_js/jd_joy_reward.js
+	sed -i "s/let joyRewardName = 20/let joyRewardName = $jd_joy_reward/g" $dir_file_js/jd_joy_reward.js
 
 	#宠汪汪喂食改成80
-	sed -i "s/|| 10/|| 80/g" $dir_file_js/jd_joy_feedPets.js
+	sed -i "s/|| 10/|| $jd_joy_feedPets/g" $dir_file_js/jd_joy_feedPets.js
 
 	#宠汪汪不给好友喂食
-	sed -i "s/let jdJoyHelpFeed = true/let jdJoyHelpFeed = false/g" $dir_file_js/jd_joy_steal.js
+	sed -i "s/let jdJoyHelpFeed = true/let jdJoyHelpFeed = $jd_joy_steal/g" $dir_file_js/jd_joy_steal.js
 
 
 	#种豆
@@ -1193,34 +1278,6 @@ additional_settings() {
 	sed -i "9a $new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set" $dir_file_js/jdDreamFactoryShareCodes.js
 
 :<<'COMMENT'
-	#东东工厂
-	old_jdfactory="\`P04z54XCjVWnYaS5u2ak7ZCdan1Bdd2GGiWvC6_uERj\`, 'P04z54XCjVWnYaS5m9cZ2ariXVJwHf0bgkG7Uo'"
-	#new_jdfactory="'T024anXulbWUI_NR9ZpeTHmEoPlACjVWnYaS5kRrbA@P04z54XCjVWnYaS5m9cZ2f83X0Zl_Dd8CqABxo', 'P04z54XCjVWnYaS5m9cZ2Wui31Oxg3QPwI97G0', 'P04z54XCjVWnYaS5m9cZz-inDgt5gUTV9zVCg', 'P04z54XCjVWnYaS5m9cZ2T8jntInKkhvhlkIu4', 'P04z54XCjVWnYaS5m9cZ2eq2S1OxAqmz-x3vbg',"
-	new_jdfactory1="'T024anXulbWUI_NR9ZpeTHmEoPlACjVWnYaS5kRrbA@P04z54XCjVWnYaS5m9cZ2f83X0Zl_Dd8CqABxo@P04z54XCjVWnYaS5m9cZ2Wui31Oxg3QPwI97G0@P04z54XCjVWnYaS5m9cZz-inDgt5gUTV9zVCg@T0205KkcJEZAjD2vYGGG4Ip0CjVWnYaS5kRrbA@P04z54XCjVWnYaS5m9cZ2T8jntInKkhvhlkIu4@P04z54XCjVWnYaS5m9cZ2eq2S1OxAqmz-x3vbg@P04z54XCjVWnYaS5mZQUSm92H5L@P04z54XCjVWnYaS5mlKD2U@P04z54XCjVWnYaS5n1LTCj93Q@P04z54XCjVWnYaS5m9cZ2er3ylCk-4HZadagsg@T023uvp2RBcY_VHKKBn3k_MMdNwCjVWnYaS5kRrbA',"
-	sed -i "s/'',/$new_jdfactory1 $new_jdfactory1 $new_jdfactory1/g" $dir_file_js/jdFactoryShareCodes.js
-	sed -i "s/$old_jdfactory/$new_jdfactory1/g" $dir_file_js/jd_jdfactory.js
-
-	if [[ -f "$dir_file/1.txt" ]]; then
-		sed -i "s/let wantProduct = \`\`/let wantProduct = \`灵蛇机械键盘\`/g" $dir_file_js/jd_jdfactory.js
-	elif [[ -f "$dir_file/2.txt" ]]; then
-		sed -i "s/let wantProduct = \`\`/let wantProduct = \`电视\`/g" $dir_file_js/jd_jdfactory.js
-	else
-		echo ""
-	fi
-
-
-	#京喜农场
-	old_jxnc="'22bd6fbbabbaa770a45ab2607e7a1e8a@197c6094e965fdf3d33621b47719e0b1'"
-	new_jxnc="6210b7cb41e01b14d92b2d91eed78384@9455922013cf0f704ee6fc9416ec05df@df0165aa52755c3a5337bc789552d9a8@019cffd91086ab563e91abf469634395@48f4c24ea3d01be32359cc61ba43ae7e@87c34293058a8644f73be7731a91a293@16b73e9a958c3f4636a51a17fcba28df@6cdc3a49111b7b57153a633eb6c1b1e3"
-	zuoyou_20190516_jxnc="8476543ed84f16c6446d48bbe8f769d4@ed92326cbc2013dfc769c5e813599b7c@74e57e9c14b59e8f11baa46d83f5f145@a782af3074ea9a1d0c72be5f04e324d4@e7ccd6363a8d84109b6ea5b6d2d7d355@48117805cf3c3f67371467c7b598964b@203c9e8921ec34ad159c301df8a3874c@c8a49d0b56a702a252d5ec3feea1c31e@f162cc02054a5be81ac30f9557bfd97b"
-	jidiyangguang_20190516_jxnc="ba177c5a5cbfdf43ea517cd21c0c6250@01a09a00572befec4edb60e9d39f7ba1"
-	chiyu_jxnc="6a1d2f560c746e4175d9c5bfc1f30ca1"
-
-	new_jxnc_set="'$new_jxnc@$zuoyou_20190516_jxnc@$jidiyangguang_20190516_jxnc@$chiyu_jxnc',"
-	sed -i "s/$old_jxnc/'6210b7cb41e01b14d92b2d91eed78384@9455922013cf0f704ee6fc9416ec05df@df0165aa52755c3a5337bc789552d9a8@019cffd91086ab563e91abf469634395@48f4c24ea3d01be32359cc61ba43ae7e@87c34293058a8644f73be7731a91a293@16b73e9a958c3f4636a51a17fcba28df@6cdc3a49111b7b57153a633eb6c1b1e3'/g" $dir_file_js/jd_jxnc.js
-	sed -i "s/'',/$new_jxnc_set/g" $dir_file_js/jdJxncShareCodes.js
-	sed -i "12a $new_jxnc_set\n$new_jxnc_set\n$new_jxnc_set\n$new_jxnc_set" $dir_file_js/jdJxncShareCodes.js
-
 	#工业爱消除
 	old_jdgyec="'840266@2583822@2585219@2586018@1556311@2583822@2585256@2586023@2728968',"
 	new_jdgyec="'1900455@2771801@2771913@743359@2753077@2759122@2759259@2337978',"
@@ -1266,7 +1323,7 @@ COMMENT
 	sed -i '36,37d' $dir_file_js/jd_crazy_joy.js
 	sed -i "35a $new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set" $dir_file_js/jd_crazy_joy.js
 	sed -i "s/$.isNode() ? 10 : 5/0/g" $dir_file_js/jd_crazy_joy.js
-	sed -i "s/applyJdBean = 0/applyJdBean = 2000/g" $dir_file_js/jd_crazy_joy.js #默认兑换2000豆子
+	sed -i "s/applyJdBean = 0/applyJdBean = $jd_crazy_joy/g" $dir_file_js/jd_crazy_joy.js #JOY兑换2000豆子
 
 
 	#口袋书店
@@ -1328,6 +1385,17 @@ COMMENT
 	#脚本黑名单
 	script_black
 
+	#京东试用
+	if [ "$jd_try" == "yes" ];then
+		jd_try_if=$(grep "jd_try.js" $cron_file | wc -l)
+		if [ "$jd_try_if" == "0" ];then
+			echo "0 10 * * * $node $dir_file/js/jd_try.js >/tmp/jd_try.log" >>$cron_file
+		else
+			echo "京东试用计划任务已经导入"
+		fi
+	else
+		echo "京东试用计划任务不导入"
+	fi
 }
 
 random_array() {
@@ -1386,6 +1454,10 @@ system_variable() {
 
 	if [[ ! -d "/tmp/jd_tmp" ]]; then
 		mkdir  /tmp/jd_tmp
+	fi
+
+	if [[ ! -d "$ccr_js_file" ]]; then
+		mkdir  $ccr_js_file
 	fi
 
 	#判断openssh
@@ -1486,6 +1558,38 @@ system_variable() {
 		fi
 	fi
 
+	jd_openwrt_config_version="1.2"
+	if [ "$dir_file" == "$openwrt_script/JD_Script" ];then
+		jd_openwrt_config="$openwrt_script_config/jd_openwrt_script_config.txt"
+		if [ ! -f "$jd_openwrt_config" ]; then
+				jd_openwrt_config_description
+		fi
+		#jd_openwrt_script_config用于升级以后恢复链接
+		if [ ! -f "$dir_file/config/jd_openwrt_script_config.txt" ]; then
+				ln -s $jd_openwrt_config $dir_file/config/jd_openwrt_script_config.txt
+		fi
+	else
+		jd_openwrt_config="$dir_file/config/jd_openwrt_script_config.txt"
+		if [ ! -f "$jd_openwrt_config" ]; then
+				jd_openwrt_config_description
+		fi
+	fi
+
+	if [ `grep "jd_openwrt_config $jd_openwrt_config_version" $jd_openwrt_config |wc -l` == "1"  ];then
+		jd_config_version="$green jd_config最新 $yellow$jd_openwrt_config$white"
+	else
+		jd_config_version="$red jd_config与新版不一致，请手动更新，更新办法，删除$green rm -rf $jd_openwrt_config$white然后更新一下脚本,再进去重新设置一下"
+	fi
+
+	ccr_if=$(grep "concurrent" $jd_openwrt_config | awk -F "'" '{print $2}')
+	jd_try=$(grep "jd_try" $jd_openwrt_config | awk -F "'" '{print $2}')
+	jd_fruit=$(grep "jd_fruit" $jd_openwrt_config | awk -F "'" '{print $2}')
+	jd_blueCoin=$(grep "jd_blueCoin" $jd_openwrt_config | awk -F "'" '{print $2}')
+	jd_joy_reward=$(grep "jd_joy_reward" $jd_openwrt_config | awk -F "'" '{print $2}')
+	jd_joy_feedPets=$(grep "jd_joy_feedPets" $jd_openwrt_config | awk -F "'" '{print $2}')
+	jd_joy_steal=$(grep "jd_joy_steal" $jd_openwrt_config | awk -F "'" '{print $2}')
+	jd_crazy_joy=$(grep "jd_crazy_joy" $jd_openwrt_config | awk -F "'" '{print $2}')
+	jd_unsubscribe=$(grep "jd_unsubscribe" $jd_openwrt_config | awk -F "'" '{print $2}')
 
 	#判断node版本是大于10
 	node_if=$(opkg list-installed | grep 'node -' | awk -F "." '{print $1}' | awk -F v '{print $2}')
@@ -1499,17 +1603,6 @@ system_variable() {
 		echo "node-npm 版本小于10，请升级以后再使用本脚本"
 		exit 0
 	fi
-:<<'COMMENT'
-	#判断JS文件夹是否为空
-	if [ ! -f "$dir_file_js/Detect.txt" ]; then
-		echo -e "$green js文件夹缺少一个Detect.txt，现在开始更新请稍等很快$white"
-		sleep 3
-		echo "我是作者写来应付检查的文件，不要理我，我很忙，老板加饭！！！再来半只白切鸡，不吃饱那里有力气应付检查。。。。。" > $dir_file_js/Detect.txt
-		update_script
-		update
-		system_variable
-	fi
-COMMENT
 
 	#添加系统变量
 	jd_script_path=$(cat /etc/profile | grep -o jd.sh | wc -l)
@@ -1527,6 +1620,52 @@ COMMENT
 	script_black
 }
 
+jd_openwrt_config_description() {
+cat > $jd_openwrt_config <<EOF
+*****************jd_openwrt_config $jd_openwrt_config_version**************
+
+这里主要定义一些脚本的个性化操作，如果你不需要微调，那么保持默认不理他就行了
+
+这里的参数如果你看不懂或者想知道还有没有其他参数，你可以去$dir_file_js这里找相应的js脚本看说明
+
+修改完参数如何生效：sh \$jd update && sh \$jd
+
+*******************************************************
+#是否启用账号并发功能（多账号考虑打开，黑了不管） yes开启 默认no
+concurrent='no'
+
+#京东试用 yes开启  默认no
+jd_try='no'
+
+#农场不浇水换豆 false关闭 ture打开
+jd_fruit='false'
+
+
+#京小超默认兑换20豆子(可以改成你要的1000豆子或者其他)
+jd_blueCoin='20'
+
+
+#宠汪汪积分兑换500豆子，(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
+jd_joy_reward='500'
+
+
+#宠汪汪喂食(更多参数自己去看js脚本描述)
+jd_joy_feedPets='80'
+
+
+#宠汪汪不给好友喂食 false不喂食 ture喂食
+jd_joy_steal='false'
+
+
+#JOY兑换豆子(满2000开始兑换)
+jd_crazy_joy='2000'
+
+
+#取消店铺200个(觉得太多你可以自己调整)
+jd_unsubscribe='200'
+EOF
+}
+
 
 system_variable
 action1="$1"
@@ -1535,7 +1674,10 @@ if [[ -z $action1 ]]; then
 	help
 else
 	case "$action1" in
-		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install)
+		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
+		concurrent_js_if
+		;;
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install)
 		$action1
 		;;
 		*)
@@ -1547,7 +1689,10 @@ else
 		echo ""
 	else
 		case "$action2" in
-		system_variable|update|update_script|run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|task|run_08_12_16|jx|run_07|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|run_030|run_020|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install)
+		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
+		concurrent_js_if
+		;;
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install)
 		$action2
 		;;
 		*)
