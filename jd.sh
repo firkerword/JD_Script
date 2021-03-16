@@ -582,8 +582,10 @@ concurrent_js_if() {
 			$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 			checklog #检测log日志是否有错误并推送
 		;;
-		*)
+		run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_030|run_020)
+			action="$action1"
 			concurrent_js
+			if_ps
 		;;
 		esac
 	else
