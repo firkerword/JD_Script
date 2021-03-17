@@ -37,8 +37,6 @@ else
 fi
 
 ccr_js_file="$dir_file/ccr_js"
-ps_if=$(ps -ww | grep "JD_Script" | grep -v "grep\|jd_crazy_joy_coin.js\|jd.sh run_" |wc -l)
-
 
 version="2.2"
 cron_file="/etc/crontabs/root"
@@ -63,7 +61,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.88"
+	cron_version="2.89"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -90,7 +88,6 @@ cat >>/etc/crontabs/root <<EOF
 5 7 * * * $dir_file/jd.sh run_07 >/tmp/jd_run_07.log 2>&1 #不需要在零点运行的脚本#100#
 */30 1-22 * * * $dir_file/jd.sh joy >/tmp/jd_joy.log 2>&1 #1-22,每半个小时kill joy并运行一次joy挂机#100#
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
-0 2-21/1 * * 0,2-6 $dir_file/jd.sh stop_notice >/tmp/jd_stop_notice.log 2>&1 #两点以后关闭农场推送，周一不关#100#
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 5 11 3 */1 *  $node $dir_file_js/jd_shakeBean.js  >/tmp/jd_shakeBean.log #京东会员-摇京豆,每个月运行一次#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播
@@ -203,10 +200,10 @@ cat >$dir_file/config/i-chenzhe_script.txt <<EOF
 	jd_shake.js 			#超级摇一摇
 	jd_shakeBean.js 		#京东会员-摇京豆,每个月运行一次
 	z_marketLottery.js 		#京东超市-大转盘
-	z_superDay.js 			#洗护发超级品类日2021-03-08 - 2021-03-15
 	z_unionPoster.js 		#美的家电节
-	z_mother_jump.jsv		#新一期母婴跳一跳开始咯
+	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_lenovo.js			#联想集卡活动
+	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
 EOF
 
 for script_name in `cat $dir_file/config/i-chenzhe_script.txt | awk '{print $1}'`
@@ -214,7 +211,7 @@ do
 	wget $url2/$script_name -O $dir_file_js/$script_name
 done
 
-	rm -rf $dir_file/config/shylocks_script.txt
+	rm -rf $dir_file_js/z_superDay.js 			#洗护发超级品类日2021-03-08 - 2021-03-15
 	cat $dir_file/config/lxk0301_script.txt > $dir_file/config/collect_script.txt
 	cat $dir_file/config/i-chenzhe_script.txt >> $dir_file/config/collect_script.txt
 
@@ -378,9 +375,11 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_jxd.js #京小兑
 	jd_nzmh.js #女装盲盒 2021-3-8至2021-3-20
 	z_marketLottery.js #京东超市-大转盘
-	z_superDay.js #洗护发超级品类日2021-03-08 - 2021-03-15
 	z_unionPoster.js #美的家电节
 	jd_xtg.js #手机尚学季
+	z_mother_jump.js		#新一期母婴跳一跳开始咯
+	z_lenovo.js			#联想集卡活动
+	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
 EOF
 	echo -e "$green run_07$start_script $white"
 
@@ -454,7 +453,7 @@ kill_joy() {
 }
 
 ddcs() {
-	ddcs_left=3
+	ddcs_left=1
 	while [[ ${ddcs_left} -gt 0 ]]; do
 		echo -e "$green正在循环运行脚本，大概$ddcs_left次结束这个循环，然后跑下一个，不需要理这个,这个是正常的$white"
 		$node $dir_file_js/jd_blueCoin.js  	#东东超市兑换，有次数限制，没时间要求
@@ -529,14 +528,6 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 
 }
 
-stop_notice() {
-	#农场和萌宠提示太多次了，所用每天提示一次即可
-	sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_fruit.js
-	sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_pet.js
-	echo "时间大于两点开始关闭农场和萌宠提示请稍等"
-	echo -e "$green农场和萌宠提示关闭成功$white"
-}
-
 concurrent_js() {
 	if [ $(ls $ccr_js_file/ | wc -l ) -gt "0" ];then
 		for i in `ls $ccr_js_file/`
@@ -560,18 +551,20 @@ concurrent_js_if() {
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
 			concurrent_js
 			if [ ! $action2 ];then
-				echo ""
+				if_ps
+				concurrent_js_clean
 			else
 				case "$action2" in
 				run_07)
-					action="$action2"
 					if_ps
+					action="$action2"
 					$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
 					concurrent_js
 					if_ps
 					$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
 					$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 					checklog #检测log日志是否有错误并推送
+					concurrent_js_clean
 				;;
 				esac
 			fi
@@ -583,11 +576,13 @@ concurrent_js_if() {
 			$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
 			$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 			checklog #检测log日志是否有错误并推送
+			concurrent_js_clean
 		;;
 		run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_030|run_020)
 			action="$action1"
 			concurrent_js
 			if_ps
+			concurrent_js_clean
 		;;
 		esac
 	else
@@ -644,25 +639,48 @@ concurrent_js_update() {
 	done
 }
 
+concurrent_js_clean(){
+	echo -e "$yellow收尾一下$white"
+	for i in `ps -ww | grep "jd.sh run_" | grep -v grep | awk '{print $1}'`
+	do
+		echo "开始kill $i"
+		kill -9 $i
+	done
+}
+
 if_ps() {
-	sleep 2
+	ps_if=$(ps -ww | grep "JD_Script" | grep -v "grep\|jd_crazy_joy_coin.js\|jd.sh run_" |wc -l)
+	echo -e "$green>>开始第一次检测上一个并发程序是否结束(10秒)$white"
+	sleep 10
 	echo ""
-	echo -e "$green>>稍等检测一下上一个并发程序是否结束$white"
 	if [ "$ps_if" == "0" ];then
-		sleep 2
-		echo -e "$green上一个并发程序已经结束$white"
+		echo -e "$green>>开始第二次检测上一个并发程序是否结束(20秒)$white"
+		sleep 20
+		if [ "$ps_if" == "0" ];then
+			echo -e "$green>>开始第三次检测上一个并发程序是否结束(30秒)$white"
+			sleep 30
+			if [ "$ps_if" == "0" ];then
+				echo -e "$yellow并发程序已经结束$white"
+			else
+				sleep 30
+				echo -ne "$green第三次检测到并发程序还在继续，30秒以后再检测$white"
+				if_ps
+			fi
+			
+		else
+			sleep 20
+			echo -ne "$green第二次检测到并发程序还在继续，20秒以后再检测$white"
+			if_ps
+		fi
 	else
-		sleep 2
-		seconds_left=30
-		while [[ ${seconds_left} -gt 0 ]]; do
-			echo -ne "$green检测到并发程序还在继续，${seconds_left}秒回来检测$white"
-			sleep 1
-			seconds_left=$(($seconds_left - 1))
-			echo -ne "\r"
-		done
+		sleep 10
+		echo -ne "$green第一次检测到并发程序还在继续，10秒以后再检测$white"
 		if_ps
 	fi
+	#for i in `ps -ww | grep "jd.sh run_" | grep -v grep | awk '{print $1}'`;do kill -9 $i ;done
+	#i=1 && while [ 100 -ge 0 ];do ps -ww |grep JD_Script | grep -v 'grep\|jd_crazy_joy_coin.js' && sleep 3 && clear && echo "检测者工具第$i次循环输出" && echo 负载情况：`uptime` && echo "" &&echo "进程状态：" && i=`expr $i + 1`;done
 }
+
 
 checklog() {
 	log1="checklog_jd.log" #用来查看tmp有多少jd log文件
@@ -1087,8 +1105,6 @@ help() {
 	echo ""
 	echo -e "$green  sh \$jd jd_sharecode $white 			#查询京东所有助力码"
 	echo ""
-	echo -e "$green  sh \$jd stop_notice $white  			#关掉萌宠 农场  多次提醒"
-	echo ""
 	echo -e "$green  sh \$jd joy $white				#运行疯狂的JOY(两个号需要1G以上，sh \$jd kill_joy 杀掉进程，彻底关闭需要先杀进程再禁用定时任务的代码)"
 	echo ""
 	echo -e "$green  sh \$jd checklog $white  			#检测log日志是否有错误并推送"
@@ -1438,6 +1454,22 @@ COMMENT
 	else
 		echo "京东试用计划任务不导入"
 	fi
+
+	#农场和东东萌宠关闭通知
+	if [ `date +%A` == "Monday" ];then
+		echo -e "$green今天周一不关闭农场萌宠通知$white"
+	else
+		case `date +%H` in
+		0|1|2|3)
+			echo -e "$green暂时不关闭农场和萌宠通知"
+		;;
+		*)
+			sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_fruit.js
+			sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_pet.js
+			echo -e "$green时间大于凌晨三点开始关闭农场和萌宠通知$white"
+		;;
+		esac
+	fi
 }
 
 random_array() {
@@ -1719,7 +1751,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install)
 		$action1
 		;;
 		*)
@@ -1734,7 +1766,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|stop_notice|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install)
 		$action2
 		;;
 		*)
