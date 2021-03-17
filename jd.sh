@@ -205,6 +205,8 @@ cat >$dir_file/config/i-chenzhe_script.txt <<EOF
 	z_marketLottery.js 		#京东超市-大转盘
 	z_superDay.js 			#洗护发超级品类日2021-03-08 - 2021-03-15
 	z_unionPoster.js 		#美的家电节
+	z_mother_jump.jsv		#新一期母婴跳一跳开始咯
+	z_lenovo.js			#联想集卡活动
 EOF
 
 for script_name in `cat $dir_file/config/i-chenzhe_script.txt | awk '{print $1}'`
@@ -589,7 +591,35 @@ concurrent_js_if() {
 		;;
 		esac
 	else
-		$action1
+		case "$action1" in
+		run_0)
+			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+			$action1
+			if [ ! $action2 ];then
+				echo ""
+			else
+				case "$action2" in
+				run_07)
+					$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+					$action2
+					$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
+					$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
+					checklog #检测log日志是否有错误并推送
+				;;
+				esac
+			fi
+		;;
+		run_07)
+			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+			$action1
+			$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
+			$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
+			checklog #检测log日志是否有错误并推送
+		;;
+		run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_030|run_020)
+			$action1
+		;;
+		esac
 	fi
 }
 
