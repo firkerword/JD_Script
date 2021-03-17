@@ -40,7 +40,7 @@ N1（群友极地阳光测试）
 
 2.3.2 扫码将获取到的cookie复制填写到jdCookie.js脚本
 
-2.4 用winscp工具连接openwrt，进入usr/share/JD_Script目录找到***jdCookie.js***和***sendNotify.js***文件
+2.4 用winscp工具连接openwrt，进入/usr/share/jd_openwrt_script/script_config/目录找到***jdCookie.js***和***sendNotify.js***文件
 
 打开jdCookie.js文件进行编辑，将抓取到的cookie填写进文本第7行开头的单引号内，并保存，注意不要漏掉或删除字符
 
