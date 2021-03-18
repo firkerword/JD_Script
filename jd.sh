@@ -549,18 +549,16 @@ concurrent_js_if() {
 		run_0)
 			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
-			concurrent_js
+			concurrent_js && if_ps
 			if [ ! $action2 ];then
 				if_ps
 				concurrent_js_clean
 			else
 				case "$action2" in
 				run_07)
-					if_ps
 					action="$action2"
 					$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
-					concurrent_js
-					if_ps
+					concurrent_js && if_ps
 					$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
 					$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 					checklog #检测log日志是否有错误并推送
@@ -571,11 +569,9 @@ concurrent_js_if() {
 			fi
 		;;
 		run_07)
-			if_ps
-			action="$action2"
+			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
-			concurrent_js
-			if_ps
+			concurrent_js && if_ps
 			$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
 			$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 			checklog #检测log日志是否有错误并推送
@@ -624,17 +620,22 @@ concurrent_js_if() {
 
 concurrent_js_update() {
 	rm -rf $ccr_js_file/*
-	js_amount=$(cat $script_dir/jdCookie.js | grep "pt_pin" | grep -v "//'" | grep -v "// '" |wc -l)
+	js_amount=$(cat $script_dir/jdCookie.js | grep "pt_pin" | grep -v "//'" | grep -v "pt_pin=(\|pt_key=xxx;pt_pin=xxx" | grep -v "// '" |wc -l)
 
 	while [[ ${js_amount} -gt 0 ]]; do
 		mkdir $ccr_js_file/js_$js_amount
 		cp $script_dir/jdCookie.js $ccr_js_file/js_$js_amount/jdCookie.js
 
-		js_cookie=$(cat $openwrt_script_config/jdCookie.js |  grep "pt_pin" | grep -v "//'" | grep -v "// '" | awk -v a="$js_amount" 'NR==a{ print $0}') #获取pt
-		sed -i '/pt_pin/d' $ccr_js_file/js_$js_amount/jdCookie.js >/dev/null 2>&1
-		sed -i "6a $js_cookie" $ccr_js_file/js_$js_amount/jdCookie.js
+		if [ ! -L "$ccr_js_file/js_$js_amount/sendNotify.js" ]; then
+			rm -rf $$ccr_js_file/js_$js_amount/sendNotify.js
+			ln -s $script_dir/sendNotify.js $ccr_js_file/js_$js_amount/sendNotify.js
+		fi
 
-		for i in `ls $dir_file_js | grep -v "jdCookie.js"`
+		js_cookie=$(cat $openwrt_script_config/jdCookie.js |  grep "pt_pin" | grep -v "//'" | grep -v "// '" | grep -v "pt_pin=(\|pt_key=xxx;pt_pin=xxx" | awk -v a="$js_amount" 'NR==a{ print $0}') #获取pt
+		sed -i '/pt_pin/d' $ccr_js_file/js_$js_amount/jdCookie.js >/dev/null 2>&1
+		sed -i "5a $js_cookie" $ccr_js_file/js_$js_amount/jdCookie.js
+
+		for i in `ls $dir_file_js | grep -v 'jdCookie.js\|sendNotify.js'`
 		do
 			cp $dir_file_js/$i $ccr_js_file/js_$js_amount/$i
 		done
@@ -645,7 +646,7 @@ concurrent_js_update() {
 
 concurrent_js_clean(){
 	echo -e "$yellow收尾一下$white"
-	for i in `ps -ww | grep "jd.sh run_" | grep -v grep | awk '{print $1}'`
+	for i in `ps -ww | grep "run_" | grep -v 'run_10_15_20\|grep' | awk '{print $1}'`
 	do
 		echo "开始kill $i"
 		kill -9 $i
@@ -653,39 +654,60 @@ concurrent_js_clean(){
 }
 
 if_ps() {
-	ps_if=$(ps -ww | grep "JD_Script" | grep -v "grep\|jd_crazy_joy_coin.js\|jd.sh run_" |wc -l)
-	echo -e "$green>>开始第一次检测上一个并发程序是否结束(10秒)$white"
-	sleep 10
+	ps_if=$(ps -ww | grep "js$" | grep -v "jd_crazy_joy_coin.js" | awk '{print $1}' |wc -l)
+	num1="10"
+	num2="20"
+	num3="30"
+	echo -e "$green>>开始第一次检测上一个并发程序是否结束($num1秒)$white"
+	sleep $num1
 	echo ""
 	if [ "$ps_if" == "0" ];then
-		echo -e "$green>>开始第二次检测上一个并发程序是否结束(20秒)$white"
-		sleep 20
+		echo -e "$green>>开始第二次检测上一个并发程序是否结束($num2秒)$white"
+		sleep $num2
 		if [ "$ps_if" == "0" ];then
-			echo -e "$green>>开始第三次检测上一个并发程序是否结束(30秒)$white"
-			sleep 30
+			echo -e "$green>>开始第三次检测上一个并发程序是否结束($num3秒)$white"
+			sleep $num3
 			if [ "$ps_if" == "0" ];then
-				echo -e "$yellow并发程序已经结束$white"
+				echo -e "$yellow>>并发程序已经结束$white"
 			else
-				sleep 30
-				echo -ne "$green第三次检测到并发程序还在继续，30秒以后再检测$white"
+				sleep $num3
+				echo -ne "$green第三次检测到并发程序还在继续，$num3秒以后再检测$white"
 				if_ps
 			fi
 			
 		else
-			sleep 20
-			echo -ne "$green第二次检测到并发程序还在继续，20秒以后再检测$white"
+			sleep $num2
+			echo -ne "$green第二次检测到并发程序还在继续，$num2秒以后再检测$white"
 			if_ps
 		fi
 	else
-		sleep 10
-		echo -ne "$green第一次检测到并发程序还在继续，10秒以后再检测$white"
+		sleep $num1
+		echo -ne "$green第一次检测到并发程序还在继续，20秒以后再检测$white"
 		if_ps
 	fi
 	#for i in `ps -ww | grep "jd.sh run_" | grep -v grep | awk '{print $1}'`;do kill -9 $i ;done
 }
 
 checktool() {
-	i=1 && while [ 100 -ge 0 ];do ps -ww |grep JD_Script | grep -v 'grep\|jd_crazy_joy_coin.js\|checktool' && sleep 3 && clear && echo "检测者工具第$i次循环输出(ctrl+c终止)" && echo "负载情况：`uptime`" && echo "" &&echo "进程状态：" && i=`expr $i + 1`;done
+	i=1
+	while [ 100 -ge 0 ];do
+		ps_check=$(ps -ww |grep "JD_Script" | grep -v "grep" |awk '{print $1}' | wc -l )
+		echo "---------------------------------------------------------------------------"
+		echo -e  "		检测者工具第$green$i$white次循环输出(ctrl+c终止)"
+		echo "---------------------------------------------------------------------------"
+		echo "负载情况：`uptime`"
+		echo ""
+		echo "进程状态："
+		if [ "$ps_check" == "0"  ];then
+			echo ""
+			echo "	没有检测到并发进程"
+		else
+			ps -ww | grep "JD_Script" |grep -v 'grep\|checktool'
+		fi
+		sleep 2
+		clear
+		i=`expr $i + 1`
+	done
 }
 
 
@@ -698,7 +720,7 @@ checklog() {
 	rm -rf $log3
 
 	#用来查看tmp有多少jd log文件
-	ls ./ | grep -E "^j" | sort >$log1
+	ls ./ | grep -E "^j" | grep -v "jd_price.log" | sort >$log1
 
 	#筛选jd log 里面有几个是带错误的
 	echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line" >>$log3
@@ -1454,11 +1476,19 @@ COMMENT
 	if [ "$jd_try" == "yes" ];then
 		jd_try_if=$(grep "jd_try.js" $cron_file | wc -l)
 		if [ "$jd_try_if" == "0" ];then
+			echo "检测到试用开关开启，导入一下计划任务"
 			echo "0 10 * * * $node $dir_file/js/jd_try.js >/tmp/jd_try.log" >>$cron_file
+			/etc/init.d/cron restart
 		else
 			echo "京东试用计划任务已经导入"
 		fi
 	else
+		jd_try_if=$(grep "jd_try.js" $cron_file | wc -l)
+		if [ "$jd_try_if" == "1" ];then
+			echo "检测到试用开关关闭，清理一下之前的导入"
+			sed -i '/jd_try.js/d' /etc/crontabs/root >/dev/null 2>&1
+			/etc/init.d/cron restart
+		fi
 		echo "京东试用计划任务不导入"
 	fi
 
@@ -1467,7 +1497,7 @@ COMMENT
 		echo -e "$green今天周一不关闭农场萌宠通知$white"
 	else
 		case `date +%H` in
-		0|1|2|3)
+		22|23|0|1|2|3)
 			echo -e "$green暂时不关闭农场和萌宠通知"
 		;;
 		*)
@@ -1572,25 +1602,26 @@ system_variable() {
 	if [ "$dir_file" == "$openwrt_script/JD_Script" ];then
 		#jdCookie.js
 		if [ ! -f "$openwrt_script_config/jdCookie.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/jdCookie.js  $openwrt_script_config/jdCookie.js
+			cp  $dir_file/JSON/jdCookie.js  $openwrt_script_config/jdCookie.js
 			rm -rf $dir_file_js/jdCookie.js #用于删除旧的链接
 			ln -s $openwrt_script_config/jdCookie.js $dir_file_js/jdCookie.js
 		fi
 
 		#jdCookie.js用于升级以后恢复链接
-		if [ ! -f "$dir_file_js/jdCookie.js" ]; then
+		if [ ! -L "$dir_file_js/jdCookie.js" ]; then
 			ln -s $openwrt_script_config/jdCookie.js $dir_file_js/jdCookie.js
 		fi
 
 		#sendNotify.js
 		if [ ! -f "$openwrt_script_config/sendNotify.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/sendNotify.js $openwrt_script_config/sendNotify.js
+			cp  $dir_file/JSON/sendNotify.js $openwrt_script_config/sendNotify.js
 			rm -rf $dir_file_js/sendNotify.js  #用于删除旧的链接
 			ln -s $openwrt_script_config/sendNotify.js $dir_file_js/sendNotify.js
 		fi
 
 		#sendNotify.js用于升级以后恢复链接
-		if [ ! -f "$dir_file_js/sendNotify.js" ]; then
+		if [ ! -L "$dir_file_js/sendNotify.js" ]; then
+			rm -rf $dir_file_js/sendNotify.js  #临时删除，解决最近不推送问题
 			ln -s $openwrt_script_config/sendNotify.js $dir_file_js/sendNotify.js
 		fi
 
@@ -1602,7 +1633,7 @@ system_variable() {
 		fi
 
 		#USER_AGENTS.js用于升级以后恢复链接
-		if [ ! -f "$dir_file_js/USER_AGENTS.js" ]; then
+		if [ ! -L "$dir_file_js/USER_AGENTS.js" ]; then
 			ln -s $openwrt_script_config/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
 
@@ -1614,17 +1645,17 @@ system_variable() {
 		fi
 
 		#JS_USER_AGENTS.js用于升级以后恢复链接
-		if [ ! -f "$dir_file_js/JS_USER_AGENTS.js" ]; then
+		if [ ! -L "$dir_file_js/JS_USER_AGENTS.js" ]; then
 			ln -s $openwrt_script_config/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
 		fi
 	else
 		if [ ! -f "$dir_file/jdCookie.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/jdCookie.js $dir_file/jdCookie.js
+			cp  $dir_file/JSON/jdCookie.js $dir_file/jdCookie.js
 			ln -s $dir_file/jdCookie.js $dir_file_js/jdCookie.js
 		fi
 
 		if [ ! -f "$dir_file/sendNotify.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/sendNotify.js $dir_file/sendNotify.js
+			cp  $dir_file/JSON/sendNotify.js $dir_file/sendNotify.js
 			ln -s $dir_file/sendNotify.js $dir_file_js/sendNotify.js
 		fi
 
@@ -1758,7 +1789,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps)
 		$action1
 		;;
 		*)
@@ -1773,7 +1804,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps)
 		$action2
 		;;
 		*)
