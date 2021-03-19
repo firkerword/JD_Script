@@ -748,6 +748,46 @@ checktool() {
 	done
 }
 
+getcookie() {
+	#$node $dir_file_js/getJDCookie.js
+	read -p "请填写你获取到的cookie：" you_cookie
+	echo -e "$yellow\n稍等开始为你查找是否存在这个cookie，有就更新，没有就新增。。。$white\n"
+	sleep 2
+	pt_pin=$(echo $you_cookie | awk -F "pt_pin=" '{print $2}' | awk -F ";" '{print $1}')
+	pt_key=$(echo $you_cookie | awk -F "pt_key=" '{print $2}' | awk -F ";" '{print $1}')
+
+	if [ `cat $script_dir/jdCookie.js | grep "$pt_pin" | wc -l` == "1" ];then
+		echo  "------------------------------------------------------------------------------"
+		echo -e "$green检测到 $yellow${pt_pin}$white 已经存在，开始更新cookie。。$white\n"
+		sleep 2
+		old_pt_key=$(cat $script_dir/jdCookie.js | grep "$pt_pin" | awk -F "pt_key=" '{print $2}' | awk -F ";" '{print $1}')
+		sed -i "s/$old_pt_key/$pt_key/g" $dir_file_js/getJDCookie.js
+		echo -e "$yellow${pt_pin}$green 旧cookie：$yellow${old_pt_key}$white\n\n$green更新为$white\n\n$yellow${pt_pin}$green 新cookie：$yellow${pt_key}$white\n"
+		echo  "------------------------------------------------------------------------------"
+		read -p "是否需要继续获取cookie（1.需要  2.不需要 ）：" cookie_continue
+		if [ "$cookie_continue" == "1" ];then
+			echo "请稍等。。。"
+			getcookie
+		elif [ "$cookie_continue" == "2" ];then
+			echo "退出脚本。。。"
+			exit 0
+		else
+			echo "请不要乱输，退出脚本。。。"
+			exit 0
+		fi
+	else
+		cookie=$(cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin")
+		echo  "------------------------------------------------------------------------------"
+		echo -e "$green检测到 $yellow${pt_pin}$white 不存在，开始新增cookie。。$white\n"
+		sleep 2
+		cookie_quantity=$( $cookie | wc -l)
+		i=$(expr $cookie_quantity + 5)
+
+		sed  "$i a \ '$you_cookie'," $dir_file_js/getJDCookie.js
+
+		echo  "------------------------------------------------------------------------------"
+	fi
+}
 
 checklog() {
 	log1="checklog_jd.log" #用来查看tmp有多少jd log文件
@@ -1850,7 +1890,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr|getcookie)
 		$action1
 		;;
 		*)
@@ -1865,7 +1905,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr|getcookie)
 		$action2
 		;;
 		*)
