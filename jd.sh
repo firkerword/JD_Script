@@ -37,7 +37,7 @@ else
 fi
 
 ccr_js_file="$dir_file/ccr_js"
-run_sleep=$(sleep 2)
+run_sleep=$(sleep 1)
 
 version="2.2"
 cron_file="/etc/crontabs/root"
@@ -749,25 +749,114 @@ checktool() {
 }
 
 getcookie() {
-	#$node $dir_file_js/getJDCookie.js
+	$node $dir_file_js/getJDCookie.js
+	addcookie
+}
+
+addcookie() {
+	echo "---------------------------------------------------------------------------"
+	echo -e "		新增cookie或者更新cookie"
+	echo "---------------------------------------------------------------------------"
+	echo ""
+	echo -e "$green例子：$white"
+	echo ""
+	echo -e "$green pt_key=jd_10086jd_10086jd_10086jd_10086jd_10086jd_10086jd_10086;pt_pin=jd_10086; //二狗子$white"
+	echo ""
+	echo -e "$yellow pt_key=$green密码  $yellow pt_pin=$green 账号  $yellow// 二狗子 $green(备注这个账号是谁的)$white"
+	echo ""
+	echo -e "$yellow 请不要乱输，如果输错了可以用$green sh \$jd delcookie$yellow删除,\n 或者你手动去$green$script_dir/jdCookie.js$yellow删除也行\n$white"
+	echo "---------------------------------------------------------------------------"
 	read -p "请填写你获取到的cookie：" you_cookie
+	if [[ -z $you_cookie ]]; then
+		echo -e "$red请不要输入空值。。。$white"
+		exit 0
+	fi
+	clear
 	echo -e "$yellow\n稍等开始为你查找是否存在这个cookie，有就更新，没有就新增。。。$white\n"
 	sleep 2
+	new_pt=$(echo $you_cookie)
 	pt_pin=$(echo $you_cookie | awk -F "pt_pin=" '{print $2}' | awk -F ";" '{print $1}')
 	pt_key=$(echo $you_cookie | awk -F "pt_key=" '{print $2}' | awk -F ";" '{print $1}')
 
 	if [ `cat $script_dir/jdCookie.js | grep "$pt_pin" | wc -l` == "1" ];then
-		echo  "------------------------------------------------------------------------------"
 		echo -e "$green检测到 $yellow${pt_pin}$white 已经存在，开始更新cookie。。$white\n"
 		sleep 2
+		old_pt=$(cat $script_dir/jdCookie.js | grep "$pt_pin" | sed -e "s/',//g" -e "s/'//g")
 		old_pt_key=$(cat $script_dir/jdCookie.js | grep "$pt_pin" | awk -F "pt_key=" '{print $2}' | awk -F ";" '{print $1}')
-		sed -i "s/$old_pt_key/$pt_key/g" $dir_file_js/getJDCookie.js
-		echo -e "$yellow${pt_pin}$green 旧cookie：$yellow${old_pt_key}$white\n\n$green更新为$white\n\n$yellow${pt_pin}$green 新cookie：$yellow${pt_key}$white\n"
+		sed -i "s/$old_pt_key/$pt_key/g" $script_dir/jdCookie.js
+		echo -e "$green 旧cookie：$yellow${old_pt}$white\n\n$green更新为$white\n\n$green 新cookie：$yellow${new_pt}$white\n"
 		echo  "------------------------------------------------------------------------------"
-		read -p "是否需要继续获取cookie（1.需要  2.不需要 ）：" cookie_continue
+	else
+		echo -e "$green检测到 $yellow${pt_pin}$white 不存在，开始新增cookie。。$white\n"
+		sleep 2
+		cookie_quantity=$( cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l)
+		i=$(expr $cookie_quantity + 5)
+		if [ $i == "5" ];then
+			sed -i "5a \  '$you_cookie\'," $script_dir/jdCookie.js
+		else
+			sed -i "$i a\  '$you_cookie\'," $script_dir/jdCookie.js
+		fi
+		echo -e "\n已将新cookie：$green${you_cookie}$white\n\n插入到$yellow$script_dir/jdCookie.js$white 第$i行\n"
+		echo  "------------------------------------------------------------------------------"
+		echo -e "$yellow你增加了账号：$green${pt_pin}$white$yellow 现在cookie一共有$cookie_quantity个，具体以下：$white"
+		cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
+		echo  "------------------------------------------------------------------------------"
+	fi
+
+	read -p "是否需要继续获取cookie（1.需要  2.不需要 ）：" cookie_continue
+	if [ "$cookie_continue" == "1" ];then
+		echo "请稍等。。。"
+		sleep 1
+		clear
+		getcookie
+	elif [ "$cookie_continue" == "2" ];then
+		echo "退出脚本。。。"
+		exit 0
+	elif [ "$cookie_continue" == "3" ];then
+		sleep 1
+		clear
+		addcookie
+	else
+		echo "请不要乱输，退出脚本。。。"
+		exit 0
+	fi
+
+}
+
+delcookie() {
+	cookie_quantity=$(cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l)
+	if [ `cat $script_dir/jdCookie.js | grep "$pt_pin" | wc -l` -ge "1" ];then
+		echo "---------------------------------------------------------------------------"
+		echo -e "		删除cookie"
+		echo "---------------------------------------------------------------------------"
+		echo -e "$green例子：$white"
+		echo ""
+		echo -e "$green pt_key=jd_10086jd_10086jd_10086jd_10086jd_10086jd_10086jd_10086;pt_pin=jd_10086; //二狗子$white"
+		echo ""
+		echo -e "$yellow 请填写你要删除的cookie（// 备注 或者pt_pin 名都行）：$green二狗子 $white"
+		echo -e "$yellow 请填写你要删除的cookie（// 备注 或者pt_pin 名都行）：$green jd_10086$white "
+		echo "---------------------------------------------------------------------------"
+		echo -e "$yellow你的cookie有$cookie_quantity个，具体如下：$white"
+		cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
+		echo "---------------------------------------------------------------------------"
+		echo ""
+		read -p "请填写你要删除的cookie（// 备注 或者pt_pin 名都行）：" you_cookie
+		if [[ -z $you_cookie ]]; then
+			echo -e "$red请不要输入空值。。。$white"
+			exit 0
+		fi
+	
+		sed -i "/$you_cookie/d" $script_dir/jdCookie.js
+		clear
+		echo "---------------------------------------------------------------------------"
+		echo -e "$yellow你删除账号或者备注：$green${you_cookie}$white$yellow 现在cookie还有`cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l`个，具体以下：$white"
+		cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
+		echo "---------------------------------------------------------------------------"
+		echo ""
+		read -p "是否需要删除cookie（1.需要  2.不需要 ）：" cookie_continue
 		if [ "$cookie_continue" == "1" ];then
 			echo "请稍等。。。"
-			getcookie
+			delcookie
 		elif [ "$cookie_continue" == "2" ];then
 			echo "退出脚本。。。"
 			exit 0
@@ -776,17 +865,9 @@ getcookie() {
 			exit 0
 		fi
 	else
-		cookie=$(cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin")
-		echo  "------------------------------------------------------------------------------"
-		echo -e "$green检测到 $yellow${pt_pin}$white 不存在，开始新增cookie。。$white\n"
-		sleep 2
-		cookie_quantity=$( $cookie | wc -l)
-		i=$(expr $cookie_quantity + 5)
-
-		sed  "$i a \ '$you_cookie'," $dir_file_js/getJDCookie.js
-
-		echo  "------------------------------------------------------------------------------"
+		echo -e "$yellow你的cookie空空如也，比地板都干净，你想删啥。。。。。$white"
 	fi
+
 }
 
 checklog() {
@@ -1196,7 +1277,7 @@ help() {
 	echo ""
 	echo -e "$yellow JS脚本活动列表：$green $dir_file/git_clone/lxk0301/README.md $white"
 	echo -e "$yellow 浏览器获取京东cookie教程：$green $dir_file/git_clone/lxk0301/backUp/GetJdCookie.md $white"
-	echo -e "$yellow 脚本获取京东cookie：$green node $dir_file_js/getJDCookie.js $white"
+	echo -e "$yellow 脚本获取京东cookie：$green sh \$jd getcookie $white"
 	echo ""
 	echo -e "$red 注意：$white请停掉你之前运行的其他jd脚本，然后把$green JS脚本活动列表$white的活动全部手动点开一次，不知活动入口的，$dir_file_js/你要的js脚本里有写"
 	echo ""
@@ -1589,7 +1670,7 @@ close_notification() {
 	else
 		case `date +%H` in
 		22|23|0|1|2|3)
-			echo -e "$green暂时不关闭农场和萌宠通知"
+			echo -e "$green暂时不关闭农场和萌宠通知$white"
 		;;
 		*)
 			sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_fruit.js
@@ -1890,7 +1971,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr|getcookie)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr|getcookie|addcookie|delcookie)
 		$action1
 		;;
 		*)
@@ -1905,7 +1986,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr|getcookie)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr|getcookie|addcookie|delcookie)
 		$action2
 		;;
 		*)
