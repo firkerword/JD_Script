@@ -37,6 +37,7 @@ else
 fi
 
 ccr_js_file="$dir_file/ccr_js"
+run_sleep=$(sleep 2)
 
 version="2.2"
 cron_file="/etc/crontabs/root"
@@ -61,7 +62,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.89"
+	cron_version="2.90"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -145,7 +146,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_joy_feedPets.js 		#宠汪汪单独喂食
 	jd_joy.js			#宠汪汪
 	jd_joy_reward.js 		#宠汪汪兑换奖品
-	jd_joy_steal.js			#宠汪汪偷好友狗粮与积分
 	jd_crazy_joy.js			#crazyJoy任务
 	jd_crazy_joy_coin.js		#crazy joy挂机领金币/宝箱专用
 	jd_car_exchange.js		#京东汽车兑换，500赛点兑换500京豆
@@ -180,6 +180,7 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_live_redrain.js 		#超级直播间红包雨
 	jd_nzmh.js			#女装盲盒 2021-3-8至2021-3-20
 	jd_xtg.js			#手机尚学季
+	jd_mohe.js			#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
@@ -204,6 +205,7 @@ cat >$dir_file/config/i-chenzhe_script.txt <<EOF
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_lenovo.js			#联想集卡活动
 	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
+	z_mgold.js 			#金口碑奖投票
 EOF
 
 for script_name in `cat $dir_file/config/i-chenzhe_script.txt | awk '{print $1}'`
@@ -211,7 +213,7 @@ do
 	wget $url2/$script_name -O $dir_file_js/$script_name
 done
 
-	rm -rf $dir_file_js/z_superDay.js 			#洗护发超级品类日2021-03-08 - 2021-03-15
+	rm -rf $dir_file_js/z_super5g.js			#5G超级盲盒
 	cat $dir_file/config/lxk0301_script.txt > $dir_file/config/collect_script.txt
 	cat $dir_file/config/i-chenzhe_script.txt >> $dir_file/config/collect_script.txt
 
@@ -279,6 +281,7 @@ EOF
 	for i in `cat /tmp/jd_tmp/run_0 | awk '{print $1}'`
 	do
 		$node $dir_file_js/$i
+		$run_sleep
 	done
 
 	ddcs
@@ -329,6 +332,7 @@ run_02() {
 run_03() {
 	echo -e "$green run_03$start_script $white"
 	$node $dir_file_js/jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
+	$node $dir_file_js/jd_mohe.js	#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
 	echo -e "$green run_03$stop_script $white"
 }
 
@@ -350,6 +354,7 @@ EOF
 	for i in `cat /tmp/jd_tmp/run_06_18 | awk '{print $1}'`
 	do
 		$node $dir_file_js/$i
+		$run_sleep
 	done
 
 	echo -e "$green run_06_18$stop_script $white"
@@ -380,12 +385,14 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_lenovo.js			#联想集卡活动
 	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
+	z_mgold.js 			#金口碑奖投票
 EOF
 	echo -e "$green run_07$start_script $white"
 
 	for i in `cat /tmp/jd_tmp/run_07 | awk '{print $1}'`
 	do
 		$node $dir_file_js/$i
+		$run_sleep
 	done
 
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
@@ -404,6 +411,7 @@ EOF
 	for i in `cat /tmp/jd_tmp/run_08_12_16 | awk '{print $1}'`
 	do
 		$node $dir_file_js/$i
+		$run_sleep
 	done
 
 	echo -e "$green run_08_12_16$stop_script $white"
@@ -421,6 +429,7 @@ EOF
 	for i in `cat /tmp/jd_tmp/run_10_15_20 | awk '{print $1}'`
 	do
 		$node $dir_file_js/$i
+		$run_sleep
 	done
 
 	echo -e "$green run_10_15_20$stop_script $white"
@@ -588,27 +597,27 @@ concurrent_js_if() {
 	else
 		case "$action1" in
 		run_0)
-			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+			$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
 			$action1
 			if [ ! $action2 ];then
 				echo ""
 			else
 				case "$action2" in
 				run_07)
-					$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+					$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
 					$action2
-					$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
-					$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
+					$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
+					$node $dir_file_js/jd_bean_change.js #京豆变更
 					checklog #检测log日志是否有错误并推送
 				;;
 				esac
 			fi
 		;;
 		run_07)
-			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+			$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
 			$action1
-			$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
-			$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
+			$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
+			$node $dir_file_js/jd_bean_change.js #京豆变更
 			checklog #检测log日志是否有错误并推送
 		;;
 		run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_030|run_020)
@@ -620,7 +629,8 @@ concurrent_js_if() {
 
 concurrent_js_update() {
 	rm -rf $ccr_js_file/*
-	js_amount=$(cat $script_dir/jdCookie.js | grep "pt_pin" | grep -v "//'" | grep -v "pt_pin=("  | grep -v "pt_key=XXX;pt_pin=XXX" | grep -v "pt_key=xxx;pt_pin=xxx"| grep -v "// '" |wc -l)
+	js_cookie=$(cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | grep -v "//'" |grep -v "// '")
+	js_amount=$(echo "$js_cookie" |wc -l)
 
 	while [[ ${js_amount} -gt 0 ]]; do
 		mkdir $ccr_js_file/js_$js_amount
@@ -631,9 +641,9 @@ concurrent_js_update() {
 			ln -s $script_dir/sendNotify.js $ccr_js_file/js_$js_amount/sendNotify.js
 		fi
 
-		js_cookie=$(cat $openwrt_script_config/jdCookie.js | grep "pt_pin" | grep -v "//'" | grep -v "pt_pin=("  | grep -v "pt_key=XXX;pt_pin=XXX" | grep -v "pt_key=xxx;pt_pin=xxx"| grep -v "// '" | awk -v a="$js_amount" 'NR==a{ print $0}') #获取pt
+		js_cookie_obtain=$(echo "$js_cookie" | awk -v a="$js_amount" 'NR==a{ print $0}') #获取pt
 		sed -i '/pt_pin/d' $ccr_js_file/js_$js_amount/jdCookie.js >/dev/null 2>&1
-		sed -i "5a $js_cookie" $ccr_js_file/js_$js_amount/jdCookie.js
+		sed -i "5a $js_cookie_obtain" $ccr_js_file/js_$js_amount/jdCookie.js
 
 		for i in `ls $dir_file_js | grep -v 'jdCookie.js\|sendNotify.js'`
 		do
@@ -646,11 +656,39 @@ concurrent_js_update() {
 
 concurrent_js_clean(){
 	echo -e "$yellow收尾一下$white"
-	for i in `ps -ww | grep "run_" | grep -v 'run_10_15_20\|grep' | awk '{print $1}'`
+	for i in `ps -ww | grep "run_" | grep -v 'grep\|kill_ccr' | awk '{print $1}'`
 	do
 		echo "开始kill $i"
 		kill -9 $i
 	done
+}
+
+kill_ccr() {
+	if [ "$ccr_if" == "yes" ];then
+		echo -e "$green>>终止并发程序。请稍等。。。。$white"
+		if [ `ps -ww | grep "js$" | grep -v "jd_crazy_joy_coin.js" | awk '{print $1}' |wc -l` == "0" ];then
+			sleep 2
+			echo -e "$green逛了一圈空空如也，你确定不是在消遣我，如果不是你可以重新运行一下。。。$white"
+		else
+			for i in `ps -ww | grep "js$" | grep -v "jd_crazy_joy_coin.js" | awk '{print $1}'`
+			do
+				kill -9 $i
+				echo "kill $i"
+			done
+			concurrent_js_clean
+			clear
+			echo -e "$green再次检测一下并发程序是否还有存在$white"
+			if [ `ps -ww | grep "js$" | grep -v "jd_crazy_joy_coin.js" | awk '{print $1}' |wc -l` == "0" ];then
+				echo -e "$yellow>>并发程序已经全部结束$white"
+			else
+				echo -e "$yellow！！！检测到并发程序还有存在，再继续杀，请稍等。。。$white"
+				sleep 1
+				kill_ccr
+			fi
+		fi
+	else
+		echo -e "$green>>你并发开关都没有打开，我终止啥？？？$white"
+	fi
 }
 
 if_ps() {
@@ -682,7 +720,7 @@ if_ps() {
 		fi
 	else
 		sleep $num1
-		echo -ne "$green第一次检测到并发程序还在继续，20秒以后再检测$white"
+		echo -ne "$green第一次检测到并发程序还在继续，$num1秒以后再检测$white"
 		if_ps
 	fi
 	#for i in `ps -ww | grep "jd.sh run_" | grep -v grep | awk '{print $1}'`;do kill -9 $i ;done
@@ -1146,6 +1184,10 @@ help() {
 	echo ""
 	echo -e "$green  sh \$jd stop_script $white  			#删除定时任务停用所用脚本"
 	echo ""
+	echo -e "$green  sh \$jd kill_ccr $white  			#终止并发"
+	echo ""
+	echo -e "$green  sh \$jd checktool $white  			#检测后台进程，方便排除问题"
+	echo ""
 	echo -e " 如果不喜欢这样，你也可以直接$green cd \$jd_file/js$white,然后用$green node 脚本名字.js$white "
 	echo ""
 	echo -e "$yellow 3.检测定时任务:$white $cron_help"
@@ -1469,9 +1511,6 @@ COMMENT
 	sed -i '47,48d' $dir_file_js/jd_global.js
 	sed -i "46a $new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set" $dir_file_js/jd_global.js
 
-	#脚本黑名单
-	script_black
-
 	#京东试用
 	if [ "$jd_try" == "yes" ];then
 		jd_try_if=$(grep "jd_try.js" $cron_file | wc -l)
@@ -1492,6 +1531,18 @@ COMMENT
 		echo "京东试用计划任务不导入"
 	fi
 
+	#取消会员卡脚本修复路径
+	sed -i "s/..\/jdCookie.js/.\/jdCookie.js/g" $dir_file_js/jd_unbind.js
+	sed -i "s/..\/sendNotify/.\/sendNotify/g" $dir_file_js/jd_unbind.js
+
+	#脚本黑名单
+	script_black
+
+	#农场萌宠关闭通知
+	close_notification
+}
+
+close_notification() {
 	#农场和东东萌宠关闭通知
 	if [ `date +%A` == "Monday" ];then
 		echo -e "$green今天周一不关闭农场萌宠通知$white"
@@ -1503,12 +1554,18 @@ COMMENT
 		*)
 			sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_fruit.js
 			sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_pet.js
+			if [ "$ccr_if" == "yes" ];then
+				for i in `ls $ccr_js_file`
+				do
+					sed -i "s/jdNotify = false/jdNotify = true/g" $ccr_js_file/$i/jd_fruit.js
+					sed -i "s/jdNotify = false/jdNotify = true/g" $ccr_js_file/$i/jd_pet.js
+				done
+			fi
 			echo -e "$green时间大于凌晨三点开始关闭农场和萌宠通知$white"
 		;;
 		esac
 	fi
 }
-
 random_array() {
 	#彻底完善，感谢minty大力支援
 	length=$(echo $random | awk -F '[@]' '{print NF}') #获取变量长度
@@ -1554,6 +1611,7 @@ npm_install() {
 		cd $dir_file && npm -g install && npm install -g request
 	fi
 }
+
 system_variable() {
 	if [[ ! -d "$dir_file/config" ]]; then
 		mkdir  $dir_file/config
@@ -1729,6 +1787,9 @@ system_variable() {
 		echo ""
 	fi
 
+	#农场萌宠关闭通知
+	close_notification
+
 	script_black
 }
 
@@ -1789,7 +1850,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr)
 		$action1
 		;;
 		*)
@@ -1804,7 +1865,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps)
+		system_variable|update|update_script|task|jx|additional_settings|joy|kill_joy|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|ddcs|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|kill_ccr)
 		$action2
 		;;
 		*)
