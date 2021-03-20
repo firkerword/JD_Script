@@ -179,7 +179,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_global.js			#环球挑战赛
 	jd_live_redrain.js 		#超级直播间红包雨
 	jd_nzmh.js			#女装盲盒 2021-3-8至2021-3-20
-	jd_xtg.js			#手机尚学季
 	jd_mohe.js			#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
@@ -206,6 +205,7 @@ cat >$dir_file/config/i-chenzhe_script.txt <<EOF
 	z_lenovo.js			#联想集卡活动
 	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
 	z_mgold.js 			#金口碑奖投票
+	z_city_cash.js			#城城分现金
 EOF
 
 for script_name in `cat $dir_file/config/i-chenzhe_script.txt | awk '{print $1}'`
@@ -213,7 +213,8 @@ do
 	wget $url2/$script_name -O $dir_file_js/$script_name
 done
 
-	rm -rf $dir_file_js/z_super5g.js			#5G超级盲盒
+	rm -rf $dir_file_js/jd_xtg.js			#手机尚学季
+
 	cat $dir_file/config/lxk0301_script.txt > $dir_file/config/collect_script.txt
 	cat $dir_file/config/i-chenzhe_script.txt >> $dir_file/config/collect_script.txt
 
@@ -381,11 +382,11 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_nzmh.js #女装盲盒 2021-3-8至2021-3-20
 	z_marketLottery.js #京东超市-大转盘
 	z_unionPoster.js #美的家电节
-	jd_xtg.js #手机尚学季
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_lenovo.js			#联想集卡活动
 	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
 	z_mgold.js 			#金口碑奖投票
+	z_city_cash.js			#城城分现金
 EOF
 	echo -e "$green run_07$start_script $white"
 
@@ -749,6 +750,8 @@ checktool() {
 }
 
 getcookie() {
+	echo ""
+	echo -e "$yellow 温馨提示，如果你已经有cookie，不想扫码直接添加，可以用$green sh \$jd addcookie$white 增加cookie $green sh \$jd delcookie$white 删除cookie"
 	$node $dir_file_js/getJDCookie.js
 	addcookie
 }
@@ -766,7 +769,7 @@ addcookie() {
 	echo ""
 	echo -e "$yellow 请不要乱输，如果输错了可以用$green sh \$jd delcookie$yellow删除,\n 或者你手动去$green$script_dir/jdCookie.js$yellow删除也行\n$white"
 	echo "---------------------------------------------------------------------------"
-	read -p "请填写你获取到的cookie：" you_cookie
+	read -p "请填写你获取到的cookie(一次只能一个cookie)：" you_cookie
 	if [[ -z $you_cookie ]]; then
 		echo -e "$red请不要输入空值。。。$white"
 		exit 0
@@ -797,8 +800,9 @@ addcookie() {
 			sed -i "$i a\  '$you_cookie\'," $script_dir/jdCookie.js
 		fi
 		echo -e "\n已将新cookie：$green${you_cookie}$white\n\n插入到$yellow$script_dir/jdCookie.js$white 第$i行\n"
+		cookie_quantity1=$( cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l)
 		echo  "------------------------------------------------------------------------------"
-		echo -e "$yellow你增加了账号：$green${pt_pin}$white$yellow 现在cookie一共有$cookie_quantity个，具体以下：$white"
+		echo -e "$yellow你增加了账号：$green${pt_pin}$white$yellow 现在cookie一共有$cookie_quantity1个，具体以下：$white"
 		cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
 		echo  "------------------------------------------------------------------------------"
 	fi
