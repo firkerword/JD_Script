@@ -180,7 +180,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_live_redrain.js 		#超级直播间红包雨
 	jd_nzmh.js			#女装盲盒 2021-3-8至2021-3-20
 	jd_mohe.js			#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
-	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -225,6 +224,7 @@ done
 
 
 cat >>$dir_file/config/collect_script.txt <<EOF
+	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jx_products_detail.js		#京喜工厂商品列表详情
 	jd_entertainment.js 		#百变大咖秀
 	jd_try.js 			#京东试用
@@ -387,6 +387,7 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
 	z_mgold.js 			#金口碑奖投票
 	z_city_cash.js			#城城分现金
+	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script $white"
 
@@ -569,7 +570,6 @@ concurrent_js_if() {
 					action="$action2"
 					$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
 					concurrent_js && if_ps
-					$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
 					$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 					checklog #检测log日志是否有错误并推送
 					if_ps
@@ -582,7 +582,6 @@ concurrent_js_if() {
 			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
 			concurrent_js && if_ps
-			$node $openwrt_script/JD_Script/js/jd_unsubscribe.js #取关店铺，没时间要求
 			$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 			checklog #检测log日志是否有错误并推送
 			if_ps
@@ -607,7 +606,6 @@ concurrent_js_if() {
 				run_07)
 					$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
 					$action2
-					$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
 					$node $dir_file_js/jd_bean_change.js #京豆变更
 					checklog #检测log日志是否有错误并推送
 				;;
@@ -750,32 +748,41 @@ checktool() {
 }
 
 getcookie() {
+	#彻底完成感谢echowxsy大力支持
 	echo ""
 	echo -e "$yellow 温馨提示，如果你已经有cookie，不想扫码直接添加，可以用$green sh \$jd addcookie$white 增加cookie $green sh \$jd delcookie$white 删除cookie"
-	$node $dir_file_js/getJDCookie.js
-	addcookie
+	$node $dir_file_js/getJDCookie.js && addcookie
 }
 
 addcookie() {
-	echo "---------------------------------------------------------------------------"
-	echo -e "		新增cookie或者更新cookie"
-	echo "---------------------------------------------------------------------------"
-	echo ""
-	echo -e "$green例子：$white"
-	echo ""
-	echo -e "$green pt_key=jd_10086jd_10086jd_10086jd_10086jd_10086jd_10086jd_10086;pt_pin=jd_10086; //二狗子$white"
-	echo ""
-	echo -e "$yellow pt_key=$green密码  $yellow pt_pin=$green 账号  $yellow// 二狗子 $green(备注这个账号是谁的)$white"
-	echo ""
-	echo -e "$yellow 请不要乱输，如果输错了可以用$green sh \$jd delcookie$yellow删除,\n 或者你手动去$green$script_dir/jdCookie.js$yellow删除也行\n$white"
-	echo "---------------------------------------------------------------------------"
-	read -p "请填写你获取到的cookie(一次只能一个cookie)：" you_cookie
-	if [[ -z $you_cookie ]]; then
-		echo -e "$red请不要输入空值。。。$white"
-		exit 0
+	
+	if [ `cat /tmp/getcookie.txt | wc -l` == "1"  ];then
+		clear
+		you_cookie=$(cat /tmp/getcookie.txt)
+		rm -rf /tmp/getcookie.txt
+		echo -e "\n$green已经获取到cookie，稍等。。。$white"
+		sleep 1
+	else
+		clear
+		echo "---------------------------------------------------------------------------"
+		echo -e "		新增cookie或者更新cookie"
+		echo "---------------------------------------------------------------------------"
+		echo ""
+		echo -e "$green例子：$white"
+		echo ""
+		echo -e "$green pt_key=jd_10086jd_10086jd_10086jd_10086jd_10086jd_10086jd_10086;pt_pin=jd_10086; //二狗子$white"
+		echo ""
+		echo -e "$yellow pt_key=$green密码  $yellow pt_pin=$green 账号  $yellow// 二狗子 $green(备注这个账号是谁的)$white"
+		echo ""
+		echo -e "$yellow 请不要乱输，如果输错了可以用$green sh \$jd delcookie$yellow删除,\n 或者你手动去$green$script_dir/jdCookie.js$yellow删除也行\n$white"
+		echo "---------------------------------------------------------------------------"
+		read -p "请填写你获取到的cookie(一次只能一个cookie)：" you_cookie
+		if [[ -z $you_cookie ]]; then
+			echo -e "$red请不要输入空值。。。$white"
+			exit 0
+		fi
 	fi
-	clear
-	echo -e "$yellow\n稍等开始为你查找是否存在这个cookie，有就更新，没有就新增。。。$white\n"
+	echo -e "$yellow\n开始为你查找是否存在这个cookie，有就更新，没有就新增。。。$white\n"
 	sleep 2
 	new_pt=$(echo $you_cookie)
 	pt_pin=$(echo $you_cookie | awk -F "pt_pin=" '{print $2}' | awk -F ";" '{print $1}')
@@ -787,7 +794,7 @@ addcookie() {
 		old_pt=$(cat $script_dir/jdCookie.js | grep "$pt_pin" | sed -e "s/',//g" -e "s/'//g")
 		old_pt_key=$(cat $script_dir/jdCookie.js | grep "$pt_pin" | awk -F "pt_key=" '{print $2}' | awk -F ";" '{print $1}')
 		sed -i "s/$old_pt_key/$pt_key/g" $script_dir/jdCookie.js
-		echo -e "$green 旧cookie：$yellow${old_pt}$white\n\n$green更新为$white\n\n$green 新cookie：$yellow${new_pt}$white\n"
+		echo -e "$green 旧cookie：$yellow${old_pt}$white\n\n$green更新为$white\n\n$green   新cookie：$yellow${new_pt}$white\n"
 		echo  "------------------------------------------------------------------------------"
 	else
 		echo -e "$green检测到 $yellow${pt_pin}$white 不存在，开始新增cookie。。$white\n"
@@ -807,6 +814,7 @@ addcookie() {
 		echo  "------------------------------------------------------------------------------"
 	fi
 
+	echo ""
 	read -p "是否需要继续获取cookie（1.需要  2.不需要 ）：" cookie_continue
 	if [ "$cookie_continue" == "1" ];then
 		echo "请稍等。。。"
@@ -1561,8 +1569,8 @@ COMMENT
 
 	#京东赚赚长期活动
 	new_jdzz="95OquUc_sFugJO5_E_2dAgm-@eU9YELv7P4thhw6utCVw@eU9YaOjnbvx1-Djdz3UUgw@AUWE5mKmQzGYKXGT8j38cwA@AUWE5mvvGzDFbAWTxjC0Ykw@AUWE5wPfRiVJ7SxKOuQY0@S5KkcJEZAjD2vYGGG4Ip0@S7aUqCVsc91U@S5KkcREsZ_QXWIx31wKJZcA@S5KkcRUwe81LRIR_3xaNedw@Suvp2RBcY_VHKKBn3k_MMdNw@SvPVyQRke_EnWJxj1nfE@S5KkcRBYbo1fXKUv2k_5ccQ@S5KkcRh0ZoVfQchP9wvQJdw@S5KkcJnlwogCDQ2G84qtI"
-
-	new_jdzz_set="'$new_jdzz',"
+	jidiyangguang_20190516_jdzz="S5KkcRBpK8lbeIxr8wfRcdw@S5KkcR0wdpFCGcRvwxv4Jcg"
+	new_jdzz_set="'$new_jdzz@$jidiyangguang_20190516_jdzz',"
 	sed -i '43,44d' $dir_file_js/jd_jdzz.js
 	sed -i "42a $new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set" $dir_file_js/jd_jdzz.js
 	sed -i "s/helpAuthor=true/helpAuthor=false/g" $dir_file_js/jd_jdzz.js
@@ -1597,8 +1605,9 @@ COMMENT
 	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
 	chiyu_jdcash="cENuJam3ZP0"
 	Jhone_Potte_20200824_jdcash="eU9Yaum1N_4j82-EzCUSgw@eU9Yar-7Nf518GyBniIWhw"
+	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
 
-	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash',"
+	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$jidiyangguang_20190516_jdcash',"
 	sed -i '32,33d' $dir_file_js/jd_cash.js
 	sed -i "31a $new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set" $dir_file_js/jd_cash.js
 	sed -i "s/https:\/\/gitee.com\/shylocks\/updateTeam\/raw\/main\/jd_cash.json/https:\/\/raw.githubusercontent.com\/ITdesk01\/JD_Script\/main\/JSON\/jd_cash.json/g"  $dir_file_js/jd_cash.js
@@ -1610,9 +1619,10 @@ COMMENT
 	chiyu_jdsgmh="T0117aUqCVsc91UCjVWmIaW5kRrbA"
 	Javon_20201224_jdsgmh="T023uvp2RBcY_VHKKBn3k_MMdNwCjVWmIaW5kRrbA"
 	Jhone_Potte_20200824_jdsgmh="T0225KkcRhsepFbSIhulk6ELIQCjVWmIaW5kRrbA@T0225KkcRk0QplaEIRigwaYPJQCjVWmIaW5kRrbA"
+	jidiyangguang_20190516_jdsgmh="T0225KkcRBpK8lbeIxr8wfRcdwCjVQmoaT5kRrbA@T0225KkcR0wdpFCGcRvwxv4JcgCjVQmoaT5kRrbA"
 
 
-	new_jdsgmh_set="'$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$Javon_20201224_jdsgmh@$Jhone_Potte_20200824_jdsgmh',"
+	new_jdsgmh_set="'$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$Javon_20201224_jdsgmh@$Jhone_Potte_20200824_jdsgmh@$jidiyangguang_20190516_jdsgmh',"
 	sed -i '32,33d' $dir_file_js/jd_sgmh.js
 	sed -i "31a $new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set" $dir_file_js/jd_sgmh.js
 
