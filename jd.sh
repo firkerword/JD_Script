@@ -277,6 +277,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_sgmh.js #闪购盲盒长期活动
 	jd_jdzz.js #京东赚赚长期活动
 	jd_small_home.js #东东小窝
+	jd_entertainment.js #百变大咖秀
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -568,8 +569,6 @@ concurrent_js_if() {
 					action="$action2"
 					$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
 					concurrent_js && if_ps
-					
-					if_ps
 					concurrent_js_clean
 				;;
 				esac
@@ -579,7 +578,6 @@ concurrent_js_if() {
 			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
 			concurrent_js 
-			if_ps
 			if_ps
 			concurrent_js_run_07
 			if_ps
@@ -694,6 +692,7 @@ kill_ccr() {
 }
 
 if_ps() {
+	sleep 5
 	ps_if=$(ps -ww | grep "js$" | grep -v "jd_crazy_joy_coin.js" | awk '{print $1}' |wc -l)
 	num1="10"
 	num2="20"
