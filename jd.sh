@@ -62,7 +62,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.90"
+	cron_version="2.92"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -91,8 +91,8 @@ cat >>/etc/crontabs/root <<EOF
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 5 11 3 */1 *  $node $dir_file_js/jd_shakeBean.js  >/tmp/jd_shakeBean.log #京东会员-摇京豆,每个月运行一次#100#
-10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播
-30,31 20-23/1 9,12 3 * $node $dir_file_js/jd_live_redrain.js >/tmp/jd_live_redrain.log	#超级直播间红包雨
+10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
+30,31 20-23/1 9,12 3 * $node $dir_file_js/jd_live_redrain.js >/tmp/jd_live_redrain.log	#超级直播间红包雨#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -104,6 +104,7 @@ EOF
 
 task_delete() {
         sed -i '/#100#/d' /etc/crontabs/root >/dev/null 2>&1
+	sed -i '/JD_Script\/js/d' /etc/crontabs/root >/dev/null 2>&1
 }
 
 ds_setup() {
@@ -383,9 +384,6 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	z_marketLottery.js #京东超市-大转盘
 	z_unionPoster.js #美的家电节
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
-	z_lenovo.js			#联想集卡活动
-	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
-	z_mgold.js 			#金口碑奖投票
 	z_city_cash.js			#城城分现金
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
@@ -570,8 +568,7 @@ concurrent_js_if() {
 					action="$action2"
 					$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
 					concurrent_js && if_ps
-					$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
-					checklog #检测log日志是否有错误并推送
+					
 					if_ps
 					concurrent_js_clean
 				;;
@@ -581,9 +578,10 @@ concurrent_js_if() {
 		run_07)
 			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
-			concurrent_js && if_ps
-			$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
-			checklog #检测log日志是否有错误并推送
+			concurrent_js 
+			if_ps
+			if_ps
+			concurrent_js_run_07
 			if_ps
 			concurrent_js_clean
 		;;
@@ -606,8 +604,7 @@ concurrent_js_if() {
 				run_07)
 					$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
 					$action2
-					$node $dir_file_js/jd_bean_change.js #京豆变更
-					checklog #检测log日志是否有错误并推送
+					concurrent_js_run_07
 				;;
 				esac
 			fi
@@ -615,15 +612,21 @@ concurrent_js_if() {
 		run_07)
 			$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
 			$action1
-			$node $dir_file_js/jd_unsubscribe.js #取关店铺，没时间要求
-			$node $dir_file_js/jd_bean_change.js #京豆变更
-			checklog #检测log日志是否有错误并推送
+			concurrent_js_run_07
 		;;
 		run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_030|run_020)
 			$action1
 		;;
 		esac
 	fi
+}
+
+concurrent_js_run_07() {
+	$node $openwrt_script/JD_Script/js/z_lenovo.js			#联想集卡活动
+	$node $openwrt_script/JD_Script/js/z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
+	$node $openwrt_script/JD_Script/js/z_mgold.js 			#金口碑奖投票
+	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
+	checklog #检测log日志是否有错误并推送
 }
 
 concurrent_js_update() {
@@ -1366,7 +1369,6 @@ additional_settings() {
 	sed -i "s/本脚本开源免费使用 By：https:\/\/gitee.com\/lxk0301\/jd_docker/#### 脚本仓库地址:https:\/\/github.com\/ITdesk01\/JD_Script\/tree\/main 核心JS采用lxk0301开源JS脚本/g" $openwrt_script_config/sendNotify.js
 	sed -i "s/本脚本开源免费使用 By：https:\/\/github.com\/LXK9301\/jd_scripts/#### 脚本仓库地址:https:\/\/github.com\/ITdesk01\/JD_Script\/tree\/main 核心JS采用lxk0301开源JS脚本/g" $openwrt_script_config/sendNotify.js
 
-
 	#东东农场
 	new_fruit1="0763443f7d6f4f5ea5e54adc1c6112ed@e61135aa1963447fa136f293a9d161c1@f9e6a916ad634475b8e77a7704b5c3d8@6632c8135d5c4e2c9ad7f4aa964d4d11@31a2097b10db48429013103077f2f037@5aa64e466c0e43a98cbfbbafcc3ecd02@bf0cbdb0083d443499a571796af20896@9046fbd8945f48cb8e36a17fff9b0983"
 	new_fruit2="d4e3080b06ed47d884e4ef9852cad568@72abb03ca91a4569933c6c8a62a5622c@ed2b2d28151a482eae49dff2e5a588f8@304b39f17d6c4dac87933882d4dec6bc"
@@ -1683,7 +1685,16 @@ close_notification() {
 		echo -e "$green今天周一不关闭农场萌宠通知$white"
 	else
 		case `date +%H` in
-		22|23|0|1|2|3)
+		22|23|00|01|02|03)
+			sed -i "s/jdNotify = true/jdNotify = false/g" $dir_file_js/jd_fruit.js
+			sed -i "s/jdNotify = true/jdNotify = false/g" $dir_file_js/jd_pet.js
+			if [ "$ccr_if" == "yes" ];then
+				for i in `ls $ccr_js_file`
+				do
+					sed -i "s/jdNotify = true/jdNotify = false/g" $ccr_js_file/$i/jd_fruit.js
+					sed -i "s/jdNotify = true/jdNotify = false/g" $ccr_js_file/$i/jd_pet.js
+				done
+			fi
 			echo -e "$green暂时不关闭农场和萌宠通知$white"
 		;;
 		*)
