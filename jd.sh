@@ -62,7 +62,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.93"
+	cron_version="2.94"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -85,7 +85,7 @@ cat >>/etc/crontabs/root <<EOF
 35 10,15,20 * * * $dir_file/jd.sh run_10_15_20 >/tmp/jd_run_10_15_20.log 2>&1 #不是很重要的，错开运行#100#
 10 8,12,16 * * * $dir_file/jd.sh run_08_12_16 >/tmp/jd_run_08_12_16.log 2>&1 #宠汪汪兑换礼品#100#
 00 22 * * * $dir_file/jd.sh update_script that_day >/tmp/jd_update_script.log 2>&1 #22点更新JD_Script脚本#100#
-5 22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 #22点05分更新lxk0301脚本#100#
+5 11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 #11,19,22点05分更新lxk0301脚本#100#
 5 7 * * * $dir_file/jd.sh run_07 >/tmp/jd_run_07.log 2>&1 #不需要在零点运行的脚本#100#
 */30 1-22 * * * $dir_file/jd.sh joy >/tmp/jd_joy.log 2>&1 #1-22,每半个小时kill joy并运行一次joy挂机#100#
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
@@ -160,7 +160,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_lotteryMachine.js 		#京东抽奖机
 	jd_necklace.js			#点点券
 	jd_syj.js			#赚京豆
-	jd_bookshop.js			#口袋书店
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
 	jd_speed.js			#天天加速
@@ -202,9 +201,8 @@ cat >$dir_file/config/i-chenzhe_script.txt <<EOF
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_lenovo.js			#联想集卡活动
 	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
-	z_mgold.js 			#金口碑奖投票
-	z_city_cash.js			#城城分现金
 	z_grassy.js			#答题赢京豆
+	z_sister.js			#乘风破浪的姐姐
 EOF
 
 for script_name in `cat $dir_file/config/i-chenzhe_script.txt | awk '{print $1}'`
@@ -212,7 +210,8 @@ do
 	wget $url2/$script_name -O $dir_file_js/$script_name
 done
 
-	rm -rf $dir_file_js/jd_xtg.js			#手机尚学季
+	rm -rf $dir_file_js/z_city_cash.js			#城城分现金
+	rm -rf $dir_file_js/z_mgold.js 			#金口碑奖投票
 
 	cat $dir_file/config/lxk0301_script.txt > $dir_file/config/collect_script.txt
 	cat $dir_file/config/i-chenzhe_script.txt >> $dir_file/config/collect_script.txt
@@ -385,8 +384,8 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	z_marketLottery.js #京东超市-大转盘
 	z_unionPoster.js #美的家电节
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
-	z_city_cash.js			#城城分现金
 	z_grassy.js			#答题赢京豆
+	z_sister.js			#乘风破浪的姐姐
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script $white"
@@ -404,7 +403,6 @@ EOF
 run_08_12_16() {
 cat >/tmp/jd_tmp/run_08_12_16 <<EOF
 	jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
-	jd_bookshop.js #口袋书店
 	jd_global_mh.js #京东国际盲盒
 	jd_global.js	#环球挑战赛
 EOF
@@ -532,7 +530,6 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 concurrent_js_run_07() {
 	$node $openwrt_script/JD_Script/js/z_lenovo.js			#联想集卡活动
 	$node $openwrt_script/JD_Script/js/z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
-	$node $openwrt_script/JD_Script/js/z_mgold.js 			#金口碑奖投票
 	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
 }
@@ -596,6 +593,7 @@ kill_ccr() {
 		echo -e "$green>>终止并发程序启动。请稍等。。。。$white"
 		if [ `ps -ww | grep "js$" | grep -v "jd_crazy_joy_coin.js" | awk '{print $1}' |wc -l` == "0" ];then
 			sleep 2
+			echo ""
 			echo -e "$green我曾经跨过山和大海，也穿过人山人海。。。$white"
 			sleep 2
 			echo -e "$green直到来到你这里。。。$white"
@@ -1219,8 +1217,15 @@ script_black() {
 	else
 		for i in `echo "$script_list"`
 		do
-			echo "开始删除关于$i脚本的代码，后面需要的话看黑名单描述处理"
-			sed -i "s/\$node \$dir_file_js\/$i//g" $dir_file/jd.sh
+			if [ `grep "dir_file_js\/$i" $dir_file/jd.sh  | wc -l` -gt 0 ];then
+				echo "开始删除关于$i脚本的代码，后面需要的话看黑名单描述处理"
+				sed -i "s/\$node \$dir_file_js\/$i//g" $dir_file/jd.sh
+			elif [ `grep "$i" $dir_file/jd.sh  | wc -l` -gt 0 ];then
+				echo "开始删除关于$i脚本的代码，后面需要的话看黑名单描述处理"
+				sed -i "s/$i//g" $dir_file/jd.sh
+			else
+				echo "黑名单脚本已经全部禁用了"
+			fi
 		done
 	fi
 	clear
@@ -1591,18 +1596,6 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	sed -i "s/applyJdBean = 2000/applyJdBean = $jd_crazy_joy/g" $dir_file_js/jd_crazy_joy.js #JOY兑换2000豆子
 
 
-	#口袋书店
-	new_jdbook="2c25276cb61741d98f767884856ebcd4@f68cdec737564d929946ff64c76374cb@1ebabd3990a3499daab4397d09cd723b@d6d73edddaa64cbda1ec42dd496591d0@e50f362dbf8e4e8891c18d0a6fc9d04d@40cb5da84f0448a695dd5b9643592cfa@3ef061eb9b244b3cbdc9904a0297c3f5@99f8c73daa9f488b8cb7a2ed585aa34d"
-	zuoyou_20190516_jdbook="6b1c75eb1cb94a798430419d910b72af@2bcf369644394ffda20b07abbd300957@dbd5fbf1ffde4f99b74fd5b9d5aba901@ccb016eff33147fc96b2b0cfa781965a@ab887a95729a4cc590fbb4161c19f57f@fa96f480e49b464e893bf18ac96a2772@eae4a6a81da5430688ed02c909d5ed75"
-	jidiyangguang_20190516_jdbook="a3ad79593cdb41bd8ab31dab7e19cf06@90660442a37f473b98bf57774e9825fe"
-	chiyu_jdbook="dfae57a9a2654667b0b5e7298d2ad137"
-	Jhone_Potte_20200824_jdbook="9248205cc28144d0bd1a925f9db0083c@de78e3257e184519bb7a2212cc4e49ec"
-
-	new_jdbook_set="'$new_jdbook@$zuoyou_20190516_jdbook@$jidiyangguang_20190516_jdbook@$chiyu_jdbook@$Jhone_Potte_20200824_jdbook',"
-
-	book_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_bookshop.js | awk -F ":" '{print $1}')
-	sed -i "$book_rows a \ $new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set\n$new_jdbook_set" $dir_file_js/jd_bookshop.js
-	
 	#签到领现金
 	new_jdcash="95OquUc_sFugJO5_E_2dAgm-@eU9YELv7P4thhw6utCVw@eU9YaOjnbvx1-Djdz3UUgw@eU9Yau_gMP4nombWynsU1w@eU9YaOWxZPV09zrQwnQX0w@eU9Ya-iyZ68kpWrRmXBFgw@eU9YabrkZ_h1-GrcmiJB0A@eU9YM7bzIptVshyjrwlteU9YCLTrH5VesRWnvw5t@P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8=@LTyKtCPGU6v0uv-n1GSwfQ==@y7KhVRopnOwB1qFo2vIefg==@WnaDbsWYwImvOD1CpkeVWA==@Y4r32JTAKNBpMoCXvBf7oA==@JuMHWNtZt4Ny_0ltvG6Ipg==@IRM2beu1b-En9mzUwnU@eU9YaOSwMP8m-D_XzHpF0w@eU9Yau-yMv8ho2fcnXAQ1Q@eU9YCovbMahykhWdvS9R@JxwyaOWzbvk7-W3WzHcV1mw"
 	zuoyou_20190516_jdcash="f1kwaQ@a1hzJOmy@eU9Ya7-wM_Qg-T_SyXIb0g@eU9Yaengbv9wozzUmiIU3g@f0JgObLlIalJrA@flpkLei3@cUJpO6X3Yf4m@e1JzPbLlJ6V5rzk"
