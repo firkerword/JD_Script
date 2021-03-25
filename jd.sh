@@ -203,6 +203,7 @@ cat >$dir_file/config/i-chenzhe_script.txt <<EOF
 	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
 	z_grassy.js			#答题赢京豆
 	z_sister.js			#乘风破浪的姐姐
+	z_xmf.js			#京东小魔方活动时间：2021-03-25 至 2021-03-27
 EOF
 
 for script_name in `cat $dir_file/config/i-chenzhe_script.txt | awk '{print $1}'`
@@ -386,6 +387,7 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_grassy.js			#答题赢京豆
 	z_sister.js			#乘风破浪的姐姐
+	z_xmf.js			#京东小魔方活动时间：2021-03-25 至 2021-03-27
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script $white"
@@ -430,10 +432,11 @@ EOF
 		$node $dir_file_js/$i
 		$run_sleep
 	done
-
-	$node $openwrt_script/JD_Script/js/jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
-
 	echo -e "$green run_10_15_20$stop_script $white"
+}
+
+run_10_15_20_ccr() {
+	$node $openwrt_script/JD_Script/js/jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
 }
 
 joy(){
@@ -689,7 +692,11 @@ concurrent_js_if() {
 			concurrent_js_run_07 && if_ps
 			concurrent_js_clean
 		;;
-		run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_030|run_020)
+		run_10_15_20)
+			run_10_15_20
+			run_10_15_20_ccr
+		;;
+		run_01|run_06_18|run_02|run_03|run_045|run_08_12_16|run_030|run_020)
 			action="$action1"
 			concurrent_js
 			if_ps
@@ -1389,6 +1396,7 @@ additional_settings() {
 	Javon_random_fr="c9bb7ca2a80d4c8ab2cae6216d7a9fe6@dcfb05a919ff472680daca4584c832b8@0ce9d3a5f9cd40ccb9741e8f8cf5d801@54ac6b2343314f61bc4a6a24d7a2eba1@bad22aba416d4fffb18ad8534b56ea60@e5a87df07c914457b855cbb2f115d0a4@9a4370f99abb4eda8fa61d08be81c1d7@d535648ffa3b45d79ff66b997ec8b629@8b8b4872ab9d489896391cc5798a56e2"
 	minty_20210114_fr="f6480e96df4e4ddb9629008af9932f8e"
 	ashou_20210516_fr="9046fbd8945f48cb8e36a17fff9b0983@72abb03ca91a4569933c6c8a62a5622c@5e567ba1b9bd4389ae19fa09ca276f33@82b1494663f9484baa176589298ca4b3@616382e94efa476c90f241c1897742f1@d4e3080b06ed47d884e4ef9852cad568@ed2b2d28151a482eae49dff2e5a588f8@a8b204ae2a7541a18e54f5bfb7dcb04b"
+	xiaobandeng_fr="64304080a2714e1cac59af03b0009581@e9333dbf9c294ad6af2792dacc236fe7"
 	xiaodengzi_20190516_fr="8284c080686b45c89a6c6f7d1ea7baac@f69821dde34540d39f95315c5290eb88@5e753c671d0644c7bb418523d3452975@c6f859ec57d74dda9dafc6b3c2af0a0f@8dda5802f0d54f38af48c4059c591007"
 	cainiao5_20190516_fr="2a9ccd7f32c245d7a4d6c0fe1cafdd4c"
 	wjq_20190516_fr="9aac4df8839742b6abae13606ad696cc"
@@ -1397,7 +1405,7 @@ additional_settings() {
 	Oyeah_20200104_fr="5e54362c4a294f66853d14e777584598"
 	shisan_20200213_fr="cf13366e69d648ff9022e0fdce8c172a@cedfefd072434e57afcd95bed69a5f5c"
 	JOSN_20200807_fr="2868e98772cb4fac9a04cd43e964f337"
-	Jhone_Potte_20200824_fr="64304080a2714e1cac59af03b0009581@e9333dbf9c294ad6af2792dacc236fe7@f6f58dc91bad4e24b9dd6f9a1ba19950@674922141a014f13bdd882e8b5c15916@4f53be3edea541268b1b948456d6ff4e"
+	Jhone_Potte_20200824_fr="f6f58dc91bad4e24b9dd6f9a1ba19950@674922141a014f13bdd882e8b5c15916@4f53be3edea541268b1b948456d6ff4e"
 	liandao_20201010_fr="1c6474a197af4b3c8d40c26ec7f11c9e@6f7a7cc42b9342e29163588bafc3782b"
 	adong_20201108_fr="3d1985319106483ba83de3366d3716d5@9e9d99a4234d45cd966236d3cb3908cf"
 	deng_20201120_fr="bc26d0bdc442421aa92cafcf26a1e148@57cf86ce18ca4f4987ce54fae6182bbd@521a558fcce44fbbb977c8eba4ba0d40@389f3bfe4bdc45e2b1c3e2f36e6be260@26c79946c7cc4477b56d94647d0959f2@26c79946c7cc4477b56d94647d0959f2"
@@ -1421,7 +1429,7 @@ additional_settings() {
 	random_fruit="$Javon_random_fr@$test_fr@$xiaodengzi_20190516_fr@$cainiao5_20190516_fr@$wjq_20190516_fr@$whiteboy_20190711_fr@$jiu_20210110_fr@$Oyeah_20200104_fr@$shisan_20200213_fr@$JOSN_20200807_fr@$Jhone_Potte_20200824_fr@$liandao_20201010_fr@$adong_20201108_fr@$deng_20201120_fr@$gomail_20201125_fr@$baijiezi_20201126_fr@$superbei666_20201124_fr@$yiji_20201125_fr@$mjmdz_20201217_fr@$JDnailao_20201230_fr@$xo_20201229_fr@$xiaobai_20201204_fr@$wuming_20201225_fr@$JOSN_20210102_fr@$Lili_20210121_fr@$tanherongyi_20210121_fr@$zuoyou_fr@$dajiangyou20210116_fr@$luckies_20210121_fr"
 	random="$random_fruit"
 	random_array
-	new_fruit_set="'$new_fruit1@$zuoyou_20190516_fr@$Javon_20201224_fr@$minty_20210114_fr@$ashou_20210516_fr@$random_set',"
+	new_fruit_set="'$new_fruit1@$zuoyou_20190516_fr@$Javon_20201224_fr@$minty_20210114_fr@$ashou_20210516_fr@$xiaobandeng_fr@$random_set',"
 
 	fr_rows=$(grep -n "shareCodes =" $dir_file_js/jd_fruit.js | awk -F ":" '{print $1}')
 	frcode_rows=$(grep -n "FruitShareCodes = \[" $dir_file_js/jdFruitShareCodes.js | awk -F ":" '{print $1}')
@@ -1438,6 +1446,7 @@ additional_settings() {
 	Javon_random_pet="MTAxODc2NTEzMDAwMDAwMDAxODU0NzI3Mw==@MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzgwMDAwMDAwNDI1MjkxMDU=@MTE1NDQ5OTIwMDAwMDAwNDIxMjgyNjM=@MTE1NDAxNzYwMDAwMDAwMzYwNjg0OTE=@MTE1NDQ5OTIwMDAwMDAwNDI4Nzk3NTE=@MTE1NDQ5OTUwMDAwMDAwNDMwMTIxMzc=@MTE1NDQ5MzYwMDAwMDAwNDQ0NTA5MzM=@MTEzMzI0OTE0NTAwMDAwMDA0NDQ1ODY4NQ=="
 	minty_20210114_pet="MTE1NDQ5OTIwMDAwMDAwNDM2ODM4NDk="
 	ashou_20210516_pet="MTAxODEyOTI4MDAwMDAwMDM5NzM3Mjk5@MTEzMzI0OTE0NTAwMDAwMDAzOTk5ODU1MQ==@MTE1NDQ5OTIwMDAwMDAwNDIxMDIzMzM=@MTAxODEyMjkxMDAwMDAwMDQwMzc4ODU1@MTAxODc2NTEzMDAwMDAwMDAxOTcyMTM3Mw==@MTAxODc2NTEzMzAwMDAwMDAxOTkzMzM1MQ==@MTAxODc2NTEzNDAwMDAwMDAxNjA0NzEwNw=="
+	Jhone_Potte_20200824_pet="MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzcwMDAwMDAwNDE3MDkwNzE=@MTE1NDUyMjEwMDAwMDAwNDE3NDU2MjU="
 	xiaodengzi_20190516_pet="MTE1NDUwMTI0MDAwMDAwMDM5NTc4ODQz@MTAxODExNDYxMTEwMDAwMDAwNDAxMzI0NTk="
 	cainiao5_20190516_pet="MTAxODc2NTEzMzAwMDAwMDAyMTg1ODcwMQ=="
 	wjq_20190516_pet="MTAxODc2NTEzMTAwMDAwMDAyNDM5MjI0Mw=="
@@ -1446,7 +1455,6 @@ additional_settings() {
 	Oyeah_20200104_pet="MTE1NDQ5OTUwMDAwMDAwNDAyNTYyMjM="
 	shisan_20200213_pet="MTAxODc2NTEzMjAwMDAwMDAyMjc4OTI5OQ==@MTAxODExNTM5NDAwMDAwMDAzOTYzODY1Nw=="
 	JOSN_20200807_pet="MTEzMzI0OTE0NTAwMDAwMDA0MTc2Njc2Nw=="
-	Jhone_Potte_20200824_pet="MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzcwMDAwMDAwNDE3MDkwNzE=@MTE1NDUyMjEwMDAwMDAwNDE3NDU2MjU="
 	liandao_20201010_pet="MTE1NDQ5MzYwMDAwMDAwNDA3Nzk0MTc=@MTE1NDQ5OTUwMDAwMDAwNDExNjIxMDc="
 	adong_20201108_pet="MTAxODc2NTEzMTAwMDAwMDAyMTIwNTc3Nw==@MTEzMzI0OTE0NTAwMDAwMDA0MjE0MjUyNQ=="
 	deng_20201120_pet="MTE1NDUwMTI0MDAwMDAwMDM4MzAwMTI5@MTE1NDQ5OTUwMDAwMDAwMzkxMTY3MTU=@MTE1NDQ5MzYwMDAwMDAwMzgzMzg3OTM=@MTAxODc2NTEzNTAwMDAwMDAyMzk1OTQ4OQ==@MTAxODExNDYxMTAwMDAwMDAwNDA2MjUzMTk=@MTE1NDUwMTI0MDAwMDAwMDM5MTg4MTAz"
@@ -1467,10 +1475,10 @@ additional_settings() {
 	dajiangyou20210116_pet="MTE1NDQ5OTUwMDAwMDAwNDQ1NDcwODM=@MTEzMzI0OTE0NTAwMDAwMDA0MzM4Mzk2Mw==@MTEzMzI0OTE0NTAwMDAwMDA0NDU5MjM2OQ=="
 	luckies_20210121_pet="MTE1NDUyMjEwMDAwMDAwNDQxMjY1MTM=@MTE1NDQ5OTIwMDAwMDAwNDQxNjM5Mjc="
 	
-	random_pet="$Javon_random_pet@$test_pet@$xiaodengzi_20190516_pet@$cainiao5_20190516_pet@$wjq_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$Jhone_Potte_20200824_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet@$xiaobai_20201204_pet@$wuming_20201225_pet@$JOSN_20210102_pet@$Lili_20210121_pet@$tanherongyi_20210121_pet@$zuoyou_pet@$dajiangyou20210116_pet@$luckies_20210121_pet"
+	random_pet="$Javon_random_pet@$test_pet@$xiaodengzi_20190516_pet@$cainiao5_20190516_pet@$wjq_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet@$xiaobai_20201204_pet@$wuming_20201225_pet@$JOSN_20210102_pet@$Lili_20210121_pet@$tanherongyi_20210121_pet@$zuoyou_pet@$dajiangyou20210116_pet@$luckies_20210121_pet"
 	random="$random_pet"
 	random_array
-	new_pet_set="'$new_pet1@$zuoyou_20190516_pet@$Javon_20201224_pet@$minty_20210114_pet@$ashou_20210516_pet@$random_set',"
+	new_pet_set="'$new_pet1@$zuoyou_20190516_pet@$Javon_20201224_pet@$minty_20210114_pet@$ashou_20210516_pet@$Jhone_Potte_20200824_pet@$random_set',"
 
 	pet_rows=$(grep -n "shareCodes =" $dir_file_js/jd_pet.js | awk -F ":" '{print $1}')
 	petcode_rows=$(grep -n "PetShareCodes = \[" $dir_file_js/jdPetShareCodes.js | awk -F ":" '{print $1}')
@@ -1495,6 +1503,7 @@ additional_settings() {
 	Javon_random_pb="wgkx2n7t2cr5oa6ro77edazro3kxfdgh6ixucea@qermg6jyrtndlahowraj6265fm@rug64eq6rdioosun4upct64uda5ac3f4ijdgqji@t4ahpnhib7i4hbcqqocijnecby@5a43e5atkvypfxat7paaht76zy@gdi2q3bsj3n4dgcs5lxnn2tyn4@mojrvk5gf5cfszku73tohtuwli@l4ex6vx6yynouzcgilo46gozezzpsoyqvp66rta@beda5sgrp3bnfrynnqutermxoe"
 	minty_20210114_pb="lo3353pm4j5vuzw3ca6oyqfolm"
 ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtvev6em@mlrdw3aw26j3w2hy5trqwqmzn6ucqiz2ribf7na@olmijoxgmjutzdb4pf2fwevfnx4fxdmgld5xu2a@yaxz3zbedmnzhemvhmrbdc7xhq@olmijoxgmjutyy7u5s57pouxi5teo3r4r2mt36i@olmijoxgmjutzh77gykzjkyd6zwvkvm6oszb5ni@dixtq55kenw3ykejvsax6y3xrq"
+	xiaobandeng_pb="olmijoxgmjutzcbkzw4njrhy3l3gwuh6g2qzsvi@olmijoxgmjuty4tpgnpbnzvu4pl6hyxp3sferqa"
 	xiaodengzi_20190516_pb="kcpj4m5kmd4sfdp7ilsvvtkdvu@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi32mpzw3ekc36hh7feakdgbbfjky@j3yggpcyulgljlovo4pwsyi3xa@uvutkok52dcpuntu3gwko34qta@vu2gwcgpheqlm5vzyxutfzc774"
 	cainiao5_20190516_pb="mlrdw3aw26j3wuxtla52mzrnywbtfqzw6bzyi3y"
 	wjq_20190516_pb="sv3wbqzfbzbip22dluyg3kqa5a"
@@ -1503,7 +1512,7 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	Oyeah_20200104_pb="e7lhibzb3zek234ckc2fm2yvkj5cbsdpe7y6p2a"
 	shisan_20200213_pb="mlrdw3aw26j3xzd26qnacr3cfnm4zggngukbhny@okj5ibnh3onz7yqop3tum45jigtppsihwynzavy"
 	JOSN_20200807_pb="pmvt25o5pxfjzcquanxwokbgvu3h7wlwy7o5jii"
-	Jhone_Potte_20200824_pb="olmijoxgmjutzcbkzw4njrhy3l3gwuh6g2qzsvi@olmijoxgmjuty4tpgnpbnzvu4pl6hyxp3sferqa@h3cggkcy6agkh4ozcp5idack3aupbxyuunf2oti@l4ex6vx6yynouz2vsrqlkogw4gvwf5sihbmchdq@wsr6thb5bd25kamxdqdkgw2m5zfiwo4o66p6saa"
+	Jhone_Potte_20200824_pb="h3cggkcy6agkh4ozcp5idack3aupbxyuunf2oti@l4ex6vx6yynouz2vsrqlkogw4gvwf5sihbmchdq@wsr6thb5bd25kamxdqdkgw2m5zfiwo4o66p6saa"
 	liandao_20201010_pb="nxawbkvqldtx4wdwxxbkf23g6y@l4ex6vx6yynouxxefa4hfq6z3in25fmktqqwtca"
 	adong_20201108_pb="qhw4z5vauoy4gfkaybvpmxvjfi@olmijoxgmjuty6wu5iufrhoi6jmzzodszk6xgda"
 	deng_20201120_pb="e7lhibzb3zek3knwnjhrbaadekphavflo22jqii@olmijoxgmjutzfvkt4iu7xobmplveczy2ogou3i@f3er4cqcqgwogenz3dwsg7owhy@eupxefvqt76x2ssddhd35aysfrchgqeijzo2wdi@3en43v3ev6tvx55oefp3vb2xure67mm3kwgsm6a@nkvdrkoit5o657wm7ui35qcu2dmtir7t5h7sema"
@@ -1524,10 +1533,10 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	dajiangyou20210116_pb="wrqpt6mmzjh2ymuihokh6rch26iphcfu6tg2dti@mlrdw3aw26j3xfvou7sfasnhuibk3tfgwzxznuq@e7lhibzb3zek3zlf7yqqsp7cpancjboji2vxaba"
 	luckies_20210121_pb="5itdl72qrkd7lbepefbvkmopla@dp4p7knb5s3qqkzpv3pxsm4u7bdci76fivwlseq"
 	
-	random_plantBean="$Javon_random_pb@$test_pb@$xiaodengzi_20190516_pb@$cainiao5_20190516_pb@$wjq_20190516_pb@$whiteboy_20190711_pb@$jiu_20210110_pb@$Oyeah_20200104_pb@$shisan_20200213_pb@$JOSN_20200807_pb@$Jhone_Potte_20200824_pb@$@$liandao_20201010_pb@$adong_20201108_pb@$deng_20201120_pb@$gomail_20201125_pb@$baijiezi_20201126_pb@$superbei666_20201124_pb@$yiji_20201125_pb@$mjmdz_20201217_pb@$JDnailao_20201230_pb@$xo_20201229_pb@$xiaobai_20201204_pb@$wuming_20201225_pb@$JOSN_20210102_pb@$Lili_20210121_pb@$tanherongyi_20210121_pb@$zuoyou_pb@$dajiangyou20210116_pb@$luckies_20210121_pb"
+	random_plantBean="$Javon_random_pb@$test_pb@$xiaodengzi_20190516_pb@$cainiao5_20190516_pb@$wjq_20190516_pb@$whiteboy_20190711_pb@$jiu_20210110_pb@$Oyeah_20200104_pb@$shisan_20200213_pb@$JOSN_20200807_pb@$Jhone_Potte_20200824_pb@$liandao_20201010_pb@$adong_20201108_pb@$deng_20201120_pb@$gomail_20201125_pb@$baijiezi_20201126_pb@$superbei666_20201124_pb@$yiji_20201125_pb@$mjmdz_20201217_pb@$JDnailao_20201230_pb@$xo_20201229_pb@$xiaobai_20201204_pb@$wuming_20201225_pb@$JOSN_20210102_pb@$Lili_20210121_pb@$tanherongyi_20210121_pb@$zuoyou_pb@$dajiangyou20210116_pb@$luckies_20210121_pb"
 	random="$random_plantBean"
 	random_array
-	new_plantBean_set="'$new_plantBean1@$zuoyou_20190516_pb@$Javon_20201224_pb@$minty_20210114_pb@$ashou_20210516_pb@$random_set',"
+	new_plantBean_set="'$new_plantBean1@$zuoyou_20190516_pb@$Javon_20201224_pb@$minty_20210114_pb@$ashou_20210516_pb@$xiaobandeng_pb@$random_set',"
 
 	pb_rows=$(grep -n "shareCodes =" $dir_file_js/jd_plantBean.js | awk -F ":" '{print $1}')
 	pbcode_rows=$(grep -n "PlantBeanShareCodes = \[" $dir_file_js/jdPlantBeanShareCodes.js | awk -F ":" '{print $1}')
@@ -1542,8 +1551,8 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	Javon_20201224_df="P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8="
 	minty_20210114_df="AuzMzT5lc_tztwp75jBCWQ=="
 	ashou_20210516_df="1rQLjMF_eWMiQ-RAWARW_w==@6h514zWW6JNRE_Kp-L4cjA==@2G-4uh8CqPAv48cQT7BbXQ==@cxWqqvvoGwDhojw6JDJzaA==@pvMjBwEJuWqNrupO6Pjn6w==@nNK5doo5rxvF1HjnP0Kwjw==@BoMD6oFV2DhQRRo_w-h83g==@PqXKBSk3K1QcHUS0QRsCBg=="
-	wjq_20190516_df="43I0xnmtfBvt5qiFm6ftxA=="
 	Jhone_Potte_20200824_df="Q4Rij5_6085kuANMaAvBMA==@gTLa05neWl8UFTGKpFLeog=="
+	wjq_20190516_df="43I0xnmtfBvt5qiFm6ftxA=="
 	whiteboy_20190711_df="U_NgGvEUnbU6IblJUTMQV3F7G5ihingk9kVobx99yrY=@BXXbkqJN7sr-0Qkid6v27A=="
 	adong_20201108_df="QBGc1MnsD3uSN5nGDMAl7A==@a8PK5kDEvblgKUUTLP0e2w=="
 	cainiao5_20201209_df="LBoBCAhsmQGJdrWJilbWJQ=="
@@ -1556,10 +1565,10 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	dajiangyou20210116_df="zn0Xt-zkwkbostX3PpMmnQ==@0VVnk16dt_qwn4-I-dLaEA=="
 	luckies_20210121_df="WOn8gTchH7qQwZU5_YaLfw=="
 	
-	random_dreamFactory="$test_df@$wjq_20190516_df@$Jhone_Potte_20200824_df@$whiteboy_20190711_df@$adong_20201108_df@$cainiao5_20201209_df@$wuming_20201225_df@$JOSN_20210102_df@$Lili_20210121_df@$tanherongyi_20210121_df@$zuoyou_df@$dajiangyou20210116_df@$luckies_20210121_df"
+	random_dreamFactory="$test_df@$wjq_20190516_df@$whiteboy_20190711_df@$adong_20201108_df@$cainiao5_20201209_df@$wuming_20201225_df@$JOSN_20210102_df@$Lili_20210121_df@$tanherongyi_20210121_df@$zuoyou_df@$dajiangyou20210116_df@$luckies_20210121_df"
 	random="$random_dreamFactory"
 	random_array
-	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$minty_20210114_df@$ashou_20210516_df@$random_set',"
+	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$minty_20210114_df@$ashou_20210516_df@$Jhone_Potte_20200824_df@$random_set',"
 
 	df_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_dreamFactory.js | awk -F ":" '{print $1}')
 	dfcode_rows=$(grep -n "shareCodes = \[" $dir_file_js/jdDreamFactoryShareCodes.js | awk -F ":" '{print $1}')
