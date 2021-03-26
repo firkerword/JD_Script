@@ -121,11 +121,14 @@ update() {
 	fi
 
 	if [ ! -d $dir_file/git_clone/lxk0301 ];then
-		git clone -b master git@gitee.com:lxk0301/jd_scripts.git $dir_file/git_clone/lxk0301
+		echo "因上游停止秘钥，暂时不做git clone操作，你用不了脚本是正常的"
+		exit 0
+		#git clone -b master git@gitee.com:lxk0301/jd_scripts.git $dir_file/git_clone/lxk0301
 	else
-		cd $dir_file/git_clone/lxk0301
-		git fetch --all
-		git reset --hard origin/master
+		echo "因上游停止秘钥，暂时不做git pull操作"
+		#cd $dir_file/git_clone/lxk0301
+		#git fetch --all
+		#git reset --hard origin/master
 	fi
 	echo -e "$green update$start_script $white"
 	echo -e "$green开始下载JS脚本，请稍等$white"
@@ -1226,10 +1229,10 @@ script_black() {
 		do
 			if [ `grep "dir_file_js\/$i" $dir_file/jd.sh  | wc -l` -gt 0 ];then
 				echo "开始删除关于$i脚本的代码，后面需要的话看黑名单描述处理"
-				sed -i "s/\$node \$dir_file_js\/$i//g" $dir_file/jd.sh
+				sed -i "/\$node \$dir_file_js\/$i/d" $dir_file/jd.sh
 			elif [ `grep "$i" $dir_file/jd.sh  | wc -l` -gt 0 ];then
 				echo "开始删除关于$i脚本的代码，后面需要的话看黑名单描述处理"
-				sed -i "s/$i//g" $dir_file/jd.sh
+				sed -i "/$i/d" $dir_file/jd.sh
 			else
 				echo "黑名单脚本已经全部禁用了"
 			fi
@@ -1725,11 +1728,12 @@ close_notification() {
 }
 random_array() {
 	#彻底完善，感谢minty大力支援
-	quantity_num="40"
 	length=$(echo $random | awk -F '[@]' '{print NF}') #获取变量长度
-	if [ "$length" -ge "$quantity_num" ];then
+	quantity_num=$(expr $length + 1)
+
+	if [ "$length" -ge "20" ];then
 		echo "random_array" > /tmp/random.txt
-		random_num=$(python3 $dir_file/jd_random.py $length,$quantity_num  | sed "s/,/\n/g")
+		random_num=$(python3 $dir_file/jd_random.py $quantity_num,$length  | sed "s/,/\n/g")
 		for i in `echo $random_num`
 		do
 			echo $random | awk -va=$i -F '[@]' '{print $a}'  >>/tmp/random.txt
