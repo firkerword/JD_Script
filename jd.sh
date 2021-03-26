@@ -209,13 +209,12 @@ cat >$dir_file/config/i-chenzhe_script.txt <<EOF
 	z_xmf.js			#京东小魔方活动时间：2021-03-25 至 2021-03-27
 EOF
 
+:<<'COMMENT'
 for script_name in `cat $dir_file/config/i-chenzhe_script.txt | awk '{print $1}'`
 do
 	wget $url2/$script_name -O $dir_file_js/$script_name
 done
-
-	rm -rf $dir_file_js/z_city_cash.js			#城城分现金
-	rm -rf $dir_file_js/z_mgold.js 			#金口碑奖投票
+COMMENT
 
 	cat $dir_file/config/lxk0301_script.txt > $dir_file/config/collect_script.txt
 	cat $dir_file/config/i-chenzhe_script.txt >> $dir_file/config/collect_script.txt
