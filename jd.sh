@@ -1010,7 +1010,7 @@ that_day() {
 }
 
 backnas() {
-	date_time=$(date +%Y-%m-%d-%H:%M)
+	date_time=$(date +%Y-%m-%d-%H:%M | sed "s/:/_/")
 	back_file_name="script_${date_time}.tar.gz"
 	#判断所在文件夹
 	if [ "$dir_file" == "$openwrt_script/JD_Script" ];then
