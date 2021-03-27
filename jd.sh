@@ -1828,6 +1828,7 @@ system_variable() {
 
 		#jdCookie.js用于升级以后恢复链接
 		if [ ! -L "$dir_file_js/jdCookie.js" ]; then
+			rm -rf $dir_file_js/jdCookie.js
 			ln -s $openwrt_script_config/jdCookie.js $dir_file_js/jdCookie.js
 		fi
 
@@ -1853,6 +1854,7 @@ system_variable() {
 
 		#USER_AGENTS.js用于升级以后恢复链接
 		if [ ! -L "$dir_file_js/USER_AGENTS.js" ]; then
+			rm -rf $dir_file_js/USER_AGENTS.js
 			ln -s $openwrt_script_config/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
 		fi
 
@@ -1865,6 +1867,7 @@ system_variable() {
 
 		#JS_USER_AGENTS.js用于升级以后恢复链接
 		if [ ! -L "$dir_file_js/JS_USER_AGENTS.js" ]; then
+			rm -rf $dir_file_js/JS_USER_AGENTS.js
 			ln -s $openwrt_script_config/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
 		fi
 	else
