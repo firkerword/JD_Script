@@ -225,7 +225,7 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	monk_shop_lottery.js 		#店铺大转盘
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jx_products_detail.js		#京喜工厂商品列表详情
-	jd_entertainment.js 		#百变大咖秀
+	z_entertainment.js		#百变大咖秀
 	jd_try.js 			#京东试用
 	jd_gyec.js			#工业爱消除
 	jd_xxl.js			#东东爱消除
@@ -277,7 +277,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_sgmh.js #闪购盲盒长期活动
 	jd_jdzz.js #京东赚赚长期活动
 	jd_small_home.js #东东小窝
-	jd_entertainment.js #百变大咖秀
+	z_entertainment.js		#百变大咖秀
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -374,7 +374,6 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_jxnc.js #京喜农场
 	jd_ms.js #京东秒秒币 一个号大概60
 	jd_sgmh.js #闪购盲盒长期活动
-	jd_entertainment.js #百变大咖秀
 	jd_speed_sign.js #京东极速版签到+赚现金任务
 	z_fanslove.js #粉丝互动
 	jd_cash.js #签到领现金，每日2毛～5毛长期
@@ -385,7 +384,8 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	z_unionPoster.js 		#美的家电节
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_xmf.js			#京东小魔方活动时间：2021-03-25 至 2021-03-27
-	monk_shop_lottery.js		#店铺大转盘		
+	z_entertainment.js		#百变大咖秀
+	monk_shop_lottery.js		#店铺大转盘
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script $white"
