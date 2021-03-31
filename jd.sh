@@ -196,11 +196,7 @@ cat >$dir_file/config/i-chenzhe_script.txt <<EOF
 	z_fanslove.js			#粉丝互动
 	z_shake.js  			#超级摇一摇
 	z_marketLottery.js 		#京东超市-大转盘
-	z_unionPoster.js 		#美的家电节
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
-	z_lenovo.js			#联想集卡活动
-	z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
-	z_xmf.js			#京东小魔方活动时间：2021-03-25 至 2021-03-27
 	z_entertainment.js		#百变大咖秀
 EOF
 
@@ -210,14 +206,26 @@ do
 	wget $url2/$script_name -O $dir_file_js/$script_name
 done
 
+url3="https://raw.githubusercontent.com/monk-coder/dust/dust/normal"
+cat >$dir_file/config/monk-coder.txt <<EOF
+	monk_shop_lottery.js #店铺大转盘
+	monk_inter_shop_sign.js #interCenter渠道店铺签到
+	monk_shop_follow_sku.js #关注有礼
+EOF
+
+
+for script_name in `cat $dir_file/config/monk-coder.txt | awk '{print $1}'`
+do
+	wget $url3/$script_name -O $dir_file_js/$script_name
+done
+
 
 	cat $dir_file/config/lxk0301_script.txt > $dir_file/config/collect_script.txt
 	cat $dir_file/config/i-chenzhe_script.txt >> $dir_file/config/collect_script.txt
+	cat $dir_file/config/monk-coder.txt >> $dir_file/config/collect_script.txt
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
-
-	wget https://raw.githubusercontent.com/monk-coder/dust/dust/normal/monk_shop_lottery.js -O $dir_file_js/monk_shop_lottery.js #店铺大转盘
 
 
 
@@ -278,6 +286,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_jdzz.js #京东赚赚长期活动
 	jd_small_home.js #东东小窝
 	z_entertainment.js		#百变大咖秀
+	monk_inter_shop_sign.js #interCenter渠道店铺签到
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -381,11 +390,10 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_jxd.js #京小兑
 	jd_nzmh.js #女装盲盒 2021-3-8至2021-3-20
 	z_marketLottery.js 		#京东超市-大转盘
-	z_unionPoster.js 		#美的家电节
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
-	z_xmf.js			#京东小魔方活动时间：2021-03-25 至 2021-03-27
 	z_entertainment.js		#百变大咖秀
 	monk_shop_lottery.js		#店铺大转盘
+	monk_shop_follow_sku.js #关注有礼
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script $white"
@@ -529,8 +537,6 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 }
 
 concurrent_js_run_07() {
-	$node $openwrt_script/JD_Script/js/z_lenovo.js			#联想集卡活动
-	$node $openwrt_script/JD_Script/js/z_oneplus.js			#一加盲盒 2021-03-17 - 2021-03-30
 	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
 }
