@@ -170,14 +170,12 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_speed_sign.js		#京东极速版签到+赚现金任务
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	jd_crazy_joy_bonus.js		#监控crazyJoy分红狗(默认不运行，欧皇自己设置定时任务)
-	jd_global_mh.js			#京东国际盲盒
 	jd_cfd.js			#京喜财富岛
 	jd_live.js			#京东直播
 	jd_jxd.js			#京小兑
-	jd_global.js			#环球挑战赛
 	jd_live_redrain.js 		#超级直播间红包雨
-	jd_nzmh.js			#女装盲盒 2021-3-8至2021-3-20
 	jd_mohe.js			#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
+	jd_carnivalcity.js		#京东手机狂欢城活动2021-4-1至2021-4-20
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -388,7 +386,7 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_cash.js #签到领现金，每日2毛～5毛长期
 	z_shake.js  #超级摇一摇
 	jd_jxd.js #京小兑
-	jd_nzmh.js #女装盲盒 2021-3-8至2021-3-20
+	jd_carnivalcity.js		#京东手机狂欢城活动2021-4-1至2021-4-20
 	z_marketLottery.js 		#京东超市-大转盘
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_entertainment.js		#百变大咖秀
@@ -411,8 +409,6 @@ EOF
 run_08_12_16() {
 cat >/tmp/jd_tmp/run_08_12_16 <<EOF
 	jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
-	jd_global_mh.js #京东国际盲盒
-	jd_global.js	#环球挑战赛
 EOF
 	echo -e "$green run_08_12_16$start_script $white"
 
@@ -1641,26 +1637,6 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	sgmh_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_sgmh.js | awk -F ":" '{print $1}')
 	sed -i "$sgmh_rows a \ $new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set" $dir_file_js/jd_sgmh.js
 
-
-	#环球挑战赛
-	new_jdglobal="cG90S2ZvL08rRkpWMFdjMHEyVW9Ta1hrTlorVTF0aTVQU1NrUG5SaHhtZz0=@a1NGVHVxNHRyblBCZEp2dGhIdWNRQT09@SHdSZG13MEUrRUEwakdMalZYVW5wVnVvWDBzSHU5aFBXMGxqc2ZQUnY5VT0=@UGJmYjF5bkViaURrQnBtQlhPNWpOeFRIb1gvczhPYTJya1RqTksxZFB6Zz0=@M0lGNjQwUWk4a0YxWDJuRDRZMDhXNmNPekh0dmFDV3ZHNHlnSXV3RSt0ND0=@QkZBdHg3b3JOcVl3d01ZS0lTOWZVZz09@dlBxYmhhcTVCS1Z1VnF5cUxrNlp3QT09"
-	zuoyou_20190516_gb="WkdTb3dTUXo5WlJ0b09MNTdWMmNHQT09@K28ydmszcmF4ditCYjZrZ3UwS0lRUT09@ZHJtNkVxdzJFeEtQWmltRXNqRllPcmRpYk41VFI3NENjVjR1OS9ybXc4bz0=@RENkbGxncnNNb2lqK05LdktCSnhvRFJHVmdUVHJBTjdvVEQwWElYUEFJRT0=@Q1JFL1c5cWJCQ2JTVVFVSUFLamJ0ZnJ0eXZuRzl1ck9tWEovajJTaDBWUT0=@RHFSajJFVW9IQzlFdWttYzJ5aTc5UT09@VTdzK1l4SEF4RllvQlZ1b3BTOU5wZz09@Z09wTEFaZ3lQR0RYeTVTSElkM1g5Zz09@SVBLcGdCMXg2M1hxK1AvQmpDc2NmQT09@blJCWmdUNUxWRkMzeUhWeERTcDE4bHMwV0xaYWMzb1VyeTVJOWZKNXk3cz0=@MU9wNXJPZSt5VmlsRFVKby9HS0Ywdz09"
-	jidiyangguang_20190516_gb="OFYrQnpmSUVLMFZ6MkN5OWc1RU5xRXJsWnNuVG1LS1Zmd2wvSlZWbnZVOD0=@M3FqU1RPM2x4UWdobHhyVGZrelpqYnc4emdBTVJzOVZpZkJxdEc5Y0s2dz0="
-	Oyeah_20200104_gb='Tlg1YnBTb1lPc3FOMUNFd0t4cTR6YTJtQmlWb2ozcmd6QnhSMSs2aTlEND0='
-	wjq_20190516_gb="aXpOOU1UK2JXSXJwMGVKOUM1N1R4QT09"
-	Jhone_Potte_20200824_gb="R1dpTW1RUjlMN1lPYjg0NDFyU2JiWGZ4L2VtU0xTZVh5czdpeXR1ajhMYz0=@V1drMmNEd1ZWRTVkMUV1anRLOHFMdnp5T080M0pkY2NPdTN3N2JMUkNaQT0="
-	JOSN_20210102_gb="Qmx1YkdRV3FKdlJQL0pkRkRmRlN3dz09"
-	xo_20201229_gb="UzZRTFNsQVFqWFk4cUxYM1NKT2xhT2c4QmprTDY1WW1KSWFsOFBtWnRXOD0="
-	qingwa_20210129_gb='UFdqVDRvRGdoWDlMUUdrRXBQWHlmQT09'
-
-
-	random_jdglobal="$Oyeah_20200104_gb@$wjq_20190516_gb@$Jhone_Potte_20200824_gb@$JOSN_20210102_gb@$xo_20201229_gb@$qingwa_20210129_gb"
-	random="$random_jdglobal"
-	random_array
-	new_jdglobal_set="'$new_jdglobal@$zuoyou_20190516_gb@$jidiyangguang_20190516_gb@$random_set',"
-
-	global_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_global.js | awk -F ":" '{print $1}')
-	sed -i "$global_rows a \ $new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set\n$new_jdglobal_set" $dir_file_js/jd_global.js
 
 	#京东试用
 	if [ "$jd_try" == "yes" ];then
