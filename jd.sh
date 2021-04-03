@@ -707,30 +707,38 @@ concurrent_js_if() {
 		esac
 	else
 		case "$action1" in
-		run_0)
+			run_0)
 			$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
 			$action1
-			if [ ! $action2 ];then
-				echo ""
-			else
-				case "$action2" in
-				run_07)
-					$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
-					$action2
-					concurrent_js_run_07
-				;;
-				esac
-			fi
-		;;
-		run_07)
+			;;
+			run_07)
 			$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
 			$action1
 			concurrent_js_run_07
-		;;
-		run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_030|run_020)
+			;;
+			run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 			$action1
-		;;
+			;;
 		esac
+
+		if [[ -z $action2 ]]; then
+			echo ""
+		else
+			case "$action2" in
+			run_0)
+			$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
+			$action2
+			;;
+			run_07)
+			$node $dir_file_js/jd_bean_sign.js "" #京东多合一签到
+			$action2
+			concurrent_js_run_07
+			;;
+			run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
+			$action2
+			;;
+		esac
+		fi
 	fi
 }
 
