@@ -62,7 +62,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.96"
+	cron_version="2.97"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -79,7 +79,7 @@ cat >>/etc/crontabs/root <<EOF
 #**********这里是JD_Script的定时任务$cron_version版本#100#**********#
 0 0 * * * $dir_file/jd.sh run_0  >/tmp/jd_run_0.log 2>&1 #0点0分执行全部脚本#100#
 0 2-23/1 * * * $dir_file/jd.sh run_01 >/tmp/jd_run_01.log 2>&1 #种豆得豆收瓶子#100#
-0 2-23/2 * * * $dir_file/jd.sh run_020 >/tmp/jd_run_020.log 2>&1 #摇钱树#100#
+0 2-23/2 * * * $dir_file/jd.sh run_02 >/tmp/jd_run_02.log 2>&1 #摇钱树#100#
 */30 2-23 * * * $dir_file/jd.sh run_030 >/tmp/jd_run_030.log 2>&1 #两个工厂#100#
 10 2-22/3 * * * $dir_file/jd.sh run_03 >/tmp/jd_run_03.log 2>&1 #天天加速 3小时运行一次，打卡时间间隔是6小时#100#
 40 6-18/6 * * * $dir_file/jd.sh run_06_18 >/tmp/jd_run_06_18.log 2>&1 #不是很重要的，错开运行#100#
@@ -150,7 +150,6 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_crazy_joy_coin.js		#crazy joy挂机领金币/宝箱专用
 	jd_car_exchange.js		#京东汽车兑换，500赛点兑换500京豆
 	jd_car.js			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
-	jd_redPacket.js			#全民开红包
 	jd_club_lottery.js		#摇京豆
 	jd_shop.js			#进店领豆
 	jd_bean_home.js			#领京豆额外奖励
@@ -160,6 +159,7 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_lotteryMachine.js 		#京东抽奖机
 	jd_necklace.js			#点点券
 	jd_syj.js			#赚京豆
+	jd_redPacket.js			#全民开红包
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
 	jd_speed.js			#天天加速
@@ -183,6 +183,8 @@ cat >$dir_file/config/lxk0301_script.txt <<EOF
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
 EOF
+
+
 cp  $dir_file/git_clone/lxk0301/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
 
 for script_name in `cat $dir_file/config/lxk0301_script.txt | awk '{print $1}'`
@@ -228,10 +230,11 @@ done
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
-
+	wget https://raw.githubusercontent.com/monk-coder/dust/dust/member/monk_pasture.js -O $dir_file_js/monk_pasture.js #有机牧场
 
 
 cat >>$dir_file/config/collect_script.txt <<EOF
+	monk_pasture.js 		#有机牧场
 	monk_shop_lottery.js 		#店铺大转盘
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jx_products_detail.js		#京喜工厂商品列表详情
@@ -281,7 +284,6 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_car_exchange.js   #京东汽车兑换，500赛点兑换500京豆
 	jd_car.js #京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	jx_sign.js #京喜app签到长期
-	jd_redPacket.js #京东全民开红包，没时间要求
 	jd_lotteryMachine.js #京东抽奖机
 	jd_cash.js #签到领现金，每日2毛～5毛长期
 	jd_sgmh.js #闪购盲盒长期活动
@@ -338,6 +340,12 @@ run_01() {
 run_02() {
 	echo -e "$green run_02$start_script $white"
 	$node $dir_file_js/jd_moneyTree.js #摇钱树
+	if [ $(date "+%-H") -ge 13 ]; then
+ 		export PASTURE_EXCHANGE_KEYWORD="1京豆"
+	else
+ 		export PASTURE_EXCHANGE_KEYWORD="10京豆"
+	fi
+	$node $dir_file_js/monk_pasture.js #有机牧场
 	echo -e "$green run_02$stop_script $white"
 }
 
@@ -533,6 +541,7 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 }
 
 concurrent_js_run_07() {
+	jd_redPacket.js #京东全民开红包，没时间要求
 	jd_cash.js #签到领现金，每日2毛～5毛长期
 	jd_carnivalcity.js		#京东手机狂欢城活动2021-4-1至2021-4-20
 	monk_shop_lottery.js		#店铺大转盘
