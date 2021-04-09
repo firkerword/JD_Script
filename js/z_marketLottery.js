@@ -2,18 +2,18 @@
 京东超市-大转盘
 长期活动，应群友要求写了一个，但是我试了没什么收益。
 活动入口：https://pro.m.jd.com/mall/active/3ryu78eKuLyY5YipWWVSeRQEpLQP/index.html
-更新地址：https://raw.githubusercontent.com/i-chenzhe/qx/main/z_marketLottery.js
+更新地址：https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_marketLottery.js
 ============Quantumultx===============
 [task_local]
 #京东超市-大转盘
-3 10 * * * https://raw.githubusercontent.com/i-chenzhe/qx/main/z_marketLottery.js, tag=京东超市-大转盘,  enabled=true
+3 10 * * * https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_marketLottery.js, tag=京东超市-大转盘,  enabled=true
 ================Loon==============
 [Script]
-cron "3 10 * * *" script-path=https://raw.githubusercontent.com/i-chenzhe/qx/main/z_marketLottery.js,tag=京东超市-大转盘
+cron "3 10 * * *" script-path=https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_marketLottery.js,tag=京东超市-大转盘
 ===============Surge=================
-京东超市-大转盘 = type=cron,cronexp="3 10 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/i-chenzhe/qx/main/z_marketLottery.js
+京东超市-大转盘 = type=cron,cronexp="3 10 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_marketLottery.js
 ============小火箭=========
-京东超市-大转盘 = type=cron,script-path=https://raw.githubusercontent.com/i-chenzhe/qx/main/z_marketLottery.js, cronexpr="3 10 * * *", timeout=3600, enable=true
+京东超市-大转盘 = type=cron,script-path=https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_marketLottery.js, cronexpr="3 10 * * *", timeout=3600, enable=true
  */
 const $ = new Env('京东超市-大转盘');
 const notify = $.isNode() ? require('./sendNotify') : '';
