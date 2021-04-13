@@ -215,7 +215,9 @@ cat >$dir_file/config/monk-coder.txt <<EOF
 	monk_shop_lottery.js #店铺大转盘
 	monk_inter_shop_sign.js #interCenter渠道店铺签到
 	monk_shop_follow_sku.js #关注有礼
-	monk_skyworth.js #创维408下班全勤奖
+	monk_skyworth_car.js #创维408下班全勤奖
+	monk_vinda.js	#“韧”性探索 空降好礼
+	monk_shop_add_to_car.js #加购有礼
 EOF
 
 :<<feng
@@ -299,6 +301,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	monk_inter_shop_sign.js #interCenter渠道店铺签到
 	jd_nzmh.js			#女装盲盒2021-4-1至2021-4-31
 	jd_syj.js #十元街签到,一天一次即可，一周30豆子
+	monk_shop_add_to_car.js #加购有礼
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -410,7 +413,8 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_cash.js #签到领现金，每日2毛～5毛长期
 	jd_carnivalcity.js		#京东手机狂欢城活动2021-4-1至2021-4-20
 	monk_shop_lottery.js		#店铺大转盘
-	monk_skyworth.js #创维408下班全勤奖
+	monk_skyworth_car.js #创维408下班全勤奖
+	monk_vinda.js	#“韧”性探索 空降好礼
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script $white"
