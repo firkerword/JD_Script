@@ -62,7 +62,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.97"
+	cron_version="2.98"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -92,7 +92,7 @@ cat >>/etc/crontabs/root <<EOF
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
-30,31 20-23/1 9,12 3 * $node $dir_file_js/jd_live_redrain.js >/tmp/jd_live_redrain.log	#超级直播间红包雨#100#
+30,31 20-23/1 14 4 * $node $dir_file_js/jd_live_redrain.js >/tmp/jd_live_redrain.log	#超级直播间红包雨#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -132,7 +132,7 @@ update() {
 #cat script_name.txt | awk '{print length, $0}' | sort -rn | sed 's/^[0-9]\+ //'按照文件名长度降序：
 #cat script_name.txt | awk '{print length, $0}' | sort -n | sed 's/^[0-9]\+ //' 按照文件名长度升序
 
-cat >$dir_file/config/lxk0301_script.txt <<EOF
+cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_bean_sign.js			#京东多合一签到
 	jx_sign.js			#京喜app签到长期
 	jd_fruit.js			#东东农场
@@ -187,15 +187,15 @@ EOF
 
 cp  $dir_file/git_clone/lxk0301/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
 
-for script_name in `cat $dir_file/config/lxk0301_script.txt | awk '{print $1}'`
+for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
 do
 	echo -e "$yellow copy $green$script_name$white"
 	cp  $dir_file/git_clone/lxk0301/$script_name  $dir_file_js/$script_name
 	sleep 1
 done
 
-url2="https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe"
-cat >$dir_file/config/i-chenzhe_script.txt <<EOF
+url2="https://share.r2ray.com/dust/i-chenzhe"
+cat >$dir_file/config/tmp/i-chenzhe_script.txt <<EOF
 	z_fanslove.js			#粉丝互动
 	z_shake.js  			#超级摇一摇
 	z_marketLottery.js 		#京东超市-大转盘
@@ -203,46 +203,56 @@ cat >$dir_file/config/i-chenzhe_script.txt <<EOF
 	z_entertainment.js		#百变大咖秀
 EOF
 
-:<<feng
-for script_name in `cat $dir_file/config/i-chenzhe_script.txt | awk '{print $1}'`
+
+for script_name in `cat $dir_file/config/tmp/i-chenzhe_script.txt | awk '{print $1}'`
 do
 	wget $url2/$script_name -O $dir_file_js/$script_name
 done
-feng
 
-url3="https://raw.githubusercontent.com/monk-coder/dust/dust/normal"
-cat >$dir_file/config/monk-coder.txt <<EOF
-	monk_shop_lottery.js #店铺大转盘
-	monk_inter_shop_sign.js #interCenter渠道店铺签到
-	monk_shop_follow_sku.js #关注有礼
-	monk_skyworth_car.js #创维408下班全勤奖
-	monk_vinda.js	#“韧”性探索 空降好礼
-	monk_shop_add_to_car.js #加购有礼
+url3="https://share.r2ray.com/dust/normal"
+cat >$dir_file/config/tmp/monk-normal.txt <<EOF
+	monk_shop_lottery.js 		#店铺大转盘
+	monk_inter_shop_sign.js 	#interCenter渠道店铺签到
+	monk_shop_follow_sku.js 	#关注有礼
+	monk_skyworth.js 		#创维408下班全勤奖
 EOF
 
-:<<feng
-for script_name in `cat $dir_file/config/monk-coder.txt | awk '{print $1}'`
+for script_name in `cat $dir_file/config/tmp/monk-normal.txt | awk '{print $1}'`
 do
 	wget $url3/$script_name -O $dir_file_js/$script_name
 done
-feng
 
-	cat $dir_file/config/lxk0301_script.txt > $dir_file/config/collect_script.txt
-	cat $dir_file/config/i-chenzhe_script.txt >> $dir_file/config/collect_script.txt
-	cat $dir_file/config/monk-coder.txt >> $dir_file/config/collect_script.txt
+url4="https://share.r2ray.com/dust/car"
+cat >$dir_file/config/tmp/monk-car.txt <<EOF
+	monk_shop_add_to_car.js 	#加购有礼
+	monk_skyworth_car.js 		#创维408下班全勤奖
+EOF
 
-	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
-	#wget https://raw.githubusercontent.com/monk-coder/dust/dust/member/monk_pasture.js -O $dir_file_js/monk_pasture.js #有机牧场
-	rm -rf $dir_file_js/jd_shakeBean.js
-	rm -rf $dir_file_js/z_lenovo.js
-	rm -rf $dir_file_js/z_oneplus.js
-	rm -rf $dir_file_js/z_unionPoster.js
-	rm -rf $dir_file_js/z_xmf.js
+for script_name in `cat $dir_file/config/tmp/monk-car.txt | awk '{print $1}'`
+do
+	wget $url4/$script_name -O $dir_file_js/$script_name
+done
 
+
+url5="https://share.r2ray.com/dust/member"
+cat >$dir_file/config/tmp/monk-member.txt <<EOF
+	monk_pasture.js			#有机牧场
+	monk_vinda.js			#“韧”性探索 空降好礼
+EOF
+
+for script_name in `cat $dir_file/config/tmp/monk-member.txt | awk '{print $1}'`
+do
+	wget $url5/$script_name -O $dir_file_js/$script_name
+done
+
+#将所有文本汇总
+echo > $dir_file/config/collect_script.txt
+for i in `ls  $dir_file/config/tmp`
+do
+	cat $dir_file/config/tmp/$i >> $dir_file/config/collect_script.txt
+done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
-	monk_pasture.js 		#有机牧场
 	monk_shop_lottery.js 		#店铺大转盘
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jx_products_detail.js		#京喜工厂商品列表详情
@@ -261,6 +271,18 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	jdFactoryShareCodes.js		#东东工厂ShareCodes
 	jdJxncShareCodes.js		#京喜农场ShareCodes
 EOF
+
+	rm -rf $dir_file/config/monk-normal.txt
+	rm -rf $dir_file/config/monk-member.txt
+	rm -rf $dir_file/config/monk-coder.txt
+	rm -rf $dir_file/config/monk-car.txt
+	rm -rf $dir_file/config/lxk0301_script.txt
+	rm -rf $dir_file/config/i-chenzhe_script.txt
+
+
+	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
+	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
+
 
 	if [ $? -eq 0 ]; then
 		echo -e ">>$green脚本下载完成$white"
@@ -302,6 +324,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_nzmh.js			#女装盲盒2021-4-1至2021-4-31
 	jd_syj.js #十元街签到,一天一次即可，一周30豆子
 	monk_shop_add_to_car.js #加购有礼
+	monk_skyworth.js #创维408下班全勤奖
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -1811,8 +1834,8 @@ npm_install() {
 }
 
 system_variable() {
-	if [[ ! -d "$dir_file/config" ]]; then
-		mkdir  $dir_file/config
+	if [[ ! -d "$dir_file/config/tmp" ]]; then
+		mkdir -p $dir_file/config/tmp
 	fi
 	
 	if [[ ! -d "$dir_file/js" ]]; then
@@ -1935,16 +1958,17 @@ system_variable() {
 	if [ "$dir_file" == "$openwrt_script/JD_Script" ];then
 		jd_openwrt_config="$openwrt_script_config/jd_openwrt_script_config.txt"
 		if [ ! -f "$jd_openwrt_config" ]; then
-				jd_openwrt_config_description
+			jd_openwrt_config_description
 		fi
 		#jd_openwrt_script_config用于升级以后恢复链接
-		if [ ! -f "$dir_file/config/jd_openwrt_script_config.txt" ]; then
-				ln -s $jd_openwrt_config $dir_file/config/jd_openwrt_script_config.txt
+		if [ ! -L "$dir_file/config/jd_openwrt_script_config.txt" ]; then
+			rm rf $dir_file/config/jd_openwrt_script_config.txt
+			ln -s $jd_openwrt_config $dir_file/config/jd_openwrt_script_config.txt
 		fi
 	else
 		jd_openwrt_config="$dir_file/config/jd_openwrt_script_config.txt"
 		if [ ! -f "$jd_openwrt_config" ]; then
-				jd_openwrt_config_description
+			jd_openwrt_config_description
 		fi
 	fi
 
