@@ -62,7 +62,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="2.98"
+	cron_version="2.99"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -87,7 +87,7 @@ cat >>/etc/crontabs/root <<EOF
 35 10,15,20 * * * $dir_file/jd.sh run_10_15_20 >/tmp/jd_run_10_15_20.log 2>&1 #不是很重要的，错开运行#100#
 10 8,12,16 * * * $dir_file/jd.sh run_08_12_16 >/tmp/jd_run_08_12_16.log 2>&1 #宠汪汪兑换礼品#100#
 00 22 * * * $dir_file/jd.sh update_script that_day >/tmp/jd_update_script.log 2>&1 #22点更新JD_Script脚本#100#
-5 11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 #11,19,22点05分更新lxk0301脚本#100#
+5 9,11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 #9,11,19,22点05分更新lxk0301脚本#100#
 */30 1-22 * * * $dir_file/jd.sh joy >/tmp/jd_joy.log 2>&1 #1-22,每半个小时kill joy并运行一次joy挂机#100#
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
@@ -194,6 +194,11 @@ do
 	sleep 1
 done
 
+
+if [ $(date "+%-H") -ge 10 ]; then
+	echo "大于10点，不拉取和尚库"
+else
+
 url2="https://share.r2ray.com/dust/i-chenzhe"
 cat >$dir_file/config/tmp/i-chenzhe_script.txt <<EOF
 	z_fanslove.js			#粉丝互动
@@ -245,6 +250,8 @@ do
 	wget $url5/$script_name -O $dir_file_js/$script_name
 done
 
+fi
+
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
 for i in `ls  $dir_file/config/tmp`
@@ -271,14 +278,6 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	jdFactoryShareCodes.js		#东东工厂ShareCodes
 	jdJxncShareCodes.js		#京喜农场ShareCodes
 EOF
-
-	rm -rf $dir_file/config/monk-normal.txt
-	rm -rf $dir_file/config/monk-member.txt
-	rm -rf $dir_file/config/monk-coder.txt
-	rm -rf $dir_file/config/monk-car.txt
-	rm -rf $dir_file/config/lxk0301_script.txt
-	rm -rf $dir_file/config/i-chenzhe_script.txt
-
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
