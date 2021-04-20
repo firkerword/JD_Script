@@ -176,7 +176,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_jxd.js			#京小兑
 	jd_live_redrain.js 		#超级直播间红包雨
 	jd_mohe.js			#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
-	jd_carnivalcity.js		#京东手机狂欢城活动2021-4-1至2021-4-20
 	jd_nzmh.js			#女装盲盒2021-4-1至2021-4-31
 	jd_moneyTree.js 		#摇钱树
 	jd_get_share_code.js		#获取jd所有助力码脚本
@@ -206,6 +205,8 @@ cat >$dir_file/config/tmp/i-chenzhe_script.txt <<EOF
 	z_marketLottery.js 		#京东超市-大转盘
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_entertainment.js		#百变大咖秀
+	z_health_energy.js		#健康社区-收能量
+	z_health_community.js		#健康社区
 EOF
 
 
@@ -259,6 +260,21 @@ do
 done
 
 fi
+
+url6="https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx"
+cat >$dir_file/config/tmp/nianyuguai_qx.txt <<EOF
+	jd_live_lottery_social.js	#直播间抽奖（全局）
+	jd_super_redrain.js		#整点红包雨
+	jx_cash_sign.js 		#京喜签到消消乐
+EOF
+
+for script_name in `cat $dir_file/config/tmp/nianyuguai_qx.txt | awk '{print $1}'`
+do
+	url="$url6"
+	wget $url6/$script_name -O $dir_file_js/$script_name
+	update_if
+done
+
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
@@ -355,7 +371,6 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_syj.js #十元街签到,一天一次即可，一周30豆子
 	monk_shop_add_to_car.js #加购有礼
 	monk_skyworth.js #创维408下班全勤奖
-	jd_carnivalcity.js		#京东手机狂欢城活动2021-4-1至2021-4-20
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -385,6 +400,7 @@ run_030() {
 	echo -e "$green run_030$start_script $white"
 	$node $dir_file_js/jd_dreamFactory.js #京喜工厂 45分钟运行一次
 	$node $dir_file_js/jd_jdfactory.js #东东工厂，不是京喜工厂
+	$node $dir_file_js/z_health_energy.js		#健康社区-收能量
 	echo -e "$green run_030$stop_script $white"
 }
 
@@ -398,6 +414,9 @@ run_01() {
 	echo -e "$green run_01$start_script $white"
 	$node $dir_file_js/jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
 	$node $dir_file_js/jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
+	$node $dir_file_js/jd_live_lottery_social.js	#直播间抽奖（全局）
+	$node $dir_file_js/jd_super_redrain.js		#整点红包雨
+	$node $dir_file_js/jx_cash_sign.js 		#京喜签到消消乐
 	echo -e "$green run_01$stop_script $white"
 }
 
@@ -417,6 +436,7 @@ run_03() {
 	echo -e "$green run_03$start_script $white"
 	$node $dir_file_js/jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
 	$node $dir_file_js/jd_mohe.js	#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
+	$node $dir_file_js/z_health_community.js		#健康社区
 	echo -e "$green run_03$stop_script $white"
 }
 
@@ -465,7 +485,6 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	z_entertainment.js		#百变大咖秀
 	monk_shop_follow_sku.js #关注有礼
 	jd_cash.js #签到领现金，每日2毛～5毛长期
-	jd_carnivalcity.js		#京东手机狂欢城活动2021-4-1至2021-4-20
 	monk_shop_lottery.js		#店铺大转盘
 	monk_skyworth_car.js #创维408下班全勤奖
 	monk_vinda.js	#“韧”性探索 空降好礼
@@ -1774,15 +1793,7 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	source /etc/profile
 
 	#手机狂欢城
-	new_sj818="b10ff4fc-7465-45aa-b052-c5d3776685ca@61740c94-f9a4-4d16-bc47-b0f0e858663d@2003ee19-bb7d-405a-a018-3eb814704c13f9cbb5fb-3944-4cc1-8136-0d1321e90d47"
-	test_sj818="733546f2-f282-4f82-86df-0f8fd3b367bd@27f61a94-7a32-4f6c-81a3-1de4e4b44a59@a0d94b9a-438f-47d7-8db4-17aa0da80f6f@9ed7b309-b7cd-483e-b6e3-4ea65e7d7fb3@8f0420f6-a601-4f54-af56-90d24434d5b6"
-	random_sj818="$test_sj818"
-	random="$random_sj818"
-	random_array
-	new_sj818_set="$new_sj818@$random_set"
 	sed -i '/JD818_SHARECODES/d' /etc/profile >/dev/null 2>&1
-	echo "export JD818_SHARECODES=$new_sj818_set" >> /etc/profile
-	source /etc/profile
 
 	#京东试用
 	if [ "$jd_try" == "yes" ];then
