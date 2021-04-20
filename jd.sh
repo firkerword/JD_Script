@@ -1744,7 +1744,6 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	#签到领现金
 	new_jdcash="95OquUc_sFugJO5_E_2dAgm-@eU9YELv7P4thhw6utCVw@eU9YaOjnbvx1-Djdz3UUgw@eU9Yau_gMP4nombWynsU1w@eU9Ya--wYP8g8zyBnyJF0w@eU9Ya-iyZ68kpWrRmXBFgw@eU9YabrkZ_h1-GrcmiJB0A@eU9YM7bzIptVshyjrwlteU9YCLTrH5VesRWnvw5t@P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8=@JuMHWNtZt4Ny_0ltvG6Ipg==@IRM2beu1b-En9mzUwnU@eU9YaOSwMP8m-D_XzHpF0w@eU9Yau-yMv8ho2fcnXAQ1Q@eU9YCovbMahykhWdvS9R@JxwyaOWzbvk7-W3WzHcV1mw"
 	zuoyou_20190516_jdcash="f1kwaQ@a1hzJOmy@eU9Ya7-wM_Qg-T_SyXIb0g@flpkLei3@f0JgObLlIalJrA@cUJpO6X3Yf4m@e1JzPbLlJ6V5rzk@eU9Ya7m3NaglpW3QziUW0A@eU9YFbnVJ6VArC-2lQtI@ZE9ILbHhMJR9oyq_ozs@eU9Yaengbv9wozzUmiIU3g@eU9YaO22Z_og-DqGz3AX1Q"
-	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
 	chiyu_jdcash="cENuJam3ZP0"
 	Jhone_Potte_20200824_jdcash="eU9Yaum1N_4j82-EzCUSgw@eU9Yar-7Nf518GyBniIWhw"
 	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
@@ -1753,7 +1752,7 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	xo_20201229_jdcash="Ih4-be-yb_Um7GzUyHAV0w@eU9Ya-2wYf8h9meHmCdG3g"
 	stayhere_20200104_jdcash="eU9YaOTnY_ku8zvSmXRAhA@JBszauu2Y_k79WnVyHQa"
 
-	new_jdcash_set="'$xo_20201229_jdcash@$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$jidiyangguang_20190516_jdcash@$ashou_20210516_jdcash@$test_jdcash@$stayhere_20200104_jdcash',"
+	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$ashou_20210516_jdcash@$test_jdcash@$stayhere_20200104_jdcash@$xo_20201229_jdcash',"
 
 	cash_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_cash.js | awk -F ":" '{print $1}')
 	sed -i "$cash_rows a \ $new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set" $dir_file_js/jd_cash.js
