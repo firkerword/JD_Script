@@ -363,7 +363,6 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_cash.js #签到领现金，每日2毛～5毛长期
 	jd_sgmh.js #闪购盲盒长期活动
 	jd_jdzz.js #京东赚赚长期活动
-	jd_small_home.js #东东小窝
 	z_entertainment.js		#百变大咖秀
 	monk_inter_shop_sign.js #interCenter渠道店铺签到
 	jd_nzmh.js			#女装盲盒2021-4-1至2021-4-31
@@ -627,6 +626,7 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 
 concurrent_js_run_07() {
 	$node $openwrt_script/JD_Script/js/jd_redPacket.js #京东全民开红包，没时间要求
+	$node $openwrt_script/JD_Script/js/jd_small_home.js #东东小窝
 	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
 }
