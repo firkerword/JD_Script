@@ -178,6 +178,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_mohe.js			#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
 	jd_nzmh.js			#女装盲盒2021-4-1至2021-4-31
 	jd_moneyTree.js 		#摇钱树
+	jd_market_lottery.js 		#幸运大转盘
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -369,6 +370,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_syj.js #十元街签到,一天一次即可，一周30豆子
 	monk_shop_add_to_car.js #加购有礼
 	monk_skyworth.js #创维408下班全勤奖
+	jd_market_lottery.js #幸运大转盘
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -626,7 +628,7 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 
 concurrent_js_run_07() {
 	$node $openwrt_script/JD_Script/js/jd_redPacket.js #京东全民开红包，没时间要求
-	$node $openwrt_script/JD_Script/js/jd_small_home.js #东东小窝
+	#$node $openwrt_script/JD_Script/js/jd_small_home.js #东东小窝
 	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
 }
