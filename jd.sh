@@ -180,6 +180,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_moneyTree.js 		#摇钱树
 	jd_market_lottery.js 		#幸运大转盘
 	jd_tcl.js 			#球队赢好礼
+	jd_jin_tie.js 			#领金贴
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -373,6 +374,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	monk_skyworth.js #创维408下班全勤奖
 	jd_market_lottery.js #幸运大转盘
 	jd_tcl.js #球队赢好礼
+	jd_jin_tie.js #领金贴
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -489,6 +491,7 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	monk_shop_lottery.js		#店铺大转盘
 	monk_skyworth_car.js #创维408下班全勤奖
 	monk_vinda.js	#“韧”性探索 空降好礼
+	jd_jin_tie.js 			#领金贴
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script $white"
