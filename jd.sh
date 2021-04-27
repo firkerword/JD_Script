@@ -62,7 +62,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.00"
+	cron_version="3.01"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -93,6 +93,7 @@ cat >>/etc/crontabs/root <<EOF
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 30,31 20-23/1 20,23,28 4 * $node $dir_file_js/jd_live_redrain.js >/tmp/jd_live_redrain.log	#超级直播间红包雨#100#
+30 20-23/1 * * * $node $dir_file_js/jd_half_redrain.js	>/tmp/jd_half_redrain.log	#半点红包雨#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -270,6 +271,7 @@ url6="https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx"
 cat >$dir_file/config/tmp/nianyuguai_qx.txt <<EOF
 	jd_live_lottery_social.js	#直播间抽奖（全局）
 	jd_super_redrain.js		#整点红包雨
+	jd_half_redrain.js		#半点红包雨
 EOF
 
 for script_name in `cat $dir_file/config/tmp/nianyuguai_qx.txt | awk '{print $1}'`
@@ -1445,6 +1447,7 @@ help() {
 	echo -e "$yellow 1.文件说明$white"
 	echo ""
 	echo -e "$green  $script_dir/jdCookie.js $white 在此脚本内填写JD Cookie 脚本内有说明"
+	echo -e "$green  $script_dir/jddj_cookie.js $white 在此脚本内填写京东到家Cookie，需要抓包"
 	echo -e "$green  $script_dir/sendNotify.js $white 在此脚本内填写推送服务的KEY，可以不填"
 	echo -e "$green  $script_dir/USER_AGENTS.js $white 京东UA文件可以自定义也可以默认"
 	echo -e "$green  $script_dir/JS_USER_AGENTS.js $white 京东极速版UA文件可以自定义也可以默认"
