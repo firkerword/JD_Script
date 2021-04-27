@@ -181,6 +181,8 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_market_lottery.js 		#幸运大转盘
 	jd_tcl.js 			#球队赢好礼
 	jd_jin_tie.js 			#领金贴
+	jd_health.js			#健康社区
+	jd_health_collect.js		#健康社区-收能量
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -208,10 +210,10 @@ cat >$dir_file/config/tmp/i-chenzhe_script.txt <<EOF
 	z_marketLottery.js 		#京东超市-大转盘
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_entertainment.js		#百变大咖秀
-	z_health_energy.js		#健康社区-收能量
-	z_health_community.js		#健康社区
 EOF
 
+rm -rf $dir_file_js/z_health_energy.js
+rm -rf $dir_file_js/z_health_community.js
 
 for script_name in `cat $dir_file/config/tmp/i-chenzhe_script.txt | awk '{print $1}'`
 do
@@ -274,6 +276,22 @@ for script_name in `cat $dir_file/config/tmp/nianyuguai_qx.txt | awk '{print $1}
 do
 	url="$url6"
 	wget $url6/$script_name -O $dir_file_js/$script_name
+	update_if
+done
+
+passerby_url="https://raw.githubusercontent.com/passerby-b/JDDJ/main"
+cat >$dir_file/config/tmp/passerby_url.txt <<EOF
+	jddj_bean.js			#京东到家鲜豆 一天一次
+	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
+	jddj_fruit.js			#京东到家果园 0,8,11,17
+	jddj_fruit_collectWater.js 	#京东到家果园水车收水滴 作者5分钟收一次
+	jddj_getPoints.js		#京东到家鲜豆庄园收水滴 作者5分钟收一次
+EOF
+
+for script_name in `cat $dir_file/config/tmp/passerby_url.txt | awk '{print $1}'`
+do
+	url="$passerby_url"
+	wget $passerby_url/$script_name -O $dir_file_js/$script_name
 	update_if
 done
 
@@ -375,6 +393,8 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_market_lottery.js #幸运大转盘
 	jd_tcl.js #球队赢好礼
 	jd_jin_tie.js #领金贴
+	jddj_bean.js			#京东到家鲜豆 一天一次
+	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -402,9 +422,11 @@ run_020() {
 
 run_030() {
 	echo -e "$green run_030$start_script $white"
-	$node $dir_file_js/jd_dreamFactory.js #京喜工厂 45分钟运行一次
+	$node $dir_file_js/jd_dreamFactory.js #京喜工厂
 	$node $dir_file_js/jd_jdfactory.js #东东工厂，不是京喜工厂
-	$node $dir_file_js/z_health_energy.js		#健康社区-收能量
+	$node $dir_file_js/jd_health_collect.js		#健康社区-收能量
+	$node $dir_file_js/jddj_fruit_collectWater.js 	#京东到家果园水车收水滴 作者5分钟收一次
+	$node $dir_file_js/jddj_getPoints.js		#京东到家鲜豆庄园收水滴 作者5分钟收一次
 	echo -e "$green run_030$stop_script $white"
 }
 
@@ -439,7 +461,8 @@ run_03() {
 	echo -e "$green run_03$start_script $white"
 	$node $dir_file_js/jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
 	$node $dir_file_js/jd_mohe.js	#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
-	$node $dir_file_js/z_health_community.js		#健康社区
+	$node $dir_file_js/jd_health.js		#健康社区
+	$node $dir_file_js/jddj_fruit.js			#京东到家果园 0,8,11,17
 	echo -e "$green run_03$stop_script $white"
 }
 
@@ -671,13 +694,29 @@ concurrent_js_update() {
 			sed -i '/pt_pin/d' $ccr_js_file/js_$js_amount/jdCookie.js >/dev/null 2>&1
 			sed -i "5a $js_cookie_obtain" $ccr_js_file/js_$js_amount/jdCookie.js
 
-			for i in `ls $dir_file_js | grep -v 'jdCookie.js\|sendNotify.js'`
+			for i in `ls $dir_file_js | grep -v 'jdCookie.js\|sendNotify.js\|jddj_cookie.js'`
 			do
 				cp $dir_file_js/$i $ccr_js_file/js_$js_amount/$i
 			done
 
 			js_amount=$(($js_amount - 1))
 		done
+
+		#京东到家cookie
+		jddj_cookie=$(cat $openwrt_script_config/jddj_cookie.js | grep "deviceid_pdj_jd" | grep -v "deviceid_pdj_jd=xxx-xxx-xxx;o2o_m_h5_sid=xxx-xxx-xxx" | grep -v "''," | grep -v "''")
+		if [ ! $jddj_cookie ];then
+			echo "jddj_cookie为空，不做操作"
+		else
+			jddj_cookie_amount=$(echo "$jddj_cookie" |wc -l)
+			while [[ ${jddj_cookie_amount} -gt 0 ]]; do
+				cp $script_dir/jddj_cookie.js $ccr_js_file/js_$jddj_cookie_amount/jddj_cookie.js
+				jddj_cookie_obtain=$(echo "$jddj_cookie" | awk -v a="$jddj_cookie_amount" 'NR==a{ print $0}') #获取pt
+				sed -i '/deviceid_pdj_jd/d' $ccr_js_file/js_$jddj_cookie_amount/jddj_cookie.js >/dev/null 2>&1
+				sed -i "2a $jddj_cookie_obtain" $ccr_js_file/js_$jddj_cookie_amount/jddj_cookie.js
+
+				jddj_cookie_amount=$(($jddj_cookie_amount - 1))
+			done
+		fi
 	fi
 }
 
@@ -1797,8 +1836,17 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	echo "export JDCFD_SHARECODES=$new_cfd_set" >> /etc/profile
 	source /etc/profile
 
-	#手机狂欢城
-	sed -i '/JD818_SHARECODES/d' /etc/profile >/dev/null 2>&1
+	#东东社区
+	new_health=""
+	test_health=""
+
+	random_health="$test_health"
+	random="$random_health"
+	random_array
+	new_health_set="$new_health@$random_set"
+	sed -i '/JDHEALTH_SHARECODES/d' /etc/profile >/dev/null 2>&1
+	echo "export JDHEALTH_SHARECODES=$new_health_set" >> /etc/profile
+	source /etc/profile
 
 	#京东试用
 	if [ "$jd_try" == "yes" ];then
@@ -2013,6 +2061,19 @@ system_variable() {
 		if [ ! -L "$dir_file_js/JS_USER_AGENTS.js" ]; then
 			rm -rf $dir_file_js/JS_USER_AGENTS.js
 			ln -s $openwrt_script_config/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
+		fi
+
+		#jddj_cookie.js 京东到家cookie
+		if [ ! -f "$openwrt_script_config/jddj_cookie.js" ]; then
+			cp  $dir_file/JSON/jddj_cookie.js  $openwrt_script_config/jddj_cookie.js
+			rm -rf $dir_file_js/jddj_cookie.js #用于删除旧的链接
+			ln -s $openwrt_script_config/jddj_cookie.js $dir_file_js/jddj_cookie.js
+		fi
+
+		#jddj_cookie.js 京东到家cookie用于升级以后恢复链接
+		if [ ! -L "$dir_file_js/jddj_cookie.js" ]; then
+			rm -rf $dir_file_js/jddj_cookie.js
+			ln -s $openwrt_script_config/jddj_cookie.js $dir_file_js/jddj_cookie.js
 		fi
 	else
 		if [ ! -f "$dir_file/jdCookie.js" ]; then
