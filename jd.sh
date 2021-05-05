@@ -180,7 +180,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_nzmh.js			#女装盲盒2021-4-1至2021-4-31
 	jd_moneyTree.js 		#摇钱树
 	jd_market_lottery.js 		#幸运大转盘
-	jd_tcl.js 			#球队赢好礼
 	jd_jin_tie.js 			#领金贴
 	jd_health.js			#健康社区
 	jd_health_collect.js		#健康社区-收能量
@@ -189,7 +188,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_unsubscribe.js		#取关京东店铺和商品
 EOF
 
-
+rm -rf $dir_file_js/jd_tcl.js 			#球队赢好礼
 cp  $dir_file/git_clone/lxk0301/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
 
 for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
@@ -392,7 +391,6 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	monk_shop_add_to_car.js #加购有礼
 	monk_skyworth.js #创维408下班全勤奖
 	jd_market_lottery.js #幸运大转盘
-	jd_tcl.js #球队赢好礼
 	jd_jin_tie.js #领金贴
 	jddj_bean.js			#京东到家鲜豆 一天一次
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
@@ -475,8 +473,6 @@ cat >/tmp/jd_tmp/run_06_18 <<EOF
 	jd_joy.js #jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
 	jd_pet.js #东东萌宠，跟手机商城同一时间
 	jd_joy_steal.js #可偷好友积分，零点开始，六点再偷一波狗粮
-	jd_daily_egg.js #天天提鹅蛋，需要有金融app，没有顶多报错问题不大
-	jd_pigPet.js #金融养猪，需要有金融app，没有顶多报错问题不大
 	jd_superMarket.js #东东超市,6点 18点多加两场用于收金币
 EOF
 	echo -e "$green run_06_18$start_script $white"
