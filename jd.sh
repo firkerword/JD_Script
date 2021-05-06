@@ -174,10 +174,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_crazy_joy_bonus.js		#监控crazyJoy分红狗(默认不运行，欧皇自己设置定时任务)
 	jd_cfd.js			#京喜财富岛
 	jd_live.js			#京东直播
-	jd_jxd.js			#京小兑
 	jd_live_redrain.js 		#超级直播间红包雨
-	jd_mohe.js			#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
-	jd_nzmh.js			#女装盲盒2021-4-1至2021-4-31
 	jd_moneyTree.js 		#摇钱树
 	jd_market_lottery.js 		#幸运大转盘
 	jd_jin_tie.js 			#领金贴
@@ -189,6 +186,9 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 EOF
 
 rm -rf $dir_file_js/jd_tcl.js 			#球队赢好礼
+rm -rf $dir_file_js/jd_jxd.js			#京小兑
+rm -rf $dir_file_js/jd_mohe.js			#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
+rm -rf $dir_file_js/jd_nzmh.js			#女装盲盒2021-4-1至2021-4-31
 cp  $dir_file/git_clone/lxk0301/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
 
 for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
@@ -386,7 +386,6 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_jdzz.js #京东赚赚长期活动
 	z_entertainment.js		#百变大咖秀
 	monk_inter_shop_sign.js #interCenter渠道店铺签到
-	jd_nzmh.js			#女装盲盒2021-4-1至2021-4-31
 	jd_syj.js #十元街签到,一天一次即可，一周30豆子
 	monk_shop_add_to_car.js #加购有礼
 	monk_skyworth.js #创维408下班全勤奖
@@ -458,7 +457,6 @@ run_02() {
 run_03() {
 	echo -e "$green run_03$start_script $white"
 	$node $dir_file_js/jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
-	$node $dir_file_js/jd_mohe.js	#5G超级盲盒2021-03-19到2021-04-30 白天抽奖基本没有京豆，4小时运行一次收集热力值
 	$node $dir_file_js/jd_health.js		#健康社区
 	$node $dir_file_js/jddj_fruit.js			#京东到家果园 0,8,11,17
 	echo -e "$green run_03$stop_script $white"
@@ -501,7 +499,6 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_speed_sign.js #京东极速版签到+赚现金任务
 	z_fanslove.js #粉丝互动
 	z_shake.js  #超级摇一摇
-	jd_jxd.js #京小兑
 	z_marketLottery.js 		#京东超市-大转盘
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	z_entertainment.js		#百变大咖秀
