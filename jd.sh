@@ -180,6 +180,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_jin_tie.js 			#领金贴
 	jd_health.js			#健康社区
 	jd_health_collect.js		#健康社区-收能量
+	jd_daily_lottery.js		#每日抽奖
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -459,6 +460,7 @@ run_03() {
 	$node $dir_file_js/jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
 	$node $dir_file_js/jd_health.js		#健康社区
 	$node $dir_file_js/jddj_fruit.js			#京东到家果园 0,8,11,17
+	$node $dir_file_js/jd_daily_lottery.js		#每日抽奖
 	echo -e "$green run_03$stop_script $white"
 }
 
@@ -1846,6 +1848,9 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 
 	#农场萌宠关闭通知
 	close_notification
+
+	#极速版红包
+	sed -i "s/jOkIZzWCgGa9NfPuHBSx1A/AkOULcXbUA_8EAPbYLLMgg/g" $dir_file_js/jd_speed_redpocke.js
 }
 
 sys_additional_settings(){
