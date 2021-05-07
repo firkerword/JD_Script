@@ -170,6 +170,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_ms.js			#京东秒秒币
 	jd_price.js			#京东保价
 	jd_speed_sign.js		#京东极速版签到+赚现金任务
+	jd_speed_redpocke.js		#极速版红包
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	jd_crazy_joy_bonus.js		#监控crazyJoy分红狗(默认不运行，欧皇自己设置定时任务)
 	jd_cfd.js			#京喜财富岛
@@ -499,6 +500,7 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_ms.js #京东秒秒币 一个号大概60
 	jd_sgmh.js #闪购盲盒长期活动
 	jd_speed_sign.js #京东极速版签到+赚现金任务
+	jd_speed_redpocke.js		#极速版红包
 	z_fanslove.js #粉丝互动
 	z_shake.js  #超级摇一摇
 	z_marketLottery.js 		#京东超市-大转盘
