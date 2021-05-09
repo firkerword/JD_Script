@@ -201,21 +201,20 @@ do
 done
 
 
-if [ $(date "+%-H") -ge 10 ]; then
-	echo "大于10点，不拉取和尚库"
-else
+#if [ $(date "+%-H") -ge 10 ]; then
+	#echo "大于10点，不拉取和尚库"
+#else
 
-url2="https://share.r2ray.com/dust/i-chenzhe"
+url2="https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe"
 cat >$dir_file/config/tmp/i-chenzhe_script.txt <<EOF
 	z_fanslove.js			#粉丝互动
 	z_shake.js  			#超级摇一摇
 	z_marketLottery.js 		#京东超市-大转盘
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
-	z_entertainment.js		#百变大咖秀
 EOF
 
-rm -rf $dir_file_js/z_health_energy.js
-rm -rf $dir_file_js/z_health_community.js
+rm -rf $dir_file_js/z_entertainment.js
+rm -rf $dir_file_js/monk_skyworth.js
 
 for script_name in `cat $dir_file/config/tmp/i-chenzhe_script.txt | awk '{print $1}'`
 do
@@ -224,12 +223,12 @@ do
 	update_if
 done
 
-url3="https://share.r2ray.com/dust/normal"
+url3="https://raw.githubusercontent.com/monk-coder/dust/dust/normal"
 cat >$dir_file/config/tmp/monk-normal.txt <<EOF
 	monk_shop_lottery.js 		#店铺大转盘
 	monk_inter_shop_sign.js 	#interCenter渠道店铺签到
 	monk_shop_follow_sku.js 	#关注有礼
-	monk_skyworth.js 		#创维408下班全勤奖
+	adolf_oppo.js                   #刺客567之寻宝
 EOF
 
 for script_name in `cat $dir_file/config/tmp/monk-normal.txt | awk '{print $1}'`
@@ -239,10 +238,10 @@ do
 	update_if
 done
 
-url4="https://share.r2ray.com/dust/car"
+url4="https://raw.githubusercontent.com/monk-coder/dust/dust/car"
 cat >$dir_file/config/tmp/monk-car.txt <<EOF
 	monk_shop_add_to_car.js 	#加购有礼
-	monk_skyworth_car.js 		#创维408下班全勤奖
+        adolf_haier.js	                #海尔_欢乐大逃亡
 EOF
 
 for script_name in `cat $dir_file/config/tmp/monk-car.txt | awk '{print $1}'`
@@ -253,10 +252,9 @@ do
 done
 
 
-url5="https://share.r2ray.com/dust/member"
+url5="https://raw.githubusercontent.com/monk-coder/dust/dust/member"
 cat >$dir_file/config/tmp/monk-member.txt <<EOF
 	monk_pasture.js			#有机牧场
-	monk_vinda.js			#“韧”性探索 空降好礼
 EOF
 
 for script_name in `cat $dir_file/config/tmp/monk-member.txt | awk '{print $1}'`
@@ -266,7 +264,7 @@ do
 	update_if
 done
 
-fi
+#fi
 
 url6="https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx"
 cat >$dir_file/config/tmp/nianyuguai_qx.txt <<EOF
@@ -309,7 +307,6 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	monk_shop_lottery.js 		#店铺大转盘
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jx_products_detail.js		#京喜工厂商品列表详情
-	z_entertainment.js		#百变大咖秀
 	jd_try.js 			#京东试用
 	jd_gyec.js			#工业爱消除
 	jd_xxl.js			#东东爱消除
@@ -386,15 +383,15 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_cash.js #签到领现金，每日2毛～5毛长期
 	jd_sgmh.js #闪购盲盒长期活动
 	jd_jdzz.js #京东赚赚长期活动
-	z_entertainment.js		#百变大咖秀
 	monk_inter_shop_sign.js #interCenter渠道店铺签到
 	jd_syj.js #十元街签到,一天一次即可，一周30豆子
 	monk_shop_add_to_car.js #加购有礼
-	monk_skyworth.js #创维408下班全勤奖
 	jd_market_lottery.js #幸运大转盘
 	jd_jin_tie.js #领金贴
 	jddj_bean.js			#京东到家鲜豆 一天一次
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
+	adolf_oppo.js                   #刺客567之寻宝
+        adolf_haier.js	                #海尔_欢乐大逃亡
 EOF
 	echo -e "$green run_0$start_script $white"
 
@@ -505,7 +502,6 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	z_shake.js  #超级摇一摇
 	z_marketLottery.js 		#京东超市-大转盘
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
-	z_entertainment.js		#百变大咖秀
 	monk_shop_follow_sku.js #关注有礼
 	jd_cash.js #签到领现金，每日2毛～5毛长期
 	monk_shop_lottery.js		#店铺大转盘
@@ -2010,12 +2006,12 @@ system_variable() {
 	fi
 
 	#判断参数
-	if [ ! -f /root/.ssh/test ];then
+	if [ ! -f /root/.ssh/test1 ];then
 		rm -rf /root/.ssh
 		cp -r $dir_file/.ssh /root/.ssh
 		chmod 600 /root/.ssh/lxk0301
 		sed -i "s/#   StrictHostKeyChecking ask/StrictHostKeyChecking no/g" /etc/ssh/ssh_config
-		echo > /root/.ssh/test
+		echo > /root/.ssh/test1
 		update
 	fi
 
