@@ -211,6 +211,7 @@ cat >$dir_file/config/tmp/i-chenzhe_script.txt <<EOF
 	z_shake.js  			#超级摇一摇
 	z_marketLottery.js 		#京东超市-大转盘
 	z_mother_jump.js		#新一期母婴跳一跳开始咯
+	z_shop_captain.js		#超级无线组队分奖品
 EOF
 
 rm -rf $dir_file_js/z_entertainment.js
@@ -392,6 +393,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	adolf_oppo.js                   #刺客567之寻宝
         adolf_haier.js	                #海尔_欢乐大逃亡
+	z_shop_captain.js		#超级无线组队分奖品
 EOF
 	echo -e "$green run_0$start_script $white"
 
