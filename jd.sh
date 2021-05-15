@@ -1878,6 +1878,13 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 
 	#极速版红包
 	sed -i "s/jOkIZzWCgGa9NfPuHBSx1A/AkOULcXbUA_8EAPbYLLMgg/g" $dir_file_js/jd_speed_redpocke.js
+
+	#关闭整点红包雨通知
+	if [ ! `grep "RAIN_NOTIFY_CONTROL" /etc/profile | wc -l` == "1" ];then
+		echo "export RAIN_NOTIFY_CONTROL="false"" >> /etc/profile
+		source /etc/profile
+	fi
+
 }
 
 sys_additional_settings(){
