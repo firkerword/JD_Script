@@ -435,6 +435,8 @@ run_01() {
 	echo -e "$green run_01$start_script $white"
 	$node $dir_file_js/jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
 	$node $dir_file_js/jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
+	export RAIN_NOTIFY_CONTROL="false"
+	source /etc/profile
 	$node $dir_file_js/jd_super_redrain.js		#整点红包雨
 	echo -e "$green run_01$stop_script $white"
 }
@@ -488,7 +490,6 @@ run_07() {
 cat >/tmp/jd_tmp/run_07 <<EOF
 	jx_sign.js #京喜app签到长期
 	jd_rankingList.js #京东排行榜签到领京豆
-	jd_syj.js #十元街签到,一天一次即可，一周30豆子
 	jd_kd.js #京东快递签到 一天运行一次即可
 	jd_bean_home.js #领京豆额外奖励
 	jd_club_lottery.js #摇京豆，没时间要求
@@ -525,6 +526,7 @@ EOF
 run_08_12_16() {
 cat >/tmp/jd_tmp/run_08_12_16 <<EOF
 	jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
+	jd_syj.js #赚京豆
 EOF
 	echo -e "$green run_08_12_16$start_script $white"
 
