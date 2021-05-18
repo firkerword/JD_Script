@@ -62,7 +62,7 @@ stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.07"
+	cron_version="3.08"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -92,7 +92,7 @@ cat >>/etc/crontabs/root <<EOF
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
-30,31 20-23/1 14,18 5 * $node $dir_file_js/jd_live_redrain.js >/tmp/jd_live_redrain.log	#超级直播间红包雨#100#
+#30,31 20-23/1 18,21,28 5 * $node $dir_file_js/jd_live_redrain.js >/tmp/jd_live_redrain.log	#超级直播间红包雨#100#
 30 20-23/1 * * * $node $dir_file_js/jd_half_redrain.js	>/tmp/jd_half_redrain.log	#半点红包雨#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
@@ -292,7 +292,13 @@ do
 done
 
 #检测cookie是否存活（暂时不能看到还有几天到期）
-cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
+	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
+
+
+	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
+	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
+	wget https://raw.githubusercontent.com/fangpidedongsun/jd_scripts2/master/jd_friend.js -O $dir_file_js/jd_friend.js #joy总动员一次性脚本
+
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
@@ -311,7 +317,7 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	jd_xxl.js			#东东爱消除
 	jd_xxl_gh.js			#个护爱消除，完成所有任务+每日挑战
 	jd_opencard.js			#开卡活动，一次性活动，运行完脚本获得53京豆，进入入口还可以开卡领30都
-	jd_friend.js			#JOY总动员 一期的活动
+	jd_friend.js			#joy总动员 一次性脚本
 	jd_unbind.js 			#注销京东会员卡
 	jdDreamFactoryShareCodes.js	#京喜工厂ShareCodes
 	jdFruitShareCodes.js		#东东农场ShareCodes
@@ -320,9 +326,6 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	jdFactoryShareCodes.js		#东东工厂ShareCodes
 	jdJxncShareCodes.js		#京喜农场ShareCodes
 EOF
-
-	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
 
 
 	if [ $? -eq 0 ]; then
@@ -1898,7 +1901,7 @@ sys_additional_settings(){
 	zuoyou_20190516_cfd="FEDB2AF96850881075FA08A13F621BA2@492629151F9A4D58FD1396DF6A89283271310967BE165544D8C825F27C4A2BA3@B07EC6F47A9BBA48D730300D742021D4AB091E6E8BC38C6FC83951F090865B4D@5266AB2AB4A420E011FDE365CD3761DEA004AF26497E96FE787CEA61D3B9CC5D@E36DC4BBF3C37E38C7E986E8836ECA97D7CC19A31C9E2A1F98A102AEE7E4CCC2@BC11A30DDE0C69ACBA90C9374FB64AF6648270AC47BB30E4340A23CB0B286411@BE23B69794FF9225CA2A11A4FD324D9973306BE33A756B36D5DD201B2D661F69@0FD477A54177EE4FA6B4128DC6C4FE442B153AE2B4C40E1EEC9CA76696BC61CB@11F743A9D0C5D5ADFBBAA2DF0413382B53EC91F0510E9968157559A4B38F176C@02891BCA03C90A1927B0A6B7AEAF2C60255B1E1317B509B477793869356E8D81@9D3BBBB7C428ACF58C7380ACA3EBE0798CBD1466AFAF50B327F3168977EBAF5A@4258CC830AA9723630A626F5CD2CE5E39EB5941364F3A8C9E0E0A04CC41ABAC9"
 	jidiyangguang_20190516_cfd="7EFA02FBA93D2428836E5046ACC9F0BA851F3F531F2B19A574E82C6612D063E6@0CEBB972109F10663A8D5E663E617B5E9DB6862E81793277DFAC711F9FA7665D"
 	Jhone_Potte_20200824_cfd="489E0A39F03311FB59083A7006A35FCB45F5EB3DA92FA7B4446168FAF5EA64DE@45E0C9745C26474C1DBB0E2F5D4E3D661F744C456D2D2516FDADD0689C455C1D"
-	Javon_20201224_cfd="859D1EACFE0FB0DE30DF970EC5DF56A66CC70A94127F891B767022BA3EE475A8@3108F77AE5B711A96FBEE78E952FDE20E8492892E55D2E715158AE7994570073"
+	Javon_20201224_cfd="859D1EACFE0FB0DE30DF970EC5DF56A6FBF3F70095B62A4D76529F62AC57EAB8@3108F77AE5B711A96FBEE78E952FDE207C976D1BA12EE4A880629BA678290EEE"
 	stayhere_20200104_cfd="1AA809032AAFEAB44ADA354C0355DF303842B23067E05B05EB517F6E0D5926C7@BBF0047F731148F8EEE064EE3D5BF51889F9EE5A1FC3BEA1C046D5D7F12946DF"
 	random_cfd="$test_cfd"
 	random="$random_cfd"
