@@ -26,14 +26,13 @@ dir_file="$( cd -P "$( dirname "$Source"  )" && pwd  )"
 dir_file_js="$dir_file/js"
 
 #检测当前位置
-openwrt_script="/usr/share/jd_openwrt_script"
-openwrt_script_config="/usr/share/jd_openwrt_script/script_config"
-if [ "$dir_file" == "$openwrt_script/JD_Script" ];then
-	script_dir="$openwrt_script_config"
-	prompt=""
+if [ "$dir_file" == "/usr/share/jd_openwrt_script/JD_Script" ];then
+	openwrt_script="/usr/share/jd_openwrt_script"
+	openwrt_script_config="/usr/share/jd_openwrt_script/script_config"
 else
-	script_dir="$dir_file"
-	prompt="检测到你使用本地安装方式安装脚本，此方式后面会逐渐放弃，请按github：https://github.com/ITdesk01/jd_openwrt_script 重新编译插件"
+	clear
+	echo -e "$red检测到你使用本地安装方式安装脚本，不再支持本地模式！！！，请按github：https://github.com/ITdesk01/jd_openwrt_script 重新编译插件$white"
+	exit 0
 fi
 
 ccr_js_file="$dir_file/ccr_js"
@@ -52,13 +51,13 @@ wrap_tab="     "
 line="%0D%0A%0D%0A---%0D%0A%0D%0A"
 current_time=$(date +"%Y-%m-%d")
 by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script/tree/main 核心JS采用lxk0301开源JS脚本"
-SCKEY=$(grep "let SCKEY" $script_dir/sendNotify.js  | awk -F "'" '{print $2}')
+SCKEY=$(grep "let SCKEY" $openwrt_script_config/sendNotify.js  | awk -F "'" '{print $2}')
 
 
 
 
-start_script="脚本开始运行，当前时间：`date "+%Y-%m-%d %H:%M"`"
-stop_script="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
+start_script_time="脚本开始运行，当前时间：`date "+%Y-%m-%d %H:%M"`"
+stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
@@ -128,7 +127,7 @@ update() {
 		git fetch --all
 		git reset --hard origin/master
 	fi
-	echo -e "$green update$start_script $white"
+	echo -e "$green update$start_script_time $white"
 	echo -e "$green开始下载JS脚本，请稍等$white"
 #cat script_name.txt | awk '{print length, $0}' | sort -rn | sed 's/^[0-9]\+ //'按照文件名长度降序：
 #cat script_name.txt | awk '{print length, $0}' | sort -n | sed 's/^[0-9]\+ //' 按照文件名长度升序
@@ -338,7 +337,7 @@ EOF
 	chmod 755 $dir_file_js/*
 	additional_settings
 	concurrent_js_update
-	echo -e "$green update$stop_script $white"
+	echo -e "$green update$stop_script_time $white"
 	task #更新完全部脚本顺便检查一下计划任务是否有变
 
 }
@@ -367,11 +366,11 @@ update_if() {
 }
 
 update_script() {
-	echo -e "$green update_script$start_script $white"
+	echo -e "$green update_script$start_script_time $white"
 	cd $dir_file
 	git fetch --all
 	git reset --hard origin/main
-	echo -e "$green update_script$stop_script $white"
+	echo -e "$green update_script$stop_script_time $white"
 }
 
 
@@ -395,7 +394,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	adolf_oppo.js                   #刺客567之寻宝
 	z_shop_captain.js		#超级无线组队分奖品
 EOF
-	echo -e "$green run_0$start_script $white"
+	echo -e "$green run_0$start_script_time $white"
 
 	for i in `cat /tmp/jd_tmp/run_0 | awk '{print $1}'`
 	do
@@ -410,43 +409,43 @@ EOF
 	run_03
 	run_030
 	$node $dir_file_js/jd_crazy_joy.js #crazyJoy任务
-	echo -e "$green run_0$stop_script $white"
+	echo -e "$green run_0$stop_script_time $white"
 }
 
 run_020() {
-	echo -e "$green run_020$start_script $white"
+	echo -e "$green run_020$start_script_time $white"
 	echo "run_020暂时没有东西"
-	echo -e "$green run_020$stop_script $white"
+	echo -e "$green run_020$stop_script_time $white"
 }
 
 run_030() {
-	echo -e "$green run_030$start_script $white"
+	echo -e "$green run_030$start_script_time $white"
 	$node $dir_file_js/jd_dreamFactory.js #京喜工厂
 	$node $dir_file_js/jd_jdfactory.js #东东工厂，不是京喜工厂
 	$node $dir_file_js/jd_health_collect.js		#健康社区-收能量
 	$node $dir_file_js/jddj_fruit_collectWater.js 	#京东到家果园水车收水滴 作者5分钟收一次
 	$node $dir_file_js/jddj_getPoints.js		#京东到家鲜豆庄园收水滴 作者5分钟收一次
-	echo -e "$green run_030$stop_script $white"
+	echo -e "$green run_030$stop_script_time $white"
 }
 
 run_045() {
-	echo -e "$green run_045$start_script $white"
+	echo -e "$green run_045$start_script_time $white"
 	echo "run_045暂时没有东西"
-	echo -e "$green run_045$stop_script $white"
+	echo -e "$green run_045$stop_script_time $white"
 }
 
 run_01() {
-	echo -e "$green run_01$start_script $white"
+	echo -e "$green run_01$start_script_time $white"
 	$node $dir_file_js/jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
 	$node $dir_file_js/jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
 	export RAIN_NOTIFY_CONTROL="false"
 	source /etc/profile
 	$node $dir_file_js/jd_super_redrain.js		#整点红包雨
-	echo -e "$green run_01$stop_script $white"
+	echo -e "$green run_01$stop_script_time $white"
 }
 
 run_02() {
-	echo -e "$green run_02$start_script $white"
+	echo -e "$green run_02$start_script_time $white"
 	$node $dir_file_js/jd_moneyTree.js #摇钱树
 	if [ $(date "+%-H") -ge 13 ]; then
 		sed -i '/PASTURE_EXCHANGE_KEYWORD/d' /etc/profile
@@ -456,16 +455,16 @@ run_02() {
 		echo "export PASTURE_EXCHANGE_KEYWORD="1京豆"" >>/etc/profile
 	fi
 	$node $dir_file_js/monk_pasture.js #有机牧场
-	echo -e "$green run_02$stop_script $white"
+	echo -e "$green run_02$stop_script_time $white"
 }
 
 run_03() {
-	echo -e "$green run_03$start_script $white"
+	echo -e "$green run_03$start_script_time $white"
 	$node $dir_file_js/jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
 	$node $dir_file_js/jd_health.js		#健康社区
 	$node $dir_file_js/jddj_fruit.js			#京东到家果园 0,8,11,17
 	$node $dir_file_js/jd_daily_lottery.js		#每日抽奖
-	echo -e "$green run_03$stop_script $white"
+	echo -e "$green run_03$stop_script_time $white"
 }
 
 
@@ -479,7 +478,7 @@ cat >/tmp/jd_tmp/run_06_18 <<EOF
 	jd_joy_steal.js #可偷好友积分，零点开始，六点再偷一波狗粮
 	jd_superMarket.js #东东超市,6点 18点多加两场用于收金币
 EOF
-	echo -e "$green run_06_18$start_script $white"
+	echo -e "$green run_06_18$start_script_time $white"
 
 	for i in `cat /tmp/jd_tmp/run_06_18 | awk '{print $1}'`
 	do
@@ -487,7 +486,7 @@ EOF
 		$run_sleep
 	done
 
-	echo -e "$green run_06_18$stop_script $white"
+	echo -e "$green run_06_18$stop_script_time $white"
 }
 
 run_07() {
@@ -515,7 +514,7 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_jin_tie.js 			#领金贴
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
-	echo -e "$green run_07$start_script $white"
+	echo -e "$green run_07$start_script_time $white"
 
 	for i in `cat /tmp/jd_tmp/run_07 | awk '{print $1}'`
 	do
@@ -524,7 +523,7 @@ EOF
 	done
 
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
-	echo -e "$green run_07$stop_script $white"
+	echo -e "$green run_07$stop_script_time $white"
 }
 
 run_08_12_16() {
@@ -533,7 +532,7 @@ cat >/tmp/jd_tmp/run_08_12_16 <<EOF
 	jd_syj.js #赚京豆
 	adolf_pk.js 			#京享值PK
 EOF
-	echo -e "$green run_08_12_16$start_script $white"
+	echo -e "$green run_08_12_16$start_script_time $white"
 
 	for i in `cat /tmp/jd_tmp/run_08_12_16 | awk '{print $1}'`
 	do
@@ -541,7 +540,7 @@ EOF
 		$run_sleep
 	done
 
-	echo -e "$green run_08_12_16$stop_script $white"
+	echo -e "$green run_08_12_16$stop_script_time $white"
 }
 
 run_10_15_20() {
@@ -550,7 +549,7 @@ cat >/tmp/jd_tmp/run_10_15_20 <<EOF
 	jd_cfd.js #京东财富岛 有一日三餐任务
 EOF
 
-	echo -e "$green run_10_15_20$start_script $white"
+	echo -e "$green run_10_15_20$start_script_time $white"
 
 	for i in `cat /tmp/jd_tmp/run_10_15_20 | awk '{print $1}'`
 	do
@@ -558,20 +557,20 @@ EOF
 		$run_sleep
 	done
 	$node $openwrt_script/JD_Script/js/jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
-	echo -e "$green run_10_15_20$stop_script $white"
+	echo -e "$green run_10_15_20$stop_script_time $white"
 }
 
 
 joy(){
 	#crazy joy挂机领金币/宝箱专用
-	echo -e "$green joy挂机领金币$start_script $white"
+	echo -e "$green joy挂机领金币$start_script_time $white"
 	kill_joy
 	$node $dir_file_js/jd_crazy_joy_coin.js &
-	echo -e "$green joy挂机领金币$stop_script $white"
+	echo -e "$green joy挂机领金币$stop_script_time $white"
 }
 
 kill_joy() {
-	echo -e "$green  执行kill_joy$start_script $white"
+	echo -e "$green  执行kill_joy$start_script_time $white"
 	pid=$(ps -ww | grep "jd_crazy_joy_coin.js" | grep -v grep | awk '{print $1}')
 	if [ $(echo $pid |wc -l ) == "1" ];then
 		echo -e "$yellow发现joy后台程序开始清理，请稍等$white"
@@ -585,7 +584,7 @@ kill_joy() {
 	else
 		echo "$green没有运行的joy后台$white"
 	fi
-	echo -e "$green 执行kill_joy$stop_script $white"
+	echo -e "$green 执行kill_joy$stop_script_time $white"
 }
 
 script_name() {
@@ -596,15 +595,15 @@ script_name() {
 
 
 jx() {
-	echo -e "$green 查询京喜商品生产所用时间$start_script $white"
+	echo -e "$green 查询京喜商品生产所用时间$start_script_time $white"
 	$node $dir_file_js/jx_products_detail.js
-	echo -e "$green 查询完成$stop_script $white"
+	echo -e "$green 查询完成$stop_script_time $white"
 }
 
 jd_sharecode() {
-	echo -e "$green 查询京东助力码$start_script $white"
+	echo -e "$green 查询京东助力码$start_script_time $white"
 	$node $dir_file_js/jd_get_share_code.js #获取jd所有助力码脚本
-	echo -e "$green查询完成$start_script $white"
+	echo -e "$green查询完成$start_script_time $white"
 	echo ""
 	jd_sharecode_if
 }
@@ -684,11 +683,11 @@ concurrent_js_update() {
 
 		while [[ ${js_amount} -gt 0 ]]; do
 			mkdir $ccr_js_file/js_$js_amount
-			cp $script_dir/jdCookie.js $ccr_js_file/js_$js_amount/jdCookie.js
+			cp $openwrt_script_config/jdCookie.js $ccr_js_file/js_$js_amount/jdCookie.js
 
 			if [ ! -L "$ccr_js_file/js_$js_amount/sendNotify.js" ]; then
 				rm -rf $$ccr_js_file/js_$js_amount/sendNotify.js
-				ln -s $script_dir/sendNotify.js $ccr_js_file/js_$js_amount/sendNotify.js
+				ln -s $openwrt_script_config/sendNotify.js $ccr_js_file/js_$js_amount/sendNotify.js
 			fi
 
 			js_cookie_obtain=$(echo "$js_cookie" | awk -v a="$js_amount" 'NR==a{ print $0}') #获取pt
@@ -710,7 +709,7 @@ concurrent_js_update() {
 		else
 			jddj_cookie_amount=$(echo "$jddj_cookie" |wc -l)
 			while [[ ${jddj_cookie_amount} -gt 0 ]]; do
-				cp $script_dir/jddj_cookie.js $ccr_js_file/js_$jddj_cookie_amount/jddj_cookie.js
+				cp $openwrt_script_config/jddj_cookie.js $ccr_js_file/js_$jddj_cookie_amount/jddj_cookie.js
 				jddj_cookie_obtain=$(echo "$jddj_cookie" | awk -v a="$jddj_cookie_amount" 'NR==a{ print $0}') #获取pt
 				sed -i '/deviceid_pdj_jd/d' $ccr_js_file/js_$jddj_cookie_amount/jddj_cookie.js >/dev/null 2>&1
 				sed -i "2a $jddj_cookie_obtain" $ccr_js_file/js_$jddj_cookie_amount/jddj_cookie.js
@@ -931,7 +930,7 @@ addcookie() {
 		echo ""
 		echo -e "$yellow pt_key=$green密码  $yellow pt_pin=$green 账号  $yellow// 二狗子 $green(备注这个账号是谁的)$white"
 		echo ""
-		echo -e "$yellow 请不要乱输，如果输错了可以用$green sh \$jd delcookie$yellow删除,\n 或者你手动去$green$script_dir/jdCookie.js$yellow删除也行\n$white"
+		echo -e "$yellow 请不要乱输，如果输错了可以用$green sh \$jd delcookie$yellow删除,\n 或者你手动去$green$openwrt_script_config/jdCookie.js$yellow删除也行\n$white"
 		echo "---------------------------------------------------------------------------"
 		read -p "请填写你获取到的cookie(一次只能一个cookie)：" you_cookie
 		if [[ -z $you_cookie ]]; then
@@ -945,29 +944,29 @@ addcookie() {
 	pt_pin=$(echo $you_cookie | awk -F "pt_pin=" '{print $2}' | awk -F ";" '{print $1}')
 	pt_key=$(echo $you_cookie | awk -F "pt_key=" '{print $2}' | awk -F ";" '{print $1}')
 
-	if [ `cat $script_dir/jdCookie.js | grep "$pt_pin" | wc -l` == "1" ];then
+	if [ `cat $openwrt_script_config/jdCookie.js | grep "$pt_pin" | wc -l` == "1" ];then
 		echo -e "$green检测到 $yellow${pt_pin}$white 已经存在，开始更新cookie。。$white\n"
 		sleep 2
-		old_pt=$(cat $script_dir/jdCookie.js | grep "$pt_pin" | sed -e "s/',//g" -e "s/'//g")
-		old_pt_key=$(cat $script_dir/jdCookie.js | grep "$pt_pin" | awk -F "pt_key=" '{print $2}' | awk -F ";" '{print $1}')
-		sed -i "s/$old_pt_key/$pt_key/g" $script_dir/jdCookie.js
+		old_pt=$(cat $openwrt_script_config/jdCookie.js | grep "$pt_pin" | sed -e "s/',//g" -e "s/'//g")
+		old_pt_key=$(cat $openwrt_script_config/jdCookie.js | grep "$pt_pin" | awk -F "pt_key=" '{print $2}' | awk -F ";" '{print $1}')
+		sed -i "s/$old_pt_key/$pt_key/g" $openwrt_script_config/jdCookie.js
 		echo -e "$green 旧cookie：$yellow${old_pt}$white\n\n$green更新为$white\n\n$green   新cookie：$yellow${new_pt}$white\n"
 		echo  "------------------------------------------------------------------------------"
 	else
 		echo -e "$green检测到 $yellow${pt_pin}$white 不存在，开始新增cookie。。$white\n"
 		sleep 2
-		cookie_quantity=$( cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l)
+		cookie_quantity=$( cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l)
 		i=$(expr $cookie_quantity + 5)
 		if [ $i == "5" ];then
-			sed -i "5a \  '$you_cookie\'," $script_dir/jdCookie.js
+			sed -i "5a \  '$you_cookie\'," $openwrt_script_config/jdCookie.js
 		else
-			sed -i "$i a\  '$you_cookie\'," $script_dir/jdCookie.js
+			sed -i "$i a\  '$you_cookie\'," $openwrt_script_config/jdCookie.js
 		fi
-		echo -e "\n已将新cookie：$green${you_cookie}$white\n\n插入到$yellow$script_dir/jdCookie.js$white 第$i行\n"
-		cookie_quantity1=$( cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l)
+		echo -e "\n已将新cookie：$green${you_cookie}$white\n\n插入到$yellow$openwrt_script_config/jdCookie.js$white 第$i行\n"
+		cookie_quantity1=$( cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l)
 		echo  "------------------------------------------------------------------------------"
 		echo -e "$yellow你增加了账号：$green${pt_pin}$white$yellow 现在cookie一共有$cookie_quantity1个，具体以下：$white"
-		cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
+		cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
 		echo  "------------------------------------------------------------------------------"
 	fi
 	check_cooike
@@ -993,8 +992,8 @@ addcookie() {
 }
 
 delcookie() {
-	cookie_quantity=$(cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l)
-	if [ `cat $script_dir/jdCookie.js | grep "$pt_pin" | wc -l` -ge "1" ];then
+	cookie_quantity=$(cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l)
+	if [ `cat $openwrt_script_config/jdCookie.js | grep "$pt_pin" | wc -l` -ge "1" ];then
 		echo "---------------------------------------------------------------------------"
 		echo -e "		删除cookie"
 		echo "---------------------------------------------------------------------------"
@@ -1006,7 +1005,7 @@ delcookie() {
 		echo -e "$yellow 请填写你要删除的cookie（// 备注 或者pt_pin 名都行）：$green jd_10086$white "
 		echo "---------------------------------------------------------------------------"
 		echo -e "$yellow你的cookie有$cookie_quantity个，具体如下：$white"
-		cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
+		cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
 		echo "---------------------------------------------------------------------------"
 		echo ""
 		read -p "请填写你要删除的cookie（// 备注 或者pt_pin 名都行）：" you_cookie
@@ -1015,11 +1014,11 @@ delcookie() {
 			exit 0
 		fi
 	
-		sed -i "/$you_cookie/d" $script_dir/jdCookie.js
+		sed -i "/$you_cookie/d" $openwrt_script_config/jdCookie.js
 		clear
 		echo "---------------------------------------------------------------------------"
-		echo -e "$yellow你删除账号或者备注：$green${you_cookie}$white$yellow 现在cookie还有`cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l`个，具体以下：$white"
-		cat $script_dir/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
+		echo -e "$yellow你删除账号或者备注：$green${you_cookie}$white$yellow 现在cookie还有`cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | wc -l`个，具体以下：$white"
+		cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | sed -e "s/',//g" -e "s/'//g"
 		echo "---------------------------------------------------------------------------"
 		echo ""
 		read -p "是否需要删除cookie（1.需要  2.不需要 ）：" cookie_continue
@@ -1149,12 +1148,12 @@ that_day() {
 	echo $git_log >/tmp/git_log_if.log
 	git_log_if=$(grep -Eo "Zhang|ITdesk" /tmp/git_log_if.log | sort -u | wc -l )
 	if [ $git_log_if -ge 1  ];then
-		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line#### $prompt\n#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
+		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line\n#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
 		echo "  时间       +作者          +操作" >> $dir_file/git_log/${current_time}.log
 		echo "$git_log" >> $dir_file/git_log/${current_time}.log
 		echo "#### 当前脚本是否最新：$Script_status" >>$dir_file/git_log/${current_time}.log
 	else
-		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line#### $prompt\n#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
+		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line\n#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
 		echo "作者泡妹子或者干饭去了$wrap$wrap_tab今天没有任何更新$wrap$wrap_tab不要催佛系玩。。。" >>$dir_file/git_log/${current_time}.log
 		echo "#### 当前脚本是否最新：$Script_status" >>$dir_file/git_log/${current_time}.log
 	fi
@@ -1465,12 +1464,12 @@ help() {
 	echo ----------------------------------------------------
 	echo -e "$yellow 1.文件说明$white"
 	echo ""
-	echo -e "$green  $script_dir/jdCookie.js $white 在此脚本内填写JD Cookie 脚本内有说明"
-	echo -e "$green  $script_dir/jddj_cookie.js $white 在此脚本内填写京东到家Cookie，需要抓包"
-	echo -e "$green  $script_dir/sendNotify.js $white 在此脚本内填写推送服务的KEY，可以不填"
-	echo -e "$green  $script_dir/USER_AGENTS.js $white 京东UA文件可以自定义也可以默认"
-	echo -e "$green  $script_dir/JS_USER_AGENTS.js $white 京东极速版UA文件可以自定义也可以默认"
-	echo -e "$green  $script_dir/config/Script_blacklist.txt $white 脚本黑名单，用法去看这个文件"
+	echo -e "$green  $openwrt_script_config/jdCookie.js $white 在此脚本内填写JD Cookie 脚本内有说明"
+	echo -e "$green  $openwrt_script_config/jddj_cookie.js $white 在此脚本内填写京东到家Cookie，需要抓包"
+	echo -e "$green  $openwrt_script_config/sendNotify.js $white 在此脚本内填写推送服务的KEY，可以不填"
+	echo -e "$green  $openwrt_script_config/USER_AGENTS.js $white 京东UA文件可以自定义也可以默认"
+	echo -e "$green  $openwrt_script_config/JS_USER_AGENTS.js $white 京东极速版UA文件可以自定义也可以默认"
+	echo -e "$green  $openwrt_script_config/Script_blacklist.txt $white 脚本黑名单，用法去看这个文件"
 	echo ""
 	echo -e "$yellow JS脚本活动列表：$green $dir_file/git_clone/lxk0301/README.md $white"
 	echo -e "$yellow 浏览器获取京东cookie教程：$green $dir_file/git_clone/lxk0301/backUp/GetJdCookie.md $white"
@@ -1572,7 +1571,7 @@ additional_settings() {
 	xiaodengzi_20190516_fr="52dc669f77c54a26857c989c5b28221f@15cb130472c7494fbffec1758094a3e1@1db8e48de262417aaeaed456cadbc021"
 	xiaodengzi_random_20190516_fr="8284c080686b45c89a6c6f7d1ea7baac@f69821dde34540d39f95315c5290eb88@5e753c671d0644c7bb418523d3452975@c6f859ec57d74dda9dafc6b3c2af0a0f@8dda5802f0d54f38af48c4059c591007"
 	cainiao5_20190516_fr="2a9ccd7f32c245d7a4d6c0fe1cafdd4c"
-	wjq_20190516_fr="9aac4df8839742b6abae13606ad696cc"
+	wjq_20190516_fr="9aac4df8839742b6abae13606ad696cc@10828079c5ca49a1b2b56a9a3fe39671@2ce1c53010dc4f7ebb5e4803701220d3@a0927fb98a854126a045dbe1f320898c"
 	whiteboy_20190711_fr="dfb6b5dcc9d24281acbfce5d649924c0@319239c7aed84c1a97092ddbf2564717@45e193df45704b8bb25e04ea86c650bf@49fefaa873c84b398882218588b0647a"
 	jiu_20210110_fr="a413cb9823394d2d91eb8346d2fa4514@96721546e8fd429dbfa1351c907ea0f7"
 	Oyeah_20200104_fr="5e54362c4a294f66853d14e777584598@efea4e3699804ffb87074c64d1e448bd"
@@ -1602,7 +1601,8 @@ additional_settings() {
 	NanshanFox_20210303_fr="466c4a6b914f4639ac3b2f8b62473365@7b688aadeb0448b8b1a2b2e85555ecb7"
 	xo_20201229_fr="0ab77174e0a446ceaf075d2de507066b@16de7030778b41cc84b43bc96b0a67b2@a659afbab858490d8c713a43be26d447"
 	xiaodengzi_random_fr="e24edc5de45341dd98f352533e23f83a"
-	random_fruit="$xo_20201229_fr@$zuoyou_random_fr@$yushengyigeliang_20210101_fr@$Javon_random_fr@$test_fr@$xiaodengzi_random_20190516_fr@$xiaodengzi_20190516_fr@$cainiao5_20190516_fr@$wjq_20190516_fr@$whiteboy_20190711_fr@$jiu_20210110_fr@$Oyeah_20200104_fr@$shisan_20200213_fr@$JOSN_20200807_fr@$Jhone_Potte_20200824_fr@$liandao_20201010_fr@$adong_20201108_fr@$deng_20201120_fr@$gomail_20201125_fr@$baijiezi_20201126_fr@$superbei666_20201124_fr@$yiji_20201125_fr@$mjmdz_20201217_fr@$JDnailao_20201230_fr@$xo_20201229_fr@$xiaobai_20201204_fr@$wuming_20201225_fr@$JOSN_20210102_fr@$Lili_20210121_fr@$tanherongyi_20210121_fr@$dajiangyou20210116_fr@$luckies_20210121_fr@$soso_20210204_fr@$NanshanFox_20210303_fr@$xiaodengzi_random_fr"
+	ysygl_20210101_fr="2a9165ab1c4f44edbbeb40ab7c8742e8@72dd4d3e2245472986f729953c5be146"
+	random_fruit="$xo_20201229_fr@$zuoyou_random_fr@$yushengyigeliang_20210101_fr@$Javon_random_fr@$test_fr@$xiaodengzi_random_20190516_fr@$xiaodengzi_20190516_fr@$cainiao5_20190516_fr@$wjq_20190516_fr@$whiteboy_20190711_fr@$jiu_20210110_fr@$Oyeah_20200104_fr@$shisan_20200213_fr@$JOSN_20200807_fr@$Jhone_Potte_20200824_fr@$liandao_20201010_fr@$adong_20201108_fr@$deng_20201120_fr@$gomail_20201125_fr@$baijiezi_20201126_fr@$superbei666_20201124_fr@$yiji_20201125_fr@$mjmdz_20201217_fr@$JDnailao_20201230_fr@$xo_20201229_fr@$xiaobai_20201204_fr@$wuming_20201225_fr@$JOSN_20210102_fr@$Lili_20210121_fr@$tanherongyi_20210121_fr@$dajiangyou20210116_fr@$luckies_20210121_fr@$soso_20210204_fr@$NanshanFox_20210303_fr@$xiaodengzi_random_fr@$ysygl_20210101_fr"
 	random="$random_fruit"
 	random_array
 	new_fruit_set="'$new_fruit1@$zuoyou_20190516_fr@$Javon_20201224_fr@$minty_20210114_fr@$ashou_20210516_fr@$xiaobandeng_fr@$chiyu_fr@$random_set',"
@@ -1627,7 +1627,7 @@ additional_settings() {
 	Jhone_Potte_20200824_pet="MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzcwMDAwMDAwNDE3MDkwNzE=@MTE1NDUyMjEwMDAwMDAwNDE3NDU2MjU="
 	xiaodengzi_20190516_pet="MTE1NDUwMTI0MDAwMDAwMDM5NTc4ODQz@MTAxODExNDYxMTEwMDAwMDAwNDAxMzI0NTk="
 	cainiao5_20190516_pet="MTAxODc2NTEzMzAwMDAwMDAyMTg1ODcwMQ=="
-	wjq_20190516_pet="MTAxODc2NTEzMTAwMDAwMDAyNDM5MjI0Mw=="
+	wjq_20190516_pet="MTAxODc2NTEzMTAwMDAwMDAyNDM5MjI0Mw==@MTAxODc2NTEzMDAwMDAwMDAyOTc5MTM1MQ==@MTE0MDE2NjI5MDAwMDAwMDQ2OTk2NjA5@MTEzMzI0OTE0NTAwMDAwMDA0Njk5NDUwMw=="
 	whiteboy_20190711_pet="MTAxODc2NTEzMzAwMDAwMDAwNjU4NDU4NQ==@MTAxODc2NTE0NzAwMDAwMDAwNDI4ODExMQ=="
 	jiu_20210110_pet="MTE1NDUwMTI0MDAwMDAwMDQwODg1ODg3@MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzgwMDAwMDAwNDM1NjI2Mjk="
 	Oyeah_20200104_pet="MTE1NDQ5OTUwMDAwMDAwNDAyNTYyMjM="
@@ -1654,10 +1654,11 @@ additional_settings() {
 	NanshanFox_20210303_pet="MTE1NDUwMTI0MDAwMDAwMDQ0OTY5Njcx@MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzgwMDAwMDAwNDQ5ODUzMDU="
 	xo_20201229_pet="MTAxODc2NTEzNTAwMDAwMDAyMzYzODQzNw==@MTEzMzI0OTE0NTAwMDAwMDA0MjkzMDE1MQ==@MTE1NDUwMTI0MDAwMDAwMDQzNDY5Mzcx"
 	soso_20210204_pet="MTAxODc2NTEzMjAwMDAwMDAyMTM2NzI5OQ=="
+	ysygl_20210101_pet="MTAxODcxOTI2NTAwMDAwMDAzMTE4MjU2Nw==@MTEyNjE4NjQ2MDAwMDAwMDQ4MTI4MjE3"
 	test_pet="MTE1NDUwMTI0MDAwMDAwMDQ1MzAyNjI5@MTAxODc2NTEzMTAwMDAwMDAwNjQ4MzU4NQ==@MTE1NDQ5OTIwMDAwMDAwNDUzMDYzMDc=@MTE1NDQ5MzYwMDAwMDAwNDUzMDI4NjM=@MTE1NDQ5MzYwMDAwMDAwMzk2NTY2MTE==@MTE1NDQ5OTUwMDAwMDAwMzk2NTY2MTk==@MTE1NDQ5OTUwMDAwMDAwNDAyNTYyMjM==@MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzcwMDAwMDAwNDA4MzcyOTU==@MTEzMzI0OTE0NTAwMDAwMDA0NDE3MTQwOQ==@MTEzMzI0OTE0NTAwMDAwMDA0NDUyNzI4NQ=="
 	
 
-	random_pet="$xo_20201229_pet@$zuoyou_random_pet@$Javon_random_pet@$test_pet@$xiaodengzi_20190516_pet@$cainiao5_20190516_pet@$wjq_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet@$xiaobai_20201204_pet@$wuming_20201225_pet@$yushengyigeliang_20210101_pet@$JOSN_20210102_pet@$Lili_20210121_pet@$tanherongyi_20210121_pet@$dajiangyou20210116_pet@$luckies_20210121_pet@$NanshanFox_20210303_pet@$soso_20210204_pet"
+	random_pet="$xo_20201229_pet@$zuoyou_random_pet@$Javon_random_pet@$test_pet@$xiaodengzi_20190516_pet@$cainiao5_20190516_pet@$wjq_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet@$xiaobai_20201204_pet@$wuming_20201225_pet@$yushengyigeliang_20210101_pet@$JOSN_20210102_pet@$Lili_20210121_pet@$tanherongyi_20210121_pet@$dajiangyou20210116_pet@$luckies_20210121_pet@$NanshanFox_20210303_pet@$soso_20210204_pet@$ysygl_20210101_pet"
 	random="$random_pet"
 	random_array
 	new_pet_set="'$new_pet1@$zuoyou_20190516_pet@$Javon_20201224_pet@$minty_20210114_pet@$ashou_20210516_pet@$Jhone_Potte_20200824_pet@$chiyu_pet@$random_set',"
@@ -1690,7 +1691,7 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	xiaobandeng_pb="olmijoxgmjutzcbkzw4njrhy3l3gwuh6g2qzsvi@olmijoxgmjuty4tpgnpbnzvu4pl6hyxp3sferqa"
 	xiaodengzi_20190516_pb="kcpj4m5kmd4sfdp7ilsvvtkdvu@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi32mpzw3ekc36hh7feakdgbbfjky@j3yggpcyulgljlovo4pwsyi3xa@uvutkok52dcpuntu3gwko34qta@vu2gwcgpheqlm5vzyxutfzc774"
 	cainiao5_20190516_pb="mlrdw3aw26j3wuxtla52mzrnywbtfqzw6bzyi3y"
-	wjq_20190516_pb="sv3wbqzfbzbip22dluyg3kqa5a"
+	wjq_20190516_pb="sv3wbqzfbzbip22dluyg3kqa5a@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi2fg36jqtqkr72x5jddqif4oiama@olmijoxgmjutzbcaz2ejl2cotlb5qzoacbk2sxy@47m36n7ro5guth5f23tvm5fyxx2owrpkwxpmb3q"
 	whiteboy_20190711_pb="jfbrzo4erngfjdjlvmvpkpgbgie7i7c6gsw54yq@e7lhibzb3zek3uzcrgdebl2uyh3kuh7kap6cwaq"
 	jiu_20210110_pb="e7lhibzb3zek3ng2hntfcceilic4hw26k24s3li@mlrdw3aw26j3wbley5cfqbdzsfdhusjessnlavi"
 	Oyeah_20200104_pb="e7lhibzb3zek234ckc2fm2yvkj5cbsdpe7y6p2a@ro7272wkuunmcy35e4iwsw3572qi2njhs4kkzgq"
@@ -1718,10 +1719,11 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	xo_20201229_pb="rm4pdd5xupcmtvhrdwrn6luniardbktuo6umwtq@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi2ydq2lfsktlu4r2v6ydelzxbeqq"
 	soso_20210204_pb="4a4p77hwqfa46vitvdjryxnokyexmx7dvyzyvsi"
 	yushengyigeliang_20210101_pb="42jxwmz7ybhbkqdsfn5gpb5kde@pfuw5smhkmxx4gbokvsi3yifr4@uwgpfl3hsfqp3b4zn67l245x6cosobnqtyrbvaa"
+	ysygl_20210101_pb="mlrdw3aw26j3xb6wpvnjtud5ktrtah4errvbety@66nvo67oyxpycucmbw7emjhuj6xfe3d3ellmesq"
 	test_pb="llc3cyki3azsjryv3ovhiqpxtut2lkuv6hpeepa@e7lhibzb3zek3giovoz45el7ymgcpt7ng5qq3ni@olmijoxgmjutzy3d472v6l6xqdtegx4v4dpjo7q@aogye6x4cnc3pjc7clkvzuymko5xo6gnii54lua@olmijoxgmjutyy7u5s57pouxi5teo3r4r2mt36i@chcdw36mwfu6bh72u7gtvev6em@olmijoxgmjutzh77gykzjkyd6zwvkvm6oszb5ni@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi3smz2qmjorpg6ldw5otnabrmlei@3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@e7lhibzb3zek2zin4gnao3gynqwqgrzjyopvbua@e7lhibzb3zek234ckc2fm2yvkj5cbsdpe7y6p2a@u72q4vdn3zes24pmx6lh34pdcinjjexdfljybvi@mlrdw3aw26j3w2hy5trqwqmzn6ucqiz2ribf7na@7zslzn452hh7x7om4ajuw5qwwre47zqcvwx3esi@7qx2cngeekeqrzlgeuuuimqllq@e7lhibzb3zek3aujadhv7432zqsccexuw6asfua@5wl7asm5apdmptrt5felw5c6am5ac3f4ijdgqji@4npkonnsy7xi3lwrdh6u5xlbh2u6vsobzgnc2sa@t7obxmpebrxkcwywc7yvrxo2savf2goaiv53moa"
 
 	
-	random_plantBean="$xo_20201229_pb@$zuoyou_random_pb@$Javon_random_pb@$test_pb@$xiaodengzi_20190516_pb@$cainiao5_20190516_pb@$wjq_20190516_pb@$whiteboy_20190711_pb@$jiu_20210110_pb@$Oyeah_20200104_pb@$shisan_20200213_pb@$JOSN_20200807_pb@$Jhone_Potte_20200824_pb@$liandao_20201010_pb@$adong_20201108_pb@$deng_20201120_pb@$gomail_20201125_pb@$baijiezi_20201126_pb@$superbei666_20201124_pb@$yiji_20201125_pb@$mjmdz_20201217_pb@$JDnailao_20201230_pb@$xo_20201229_pb@$xiaobai_20201204_pb@$wuming_20201225_pb@$JOSN_20210102_pb@$Lili_20210121_pb@$tanherongyi_20210121_pb@$dajiangyou20210116_pb@$luckies_20210121_pb@$NanshanFox_20210303_pb@$soso_20210204_pb@$yushengyigeliang_20210101_pb"
+	random_plantBean="$xo_20201229_pb@$zuoyou_random_pb@$Javon_random_pb@$test_pb@$xiaodengzi_20190516_pb@$cainiao5_20190516_pb@$wjq_20190516_pb@$whiteboy_20190711_pb@$jiu_20210110_pb@$Oyeah_20200104_pb@$shisan_20200213_pb@$JOSN_20200807_pb@$Jhone_Potte_20200824_pb@$liandao_20201010_pb@$adong_20201108_pb@$deng_20201120_pb@$gomail_20201125_pb@$baijiezi_20201126_pb@$superbei666_20201124_pb@$yiji_20201125_pb@$mjmdz_20201217_pb@$JDnailao_20201230_pb@$xo_20201229_pb@$xiaobai_20201204_pb@$wuming_20201225_pb@$JOSN_20210102_pb@$Lili_20210121_pb@$tanherongyi_20210121_pb@$dajiangyou20210116_pb@$luckies_20210121_pb@$NanshanFox_20210303_pb@$soso_20210204_pb@$yushengyigeliang_20210101_pb@$ysygl_20210101_pb"
 	random="$random_plantBean"
 	random_array
 	new_plantBean_set="'$new_plantBean1@$zuoyou_20190516_pb@$Javon_20201224_pb@$minty_20210114_pb@$ashou_20210516_pb@$xiaobandeng_pb@$chiyu_pb@$random_set',"
@@ -1744,7 +1746,7 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	superbei666_20201124_df="5_h5YOeKKB-7m3ejIBrkyg=="
 	ashou_20210516_df="1rQLjMF_eWMiQ-RAWARW_w==@6h514zWW6JNRE_Kp-L4cjA==@2G-4uh8CqPAv48cQT7BbXQ==@cxWqqvvoGwDhojw6JDJzaA==@pvMjBwEJuWqNrupO6Pjn6w==@nNK5doo5rxvF1HjnP0Kwjw==@BoMD6oFV2DhQRRo_w-h83g==@PqXKBSk3K1QcHUS0QRsCBg=="
 	Jhone_Potte_20200824_df="Q4Rij5_6085kuANMaAvBMA==@gTLa05neWl8UFTGKpFLeog=="
-	wjq_20190516_df="43I0xnmtfBvt5qiFm6ftxA=="
+	wjq_20190516_df="43I0xnmtfBvt5qiFm6ftxA==@aGGJ27ylclTmr20WGw-ePQ==@Suo8Gk5ZAB8bY5RgiNgdlw==@NoLbYPmp_p3aXBkDRwdE2Q=="
 	whiteboy_20190711_df="U_NgGvEUnbU6IblJUTMQV3F7G5ihingk9kVobx99yrY=@BXXbkqJN7sr-0Qkid6v27A=="
 	adong_20201108_df="QBGc1MnsD3uSN5nGDMAl7A==@a8PK5kDEvblgKUUTLP0e2w=="
 	cainiao5_20201209_df="LBoBCAhsmQGJdrWJilbWJQ=="
@@ -1761,8 +1763,9 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	yushengyigeliang_20210101_df="qCG9QOJTxIDm0m8RAzmj_A==@3mO9RC7oitABfebSxFZntg==@jxV8UW_ZoHgE7HYvdofwtA=="
 	stayhere_20200104_df="oSsgRyF7zQgU5JfsS9A1dg=="
 	soso_20210204_df="XSblCsoOhYj-2BIDn3nC3g=="
+	ysygl_20210101_df="q4hywbUaNk0XuRmiMP4Avg==@BFSsGKVKebcBAe1MG5cU8A=="
 	
-	random_dreamFactory="$xo_20201229_df@$zuoyou_random_df@$test_df@$wjq_20190516_df@$whiteboy_20190711_df@$adong_20201108_df@$cainiao5_20201209_df@$wuming_20201225_df@$JOSN_20210102_df@$Lili_20210121_df@$tanherongyi_20210121_df@$dajiangyou20210116_df@$luckies_20210121_df@$superbei666_20201124_df@$NanshanFox_20210303_df@$jdnailao_20201130_df@$Javon_20201224_random_df@$yushengyigeliang_20210101_df@$stayhere_20200104_df@$soso_20210204_df"
+	random_dreamFactory="$xo_20201229_df@$zuoyou_random_df@$test_df@$wjq_20190516_df@$whiteboy_20190711_df@$adong_20201108_df@$cainiao5_20201209_df@$wuming_20201225_df@$JOSN_20210102_df@$Lili_20210121_df@$tanherongyi_20210121_df@$dajiangyou20210116_df@$luckies_20210121_df@$superbei666_20201124_df@$NanshanFox_20210303_df@$jdnailao_20201130_df@$Javon_20201224_random_df@$yushengyigeliang_20210101_df@$stayhere_20200104_df@$soso_20210204_df@$ysygl_20210101_df"
 	random="$random_dreamFactory"
 	random_array
 	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$minty_20210114_df@$ashou_20210516_df@$Jhone_Potte_20200824_df@$chiyu_df@$random_set',"
@@ -1781,8 +1784,9 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	ashou_20210516_jdzz="Sv_V1RRgf_VPSJhyb1A@Sa0DkmLenrwOA@S5KkcRRtN8wCBdUimlqVbJw@S5KkcRkoboVKEJRr3xvINdQ@S_aIzGEdFoAGJdw@S5KkcRhpI8VfXcR79wqVcIA@S5KkcRk1P8VTSdUmixvUIfQ@S-acrCh8Q_VE"
 	xo_20201229_jdzz="Sv_h6QR0Z_F3XPRj1l_QMcQ@S5KkcRx8b8lfQJxOmx6NffA"
 	stayhere_20200104_jdzz="S5KkcRBZM8FHfIk_zxvBZJg@Suf13Rhkd8FHKJB30l_AD"
+	wjq_20190516_jdzz="S-acyL1ZZ@S5KkcR0sZ9V2CJh-nlKMMdg@S5KkcRhod9VGGcUj3kaZeJQ@S5KkcA2RThBKfVGmO9Z1J"
 	
-	new_jdzz_set="'$xo_20201229_jdzz@$new_jdzz@$zuoyou_20190516_jdzz@$jidiyangguang_20190516_jdzz@$chiyu_jdzz@$ashou_20210516_jdzz@$xo_20201229_jdzz@$stayhere_20200104_jdzz',"
+	new_jdzz_set="'$xo_20201229_jdzz@$new_jdzz@$zuoyou_20190516_jdzz@$jidiyangguang_20190516_jdzz@$chiyu_jdzz@$ashou_20210516_jdzz@$xo_20201229_jdzz@$stayhere_20200104_jdzz@$wjq_20190516_jdzz',"
 
 	jdzz_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_jdzz.js | awk -F ":" '{print $1}')
 	sed -i "$jdzz_rows a \ $new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set\n$new_jdzz_set" $dir_file_js/jd_jdzz.js
@@ -1798,8 +1802,9 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	ashou_20210516_crazyJoy="olsw8XVa7wR0FkRUtBfFHA==@g1JWtxlX4qIozEmNryQipA==@kFXkccdosJUs2woo9v1i66t9zd5YaBeE@aM93O_bjCuJBkBWZB1ALPat9zd5YaBeE@JbQ7JvEWx7Fab-MBk27Njg==@Opw_ywaQzHoZAjvtslBb-qt9zd5YaBeE@lrfiS0THw-PihqcgEdchY6t9zd5YaBeE@_6SDheC97JWrfc3eWGgXhA=="
 	xo_20201229_crazyJoy="BrZxuN-FogjZKJXTJqXFOat9zd5YaBeE"
 	stayhere_20200104_crazyJoy="JYMB0M2DG_OE-H_RYgP99qt9zd5YaBeE@MDIQhVK-LG_PlEmOfPSLwQ=="
+	wjq_20190516_crazyJoy="ejBGqJTY4r0=@enMTVrJW7qPAbTSvji1oZat9zd5YaBeE@rxZNO2svihUeku1Bz2PDp6t9zd5YaBeE@a3gu8WxfBpqodtuySkObDw=="
 	
-	new_crazyJoy_set="'$xo_20201229_crazyJoy@$new_crazyJoy@$zuoyou_20190516_cj@$jidiyangguang_20190516_cj@$Jhone_Potte_20200824_cj@$chiyu_cj@$ashou_20210516_crazyJoy@$xo_20201229_crazyJoy@$stayhere_20200104_crazyJoy',"
+	new_crazyJoy_set="'$xo_20201229_crazyJoy@$new_crazyJoy@$zuoyou_20190516_cj@$jidiyangguang_20190516_cj@$Jhone_Potte_20200824_cj@$chiyu_cj@$ashou_20210516_crazyJoy@$xo_20201229_crazyJoy@$stayhere_20200104_crazyJoy@$wjq_20190516_crazyJoy',"
 
 	crazyJoy_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_crazy_joy.js | awk -F ":" '{print $1}')
 	sed -i "$crazyJoy_rows a \ $new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set\n$new_crazyJoy_set" $dir_file_js/jd_crazy_joy.js
@@ -1818,8 +1823,9 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	test_jdcash="JxwyaOWzbvk7-W3WzHcV1mw@9ruRu2Aas2GG@9o-utEEMs2mlJsRi@a0JpJLXsCf0k8m8@9pm0u3sJvlya@YF5qMbnwCaB6rQ@aUJtNb7xLKV8qA@XM6P3Toyxw@ZnQyOL7hMv91-GfczSJC@Iho0aO6yZ_gm-QGI@dF5oO7nsMaF_rznXy3MQ@d0RpO7_qM6JxuSuL@ZEd2be26"
 	xo_20201229_jdcash="Ih4-be-yb_Um7GzUyHAV0w@eU9Ya-2wYf8h9meHmCdG3g"
 	stayhere_20200104_jdcash="eU9YaOTnY_ku8zvSmXRAhA@JBszauu2Y_k79WnVyHQa"
+	wjq_20190516_jdcash="ZEF2A6Ty@eU9Ya7myZvVz92uGyycV1A@eU9Yaui2Zvl3oDzWziJHhw@eU9YL5b4F7puhR2vqhlQ"
 
-	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$ashou_20210516_jdcash@$test_jdcash@$stayhere_20200104_jdcash@$xo_20201229_jdcash',"
+	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$ashou_20210516_jdcash@$test_jdcash@$stayhere_20200104_jdcash@$xo_20201229_jdcash@$wjq_20190516_jdcash',"
 
 	cash_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_cash.js | awk -F ":" '{print $1}')
 	sed -i "$cash_rows a \ $new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set\n$new_jdcash_set" $dir_file_js/jd_cash.js
@@ -1843,11 +1849,12 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	Jhone_Potte_20200824_jdsgmh="T0225KkcRhsepFbSIhulk6ELIQCjVWmIaW5kRrbA@T0225KkcRk0QplaEIRigwaYPJQCjVWmIaW5kRrbA"
 	jidiyangguang_20190516_jdsgmh="T0225KkcRBpK8lbeIxr8wfRcdwCjVQmoaT5kRrbA@T0225KkcR0wdpFCGcRvwxv4JcgCjVQmoaT5kRrbA"
 	chiyu_jdsgmh="T0117aUqCVsc91UCjVQmoaT5kRrbA"
+	wjq_20190516_jdsgmh="T008-acyL1ZZCjVQmoaT5kRrbA@T0225KkcR0sZ9V2CJh-nlKMMdgCjVQmoaT5kRrbA@T0225KkcRhod9VGGcUj3kaZeJQCjVQmoaT5kRrbA@T0205KkcA2RThBKfVGmO9Z1JCjVQmoaT5kRrbA"
 	ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQmoaT5kRrbA@T0225KkcRRtN8wCBdUimlqVbJwCjVQmoaT5kRrbA@T0225KkcRkoboVKEJRr3xvINdQCjVQmoaT5kRrbA@T014_aIzGEdFoAGJdwCjVQmoaT5kRrbA@T0225KkcRhpI8VfXcR79wqVcIACjVQmoaT5kRrbA@T0225KkcRk1P8VTSdUmixvUIfQCjVQmoaT5kRrbA@T011-acrCh8Q_VECjVQmoaT5kRrbA"
 	xo_20201229_jdsgmh="T022v_h6QR0Z_F3XPRj1l_QMcQCjVQmoaT5kRrbA@T0225KkcRx8b8lfQJxOmx6NffACjVQmoaT5kRrbA"
 	stayhere_20200104_jdsgmh="T0225KkcRBZM8FHfIk_zxvBZJgCjVQmoaT5kRrbA@T020uf13Rhkd8FHKJB30l_ADCjVQmoaT5kRrbA"
 	
-	new_jdsgmh_set="'$xo_20201229_jdsgmh@$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$Javon_20201224_jdsgmh@$Jhone_Potte_20200824_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$ashou_20210516_jdsgmh@$xo_20201229_jdsgmh@$stayhere_20200104_jdsgmh',"
+	new_jdsgmh_set="'$xo_20201229_jdsgmh@$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$Javon_20201224_jdsgmh@$Jhone_Potte_20200824_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$ashou_20210516_jdsgmh@$xo_20201229_jdsgmh@$stayhere_20200104_jdsgmh@$wjq_20190516_jdsgmh',"
 
 	sgmh_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_sgmh.js | awk -F ":" '{print $1}')
 	sed -i "$sgmh_rows a \ $new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set\n$new_jdsgmh_set" $dir_file_js/jd_sgmh.js
@@ -1903,13 +1910,23 @@ sys_additional_settings(){
 	Jhone_Potte_20200824_cfd="489E0A39F03311FB59083A7006A35FCB45F5EB3DA92FA7B4446168FAF5EA64DE@45E0C9745C26474C1DBB0E2F5D4E3D661F744C456D2D2516FDADD0689C455C1D"
 	Javon_20201224_cfd="859D1EACFE0FB0DE30DF970EC5DF56A6FBF3F70095B62A4D76529F62AC57EAB8@3108F77AE5B711A96FBEE78E952FDE207C976D1BA12EE4A880629BA678290EEE"
 	stayhere_20200104_cfd="1AA809032AAFEAB44ADA354C0355DF303842B23067E05B05EB517F6E0D5926C7@BBF0047F731148F8EEE064EE3D5BF51889F9EE5A1FC3BEA1C046D5D7F12946DF"
+	wjq_20190516_cfd="8B25EB56B78A0063DD5973F5288E9AC7A004AF26497E96FE787CEA61D3B9CC5D@523A0D3DC8B2D06DAD1D890CEC4602FE95CED6F95BBE2CEAC38456E6FCA53374@C5E603559CBD99BA892151EBC82A83A8D323DEFC7764075D3D8CC40FA635E26A@B83A0D5AB3E4D6CB9CF4A58401C2D6FE808F91CE3C50245EBC60132C4A57CAEF"
 	random_cfd="$test_cfd"
 	random="$random_cfd"
 	random_array
-	new_cfd_set="$new_cfd@$Javon_20201224_cfd@$zuoyou_20190516_cfd@$jidiyangguang_20190516_cfd@$Jhone_Potte_20200824_cfd@$random_set@$stayhere_20200104_cfd"
+	new_cfd_set="$new_cfd@$Javon_20201224_cfd@$zuoyou_20190516_cfd@$jidiyangguang_20190516_cfd@$Jhone_Potte_20200824_cfd@$random_set@$stayhere_20200104_cfd@$wjq_20190516_cfd"
+	#根据账号数量生成对应的助力码
+	js_cookie=$(cat $dir_file_js/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | grep -v "//'" |grep -v "// '")
+	js_amountT=$(echo "$js_cookie" |wc -l)
+	cfd_share_code="$new_cfd_set"
+	while [[ ${js_amountT} -gt 0 ]]; do
+		cfd_share_code="$cfd_share_code&$new_cfd_set"
+		js_amountT=$(($js_amountT - 1))
+	done
 	sed -i '/JDCFD_SHARECODES/d' /etc/profile >/dev/null 2>&1
-	echo "export JDCFD_SHARECODES=$new_cfd_set" >> /etc/profile
-
+	#echo "export JDCFD_SHARECODES=$new_cfd_set" >> /etc/profile
+	echo "export JDCFD_SHARECODES=\"$cfd_share_code&&\"" >> /etc/profile
+	
 	#东东社区
 	new_health="T024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQCjVfnoaW5kRrbA@T0225KkcRUhP9FCEKR79xaZYcgCjVfnoaW5kRrbA@T0205KkcH0RYsTOkY2iC8I10CjVfnoaW5kRrbA@T0205KkcJEZAjD2vYGGG4Ip0CjVfnoaW5kRrbA"
 	test_health="T019vPVyQRke_EnWJxj1nfECjVfnoaW5kRrbA@T0225KkcRBYbo1fXKUv2k_5ccQCjVfnoaW5kRrbA@T0225KkcRh0ZoVfQchP9wvQJdwCjVfnoaW5kRrbA@T0205KkcPGhhswmWX2e03YBbCjVfnoaW5kRrbA@T0225KkcRBwdp1CEI0v8l_9ZdwCjVfnoaW5kRrbA"
@@ -2029,26 +2046,6 @@ system_variable() {
 		mkdir  $ccr_js_file
 	fi
 
-	#判断openssh
-	openssh_if=$(opkg list-installed | grep "openssh-client" | awk '{print $1}')
-	openssh_if1=$(opkg list-installed | grep "openssh-keygen" | awk '{print $1}')
-	if [ ! $openssh_if ];then
-		echo -e "缺少$green openssh-client$white依赖，请安装以后再使用本脚本"
-		sleep 5
-	fi
-	
-	if [ ! $openssh_if1 ];then
-		echo -e "缺少$green openssh-keygen$white依赖，请安装以后再使用本脚本"
-		sleep 5
-	fi
-
-	#判断python
-	python_if=$(opkg list-installed | grep "python3" | awk 'NR==1 {print $1}')
-	if [ ! $python_if ];then
-		echo -e "缺少$green python3$white依赖，请安装以后再使用本脚本"
-		sleep 5
-	fi
-
 	#判断参数
 	if [ ! -f /root/.ssh/test1 ];then
 		rm -rf /root/.ssh
@@ -2124,26 +2121,6 @@ system_variable() {
 			rm -rf $dir_file_js/jddj_cookie.js
 			ln -s $openwrt_script_config/jddj_cookie.js $dir_file_js/jddj_cookie.js
 		fi
-	else
-		if [ ! -f "$dir_file/jdCookie.js" ]; then
-			cp  $dir_file/JSON/jdCookie.js $dir_file/jdCookie.js
-			ln -s $dir_file/jdCookie.js $dir_file_js/jdCookie.js
-		fi
-
-		if [ ! -f "$dir_file/sendNotify.js" ]; then
-			cp  $dir_file/JSON/sendNotify.js $dir_file/sendNotify.js
-			ln -s $dir_file/sendNotify.js $dir_file_js/sendNotify.js
-		fi
-
-		if [ ! -f "$dir_file/USER_AGENTS.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/USER_AGENTS.js $dir_file/USER_AGENTS.js
-			ln -s $dir_file/USER_AGENTS.js $dir_file_js/USER_AGENTS.js
-		fi
-
-		if [ ! -f "$dir_file/JS_USER_AGENTS.js" ]; then
-			cp  $dir_file/git_clone/lxk0301/JS_USER_AGENTS.js $dir_file/JS_USER_AGENTS.js
-			ln -s $dir_file/JS_USER_AGENTS.js $dir_file_js/JS_USER_AGENTS.js
-		fi
 	fi
 
 	jd_openwrt_config_version="1.2"
@@ -2156,11 +2133,6 @@ system_variable() {
 		if [ ! -L "$dir_file/config/jd_openwrt_script_config.txt" ]; then
 			rm rf $dir_file/config/jd_openwrt_script_config.txt
 			ln -s $jd_openwrt_config $dir_file/config/jd_openwrt_script_config.txt
-		fi
-	else
-		jd_openwrt_config="$dir_file/config/jd_openwrt_script_config.txt"
-		if [ ! -f "$jd_openwrt_config" ]; then
-			jd_openwrt_config_description
 		fi
 	fi
 
@@ -2180,30 +2152,12 @@ system_variable() {
 	jd_crazy_joy=$(grep "jd_crazy_joy" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_unsubscribe=$(grep "jd_unsubscribe" $jd_openwrt_config | awk -F "'" '{print $2}')
 
-	#判断node版本是大于10
-	node_if=$(opkg list-installed | grep 'node -' | awk -F "." '{print $1}' | awk -F v '{print $2}')
-	node_npm=$(opkg list-installed | grep 'node-npm' | awk -F "." '{print $1}' | awk -F v '{print $2}')
-	if [ ! $node_if -ge "10" ];then
-		echo "node 版本小于10，请升级以后再使用本脚本"
-		exit 0
-	fi
-
-	if [ ! $node_if -ge "10" ];then
-		echo "node-npm 版本小于10，请升级以后再使用本脚本"
-		exit 0
-	fi
-
 	#添加系统变量
 	jd_script_path=$(cat /etc/profile | grep -o jd.sh | wc -l)
 	if [[ "$jd_script_path" == "0" ]]; then
 		echo "export jd_file=$dir_file" >> /etc/profile
 		echo "export jd=$dir_file/jd.sh" >> /etc/profile
 		source /etc/profile
-	fi
-
-	blacklist=""
-	if [ "黑名单" == "$blacklist" ];then
-		echo ""
 	fi
 
 	#农场萌宠关闭通知
