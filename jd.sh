@@ -181,6 +181,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_health.js			#健康社区
 	jd_health_collect.js		#健康社区-收能量
 	jd_daily_lottery.js		#每日抽奖
+	jd_jump.js			#跳跳乐瓜分京豆
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -222,6 +223,8 @@ cat >$dir_file/config/tmp/monk-normal.txt <<EOF
 	monk_shop_follow_sku.js 	#关注有礼
 	adolf_oppo.js                   #刺客567之寻宝
 	adolf_pk.js 			#京享值PK
+	adolf_martin.js			#人头马x博朗
+	adolf_mi.js			#合成小金刚
 EOF
 
 for script_name in `cat $dir_file/config/tmp/monk-normal.txt | awk '{print $1}'`
@@ -512,6 +515,8 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	monk_skyworth_car.js #创维408下班全勤奖
 	monk_vinda.js	#“韧”性探索 空降好礼
 	jd_jin_tie.js 			#领金贴
+	adolf_martin.js			#人头马x博朗
+	adolf_mi.js			#合成小金刚
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script_time $white"
@@ -531,6 +536,7 @@ cat >/tmp/jd_tmp/run_08_12_16 <<EOF
 	jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
 	jd_syj.js #赚京豆
 	adolf_pk.js 			#京享值PK
+	jd_jump.js			#跳跳乐瓜分京豆
 EOF
 	echo -e "$green run_08_12_16$start_script_time $white"
 
