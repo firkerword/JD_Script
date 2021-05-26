@@ -2021,7 +2021,7 @@ sys_additional_settings(){
 }
 
 zoo_share() {
-	new_zoo="sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgbEmm15mndGsDU8xOB2HuY@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgeDWC-K5kCbbW3HgcATcUw@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgWfwcdG_tYuxcGJ39fvF0Q"
+	new_zoo="ZXTKT024anXulbWUI_NR9ZpeTHmEoPlAFjRWn6-7zx55awQ@ZXTKT0205KkcPElQrCOQVnqP66FpFjRWn6-7zx55awQ@ZXTKT0225KkcRBpM_VSEKUz8kPENIQFjRWn6-7zx55awQ@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgbEmm15mndGsDU8xOB2HuY@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgeDWC-K5kCbbW3HgcATcUw@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgWfwcdG_tYuxcGJ39fvF0Q"
 	new_zoo_set="'$new_zoo',"
 
 	share_code_value="$new_zoo_set"
