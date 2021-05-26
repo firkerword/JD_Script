@@ -185,12 +185,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_carnivalcity.js		#京东手机狂欢城
 	jd_zoo.js 			#动物联萌 618活动
 	jd_get_share_code.js		#获取jd所有助力码脚本
-	jdDreamFactoryShareCodes.js	#京喜工厂ShareCodes
-	jdFruitShareCodes.js		#东东农场ShareCodes
-	jdPetShareCodes.js		#东东萌宠ShareCodes
-	jdPlantBeanShareCodes.js	#种豆得豆ShareCodes
-	jdFactoryShareCodes.js		#东东工厂ShareCodes
-	jdJxncShareCodes.js		#京喜农场ShareCodes
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
 EOF
@@ -235,6 +229,7 @@ cat >$dir_file/config/tmp/monk-normal.txt <<EOF
 	adolf_mi.js			#合成小金刚
 	adolf_superbox.js		#超级盒子
 	adolf_newInteraction.js		#618大势新品赏
+	adolf_jxhb.js			#京喜阶梯红包
 EOF
 
 for script_name in `cat $dir_file/config/tmp/monk-normal.txt | awk '{print $1}'`
@@ -348,7 +343,7 @@ EOF
 		update
 	fi
 	chmod 755 $dir_file_js/*
-	#additional_settings
+	additional_settings
 	zoo_share
 	concurrent_js_update
 	source /etc/profile
@@ -675,6 +670,7 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 }
 
 concurrent_js_run_07() {
+	$node $openwrt_script/JD_Script/js/adolf_jxhb.js			#京喜阶梯红包
 	$node $openwrt_script/JD_Script/js/jd_redPacket.js #京东全民开红包，没时间要求
 	#$node $openwrt_script/JD_Script/js/jd_small_home.js #东东小窝
 	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
@@ -1642,14 +1638,13 @@ additional_settings() {
 	random_fruit="$xo_20201229_fr@$zuoyou_random_fr@$yushengyigeliang_20210101_fr@$Javon_random_fr@$test_fr@$xiaodengzi_random_20190516_fr@$xiaodengzi_20190516_fr@$cainiao5_20190516_fr@$wjq_20190516_fr@$whiteboy_20190711_fr@$jiu_20210110_fr@$Oyeah_20200104_fr@$shisan_20200213_fr@$JOSN_20200807_fr@$Jhone_Potte_20200824_fr@$liandao_20201010_fr@$adong_20201108_fr@$deng_20201120_fr@$gomail_20201125_fr@$baijiezi_20201126_fr@$superbei666_20201124_fr@$yiji_20201125_fr@$mjmdz_20201217_fr@$JDnailao_20201230_fr@$xo_20201229_fr@$xiaobai_20201204_fr@$wuming_20201225_fr@$JOSN_20210102_fr@$Lili_20210121_fr@$tanherongyi_20210121_fr@$dajiangyou20210116_fr@$luckies_20210121_fr@$soso_20210204_fr@$NanshanFox_20210303_fr@$xiaodengzi_random_fr@$ysygl_20210101_fr"
 	random="$random_fruit"
 	random_array
-	new_fruit_set="$new_fruit1@$zuoyou_20190516_fr@$Javon_20201224_fr@$minty_20210114_fr@$ashou_20210516_fr@$xiaobandeng_fr@$chiyu_fr@$random_set"
+	new_fruit_set="'$new_fruit1@$zuoyou_20190516_fr@$Javon_20201224_fr@$minty_20210114_fr@$ashou_20210516_fr@$xiaobandeng_fr@$chiyu_fr@$random_set',"
 
-	share_code="$new_fruit_set"
-	share_code_value="$new_fruit_set"
-	share_code_generate
-	sed -i '/FRUITSHARECODES/d' /etc/profile >/dev/null 2>&1
-	export FRUITSHARECODES="$share_code_value&&"
-	echo "export FRUITSHARECODES=\"$share_code_value&&\"" >> /etc/profile
+	fr_rows=$(grep -n "shareCodes =" $dir_file_js/jd_fruit.js | awk -F ":" '{print $1}')
+	frcode_rows=$(grep -n "FruitShareCodes = \[" $dir_file_js/jdFruitShareCodes.js | awk -F ":" '{print $1}')
+
+	sed -i "$fr_rows a \ $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jd_fruit.js
+	sed -i "$frcode_rows a  \ $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jdFruitShareCodes.js
 
 	sed -i "s/dFruitBeanCard = false/dFruitBeanCard = $jd_fruit/g" $dir_file_js/jd_fruit.js #农场不浇水开始换豆
 
@@ -1699,14 +1694,13 @@ additional_settings() {
 	random_pet="$xo_20201229_pet@$zuoyou_random_pet@$Javon_random_pet@$test_pet@$xiaodengzi_20190516_pet@$cainiao5_20190516_pet@$wjq_20190516_pet@$whiteboy_20190711_pet@$jiu_20210110_pet@$Oyeah_20200104_pet@$shisan_20200213_pet@$JOSN_20200807_pet@$liandao_20201010_pet@$adong_20201108_pet@$deng_20201120_pet@$gomail_20201125_pet@$baijiezi_20201126_pet@$superbei666_20201124_pet@$yiji_20201125_pet@$mjmdz_20201217_pet@$JDnailao_20201230_pet@$xo_20201229_pet@$xiaobai_20201204_pet@$wuming_20201225_pet@$yushengyigeliang_20210101_pet@$JOSN_20210102_pet@$Lili_20210121_pet@$tanherongyi_20210121_pet@$dajiangyou20210116_pet@$luckies_20210121_pet@$NanshanFox_20210303_pet@$soso_20210204_pet@$ysygl_20210101_pet"
 	random="$random_pet"
 	random_array
-	new_pet_set="$new_pet1@$zuoyou_20190516_pet@$Javon_20201224_pet@$minty_20210114_pet@$ashou_20210516_pet@$Jhone_Potte_20200824_pet@$chiyu_pet@$random_set"
+	new_pet_set="'$new_pet1@$zuoyou_20190516_pet@$Javon_20201224_pet@$minty_20210114_pet@$ashou_20210516_pet@$Jhone_Potte_20200824_pet@$chiyu_pet@$random_set',"
 
-	share_code="$new_pet_set"
-	share_code_value="$new_pet_set"
-	share_code_generate
-	sed -i '/PETSHARECODES/d' /etc/profile >/dev/null 2>&1
-	export PETSHARECODES="$share_code_value&&"
-	echo "export PETSHARECODES=\"$share_code_value&&\"" >> /etc/profile
+	pet_rows=$(grep -n "shareCodes =" $dir_file_js/jd_pet.js | awk -F ":" '{print $1}')
+	petcode_rows=$(grep -n "PetShareCodes = \[" $dir_file_js/jdPetShareCodes.js | awk -F ":" '{print $1}')
+
+	sed -i "$pet_rows a \ $new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set" $dir_file_js/jd_pet.js
+	sed -i "$petcode_rows a  \ $new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set" $dir_file_js/jdPetShareCodes.js
 
 	#宠汪汪积分兑换奖品改成兑换500豆子，个别人会兑换错误(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
 	sed -i "s/let joyRewardName = 0/let joyRewardName = $jd_joy_reward/g" $dir_file_js/jd_joy_reward.js
@@ -1815,15 +1809,56 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	random_dreamFactory="$xo_20201229_df@$zuoyou_random_df@$test_df@$wjq_20190516_df@$whiteboy_20190711_df@$adong_20201108_df@$cainiao5_20201209_df@$wuming_20201225_df@$JOSN_20210102_df@$Lili_20210121_df@$tanherongyi_20210121_df@$dajiangyou20210116_df@$luckies_20210121_df@$superbei666_20201124_df@$NanshanFox_20210303_df@$jdnailao_20201130_df@$Javon_20201224_random_df@$yushengyigeliang_20210101_df@$stayhere_20200104_df@$soso_20210204_df@$ysygl_20210101_df"
 	random="$random_dreamFactory"
 	random_array
-	new_dreamFactory_set="$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$minty_20210114_df@$ashou_20210516_df@$Jhone_Potte_20200824_df@$chiyu_df@$random_set"
+	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$minty_20210114_df@$ashou_20210516_df@$Jhone_Potte_20200824_df@$chiyu_df@$random_set',"
 
-	share_code="$new_dreamFactory_set"
-	share_code_value="$new_dreamFactory_set"
-	share_code_generate
-	sed -i '/DREAM_FACTORY_SHARE_CODES/d' /etc/profile >/dev/null 2>&1
-	export DREAM_FACTORY_SHARE_CODES="$share_code_value&&"
-	echo "export DREAM_FACTORY_SHARE_CODES=\"$share_code_value&&\"" >> /etc/profile
+	df_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_dreamFactory.js | awk -F ":" '{print $1}')
+	dfcode_rows=$(grep -n "shareCodes = \[" $dir_file_js/jdDreamFactoryShareCodes.js | awk -F ":" '{print $1}')
 
+	sed -i "$df_rows a \ $new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set" $dir_file_js/jd_dreamFactory.js
+	sed -i "$dfcode_rows a  \ $new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set" $dir_file_js/jdDreamFactoryShareCodes.js
+
+	#京东试用
+	if [ "$jd_try" == "yes" ];then
+		jd_try_if=$(grep "jd_try.js" $cron_file | wc -l)
+		if [ "$jd_try_if" == "0" ];then
+			echo "检测到试用开关开启，导入一下计划任务"
+			echo "0 10 * * * $node $dir_file/js/jd_try.js >/tmp/jd_try.log" >>$cron_file
+			/etc/init.d/cron restart
+		else
+			echo "京东试用计划任务已经导入"
+		fi
+	else
+		jd_try_if=$(grep "jd_try.js" $cron_file | wc -l)
+		if [ "$jd_try_if" == "1" ];then
+			echo "检测到试用开关关闭，清理一下之前的导入"
+			sed -i '/jd_try.js/d' /etc/crontabs/root >/dev/null 2>&1
+			/etc/init.d/cron restart
+		fi
+		echo "京东试用计划任务不导入"
+	fi
+
+	#取消会员卡脚本修复路径
+	sed -i "s/..\/jdCookie.js/.\/jdCookie.js/g" $dir_file_js/jd_unbind.js
+	sed -i "s/..\/sendNotify/.\/sendNotify/g" $dir_file_js/jd_unbind.js
+	sed -i "s/..\/USER_AGENTS/.\/USER_AGENTS/g" $dir_file_js/jd_unbind.js
+
+	#脚本黑名单
+	script_black
+
+	#农场萌宠关闭通知
+	close_notification
+
+	#极速版红包
+	sed -i "s/jOkIZzWCgGa9NfPuHBSx1A/AkOULcXbUA_8EAPbYLLMgg/g" $dir_file_js/jd_speed_redpocke.js
+
+	#关闭整点红包雨通知
+	if [ ! `grep "RAIN_NOTIFY_CONTROL" /etc/profile | wc -l` == "1" ];then
+		echo "export RAIN_NOTIFY_CONTROL="false"" >> /etc/profile
+		source /etc/profile
+	fi
+}
+
+sys_additional_settings(){
 	#京东赚赚长期活动
 	new_jdzz="95OquUc_sFugJO5_E_2dAgm-@eU9YELv7P4thhw6utCVw@eU9YaOjnbvx1-Djdz3UUgw@S5KkcRx0b81fRIkigwKZccQ@AUWE5mKmQzGYKXGT8j38cwA@AUWE5mvvGzDFbAWTxjC0Ykw@AUWE5wPfRiVJ7SxKOuQY0@S5KkcJEZAjD2vYGGG4Ip0@S5KkcREsZ_QXWIx31wKJZcA@S5KkcRUwe81LRIR_3xaNedw@Suvp2RBcY_VHKKBn3k_MMdNw@SvPVyQRke_EnWJxj1nfE@S5KkcRBYbo1fXKUv2k_5ccQ@S5KkcRh0ZoVfQchP9wvQJdw@S5KkcJnlwogCDQ2G84qtI"
 	zuoyou_20190516_jdzz="S4r90RQ@S9r43CBsZ@S5KkcR00boFzRKEvzlvYCcA@S47wgARoc@S4qQkFUBOsgG4fQ@S7KQtF1dc8lbX@S5rQ3EUBOtA2Ifk0@S5KkcR0scpgDUdBnxkaEPcg@S5KkcOUt-tA2xfVuXyo9R@S-akMAUNKozyMcl6e_L8@S5KkcRRtL_VeBckj1xaYNfA@S5KkcRB8d9FLRKU6nkPQOdw"
@@ -1920,46 +1955,6 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	export JDSGMH_SHARECODES="$share_code_value&&"
 	echo "export JDSGMH_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
 
-	#京东试用
-	if [ "$jd_try" == "yes" ];then
-		jd_try_if=$(grep "jd_try.js" $cron_file | wc -l)
-		if [ "$jd_try_if" == "0" ];then
-			echo "检测到试用开关开启，导入一下计划任务"
-			echo "0 10 * * * $node $dir_file/js/jd_try.js >/tmp/jd_try.log" >>$cron_file
-			/etc/init.d/cron restart
-		else
-			echo "京东试用计划任务已经导入"
-		fi
-	else
-		jd_try_if=$(grep "jd_try.js" $cron_file | wc -l)
-		if [ "$jd_try_if" == "1" ];then
-			echo "检测到试用开关关闭，清理一下之前的导入"
-			sed -i '/jd_try.js/d' /etc/crontabs/root >/dev/null 2>&1
-			/etc/init.d/cron restart
-		fi
-		echo "京东试用计划任务不导入"
-	fi
-
-	#取消会员卡脚本修复路径
-	sed -i "s/..\/jdCookie.js/.\/jdCookie.js/g" $dir_file_js/jd_unbind.js
-	sed -i "s/..\/sendNotify/.\/sendNotify/g" $dir_file_js/jd_unbind.js
-	sed -i "s/..\/USER_AGENTS/.\/USER_AGENTS/g" $dir_file_js/jd_unbind.js
-
-	#脚本黑名单
-	script_black
-
-	#农场萌宠关闭通知
-	close_notification
-
-	#极速版红包
-	sed -i "s/jOkIZzWCgGa9NfPuHBSx1A/AkOULcXbUA_8EAPbYLLMgg/g" $dir_file_js/jd_speed_redpocke.js
-
-	#关闭整点红包雨通知
-	if [ ! `grep "RAIN_NOTIFY_CONTROL" /etc/profile | wc -l` == "1" ];then
-		echo "export RAIN_NOTIFY_CONTROL="false"" >> /etc/profile
-		source /etc/profile
-	fi
-
 	#城城分现金
 	new_cc="yA14HUcpl60lqwMwz1q9Ath0TJZGZJaiggXDQHv5Jvt6FTlDFtFx@RtGKtLvtGH3kCOPhaIJQmuiyd-flkynvTBf-d-r0MV_rt2-f@RtGKzOjxSQrwd9WSE9I0g3038GeOvTcUJm5WJvgafs44wjUGig@RtGKzu_2FwiiLYuZFtw01xSvrB-HuUEgE5LT3P2Kw4NpSfFWWA@RtGKzOWnQwPxeNefHtM309LeOcgmvJAhqMiaAxCsakLCmTAuHg@RtGKz--mRwmlfNHOQ4Vl04WNzI1eNfWttLYZZhez82Z1NDXNTQ@RtGKz-ikQFmhKoeeRddlgy5fN15EGbxpkR8Hbii5cgoyTbfmdQ@RtGKzbryQA7wd4eTRoVh0LMrs5aJ5bA8HqX-MAWT_tmtr1Y6aA@RtGKl7blBW3QPfHsc65Nmnyr9cMU4yMYm4XOVHjO_cQ1jV0c@RtGKrLT9OGPbPvjoY6lNmn1fBMAgnWU33U4pTz3UaKy0C0GI"
 	chiyu_cc="T928gamhQwvvMs-aW5h_jzzHqsqm41LRlvzvIEs"
@@ -1976,10 +1971,7 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	sed -i '/CITY_SHARECODES/d' /etc/profile >/dev/null 2>&1
 	export CITY_SHARECODES="$share_code_value&&"
 	echo "export CITY_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
-	
-}
 
-sys_additional_settings(){
 	#财富岛
 	new_cfd="698098B001CF38EEEBCF66F9746EAFC7E1627164C06D4AADED9CCBC4B3A308EF@2F37BEBF8BFCDF8BEE92C1C2923706A4D1E39886C942A521A2A0353AED313BEC@74368D6374341F98E02515D2661AA24DDDF4780627137D1A2A93C1D968FE8698@161F722B03A9D0D88957B3A10D1993F0AC232B8CE6586F11D730AC247E887B31"
 	test_cfd="1A91CB7D423B0797C8FCB56F427D8DBE17FC2BC3429518690AE267598024A64F@D2B2DC26C59CE6F9D40087876C5E1365B167EC29D2F4A5A1E466AD6DC908FF13@5B674A6E0E797CF70F2D784210E24D19875694C418C215CB732C90C8534DE908@30267C61BC24DCF80B89925CCCB5B4C3900AAE08116E9F7EC18A0ACF8371482D@EC1EE0B8E9D14A159CB3ED96274FE27FAD7BC87B7873159A8EE7F60C5FD7D681"
@@ -2260,7 +2252,6 @@ system_variable() {
 	script_black
 
 	sys_additional_settings
-	additional_settings
 }
 
 jd_openwrt_config_description() {
