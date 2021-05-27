@@ -31,7 +31,7 @@ if [ "$dir_file" == "/usr/share/jd_openwrt_script/JD_Script" ];then
 	openwrt_script_config="/usr/share/jd_openwrt_script/script_config"
 else
 	clear
-	echo -e "$red检测到你使用本地安装方式安装脚本，不再支持本地模式！！！，请按github：https://github.com/ITdesk01/jd_openwrt_script 重新编译插件$white"
+	echo -e "$red检测到你使用本地安装方式安装脚本，不再支持本地模式！！！，请按github：https://github.com/firkerword/jd_openwrt_script 重新编译插件$white"
 	exit 0
 fi
 
@@ -50,7 +50,7 @@ wrap="%0D%0A%0D%0A" #Server酱换行
 wrap_tab="     "
 line="%0D%0A%0D%0A---%0D%0A%0D%0A"
 current_time=$(date +"%Y-%m-%d")
-by="#### 脚本仓库地址:https://github.com/ITdesk01/JD_Script/tree/main 核心JS采用lxk0301开源JS脚本"
+by="#### 脚本仓库地址:https://github.com/firkerword/JD_Script/tree/main 核心JS采用lxk0301开源JS脚本"
 SCKEY=$(grep "let SCKEY" $openwrt_script_config/sendNotify.js  | awk -F "'" '{print $2}')
 
 js_cookie=$(cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | grep -v "//'" |grep -v "// '")
@@ -1549,7 +1549,7 @@ help() {
 	echo ""
 	echo -e "$yellow 6.个性化配置：$white $jd_config_version"
 	echo ""
-	echo -e "$yellow 7.JD_Script报错你可以反馈到这里:$white$green https://github.com/ITdesk01/JD_Script/issues$white"
+	echo -e "$yellow 7.JD_Script报错你可以反馈到这里:$white$green https://github.com/firkerword/JD_Script/issues$white"
 	echo ""
 	echo ""
 	echo -e "本脚本基于$green x86主机测试$white，一切正常，其他的机器自行测试，满足依赖一般问题不大"
@@ -1590,8 +1590,8 @@ additional_settings() {
 	sed -i "s/|| 20/|| $jd_unsubscribe/g" $dir_file_js/jd_unsubscribe.js
 
 	if [ `cat $openwrt_script_config/sendNotify.js | grep "采用lxk0301开源JS脚本" | wc -l` == "0" ];then
-	sed -i "s/本脚本开源免费使用 By：https:\/\/gitee.com\/lxk0301\/jd_docker/#### 脚本仓库地址:https:\/\/github.com\/ITdesk01\/JD_Script\/tree\/main 核心JS采用lxk0301开源JS脚本/g" $openwrt_script_config/sendNotify.js
-	sed -i "s/本脚本开源免费使用 By：https:\/\/github.com\/LXK9301\/jd_scripts/#### 脚本仓库地址:https:\/\/github.com\/ITdesk01\/JD_Script\/tree\/main 核心JS采用lxk0301开源JS脚本/g" $openwrt_script_config/sendNotify.js
+	sed -i "s/本脚本开源免费使用 By：https:\/\/gitee.com\/lxk0301\/jd_docker/#### 脚本仓库地址:https:\/\/github.com\/firkerword\/JD_Script\/tree\/main 核心JS采用lxk0301开源JS脚本/g" $openwrt_script_config/sendNotify.js
+	sed -i "s/本脚本开源免费使用 By：https:\/\/github.com\/LXK9301\/jd_scripts/#### 脚本仓库地址:https:\/\/github.com\/firkerword\/JD_Script\/tree\/main 核心JS采用lxk0301开源JS脚本/g" $openwrt_script_config/sendNotify.js
 	fi
 	
 
@@ -1926,7 +1926,7 @@ sys_additional_settings(){
 	export JD_CASH_SHARECODES="$share_code_value&&"
 	echo "export JD_CASH_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
 
-	sed -i "s/https:\/\/gitee.com\/shylocks\/updateTeam\/raw\/main\/jd_cash.json/https:\/\/raw.githubusercontent.com\/ITdesk01\/JD_Script\/main\/JSON\/jd_cash.json/g"  $dir_file_js/jd_cash.js
+	sed -i "s/https:\/\/gitee.com\/shylocks\/updateTeam\/raw\/main\/jd_cash.json/https:\/\/raw.githubusercontent.com\/firkerword\/JD_Script\/main\/JSON\/jd_cash.json/g"  $dir_file_js/jd_cash.js
 
 	if [ `date +%A` == "Sunday" ];then
 		echo "周日提前开启2元兑换200豆子功能"
@@ -2126,12 +2126,12 @@ npm_install() {
 system_variable() {
 	#
 	cd $dir_file
-	if_git=$(git remote -v | grep -o "https:\/\/github.com\/ITdesk01\/JD_Script.git" | wc -l)
+	if_git=$(git remote -v | grep -o "https:\/\/github.com\/firkerword\/JD_Script.git" | wc -l)
 	if [ "$if_git" == "2" ];then
 		echo ""
 	else
 		echo -e "$red检测到你的JD_Script的github地址错误，停止为你服务，省的老问我，为什么你更新了以后，没有我说的脚本,你用的都不是我的，怎么可能跟上我的更新！！！$white"
-		echo -e "$green唯一的github地址：https://github.com/ITdesk01/JD_Script.git$white"
+		echo -e "$green唯一的github地址：https://github.com/firkerword/JD_Script.git$white"
 		exit 0
 	fi
 
