@@ -184,6 +184,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_city.js			#城城领现金
 	jd_carnivalcity.js		#京东手机狂欢城
 	jd_zoo.js 			#动物联萌 618活动
+	jd_xtg.js			#家电星推官
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -232,6 +233,8 @@ cat >$dir_file/config/tmp/monk-normal.txt <<EOF
 	adolf_jxhb.js			#京喜阶梯红包
 EOF
 
+rm -rf $dir_file_js/adolf_star.js
+
 for script_name in `cat $dir_file/config/tmp/monk-normal.txt | awk '{print $1}'`
 do
 	url="$url3"
@@ -244,8 +247,6 @@ cat >$dir_file/config/tmp/monk-car.txt <<EOF
 	monk_shop_add_to_car.js 	#加购有礼
 EOF
 
-rm -rf $dir_file_js/adolf_haier.js
-rm -rf $dir_file_js/adolf_ETIP.js
 
 for script_name in `cat $dir_file/config/tmp/monk-car.txt | awk '{print $1}'`
 do
@@ -478,6 +479,7 @@ run_03() {
 	$node $dir_file_js/jd_health.js		#健康社区
 	$node $dir_file_js/jddj_fruit.js			#京东到家果园 0,8,11,17
 	$node $dir_file_js/jd_daily_lottery.js		#每日抽奖
+	$node $dir_file_js/jd_xtg.js			#家电星推官
 	echo -e "$green run_03$stop_script_time $white"
 }
 
