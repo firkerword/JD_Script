@@ -185,6 +185,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_carnivalcity.js		#京东手机狂欢城
 	jd_zoo.js 			#动物联萌 618活动
 	jd_xtg.js			#家电星推官
+	jd_xtg_help.js			#家电星推官好友互助
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -227,13 +228,13 @@ cat >$dir_file/config/tmp/monk-normal.txt <<EOF
 	adolf_oppo.js                   #刺客567之寻宝
 	adolf_pk.js 			#京享值PK
 	adolf_martin.js			#人头马x博朗
-	adolf_mi.js			#合成小金刚
 	adolf_superbox.js		#超级盒子
 	adolf_newInteraction.js		#618大势新品赏
 	adolf_jxhb.js			#京喜阶梯红包
 EOF
 
 rm -rf $dir_file_js/adolf_star.js
+rm -rf $dir_file_js/adolf_mi.js			#合成小金刚
 
 for script_name in `cat $dir_file/config/tmp/monk-normal.txt | awk '{print $1}'`
 do
@@ -387,6 +388,7 @@ update_script() {
 
 run_0() {
 cat >/tmp/jd_tmp/run_0 <<EOF
+	jd_xtg.js			#家电星推官
 	jd_blueCoin.js  	#东东超市兑换，有次数限制，没时间要求
 	jd_car_exchange.js   #京东汽车兑换，500赛点兑换500京豆
 	jd_car.js #京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
@@ -448,12 +450,11 @@ run_045() {
 
 run_01() {
 	echo -e "$green run_01$start_script_time $white"
+	$node $dir_file_js/jd_zoo.js 			#动物联萌 618活动
 	$node $dir_file_js/jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
 	$node $dir_file_js/jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
 	export RAIN_NOTIFY_CONTROL="false"
 	$node $dir_file_js/jd_super_redrain.js		#整点红包雨
-	$node $dir_file_js/jd_city.js			#城城领现金
-	$node $dir_file_js/jd_zoo.js 			#动物联萌 618活动
 	echo -e "$green run_01$stop_script_time $white"
 }
 
@@ -470,16 +471,19 @@ run_02() {
 		export PASTURE_EXCHANGE_KEYWORD="1京豆"
 	fi
 	$node $dir_file_js/monk_pasture.js #有机牧场
+	$node $dir_file_js/jd_xtg.js			#家电星推官
 	echo -e "$green run_02$stop_script_time $white"
 }
 
 run_03() {
 	echo -e "$green run_03$start_script_time $white"
+	$node $openwrt_script/JD_Script/js/adolf_jxhb.js			#京喜阶梯红包
+	$node $dir_file_js/jd_city.js			#城城领现金
+	$node $dir_file_js/jd_xtg_help.js			#家电星推官好友互助脚本
 	$node $dir_file_js/jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
 	$node $dir_file_js/jd_health.js		#健康社区
 	$node $dir_file_js/jddj_fruit.js			#京东到家果园 0,8,11,17
 	$node $dir_file_js/jd_daily_lottery.js		#每日抽奖
-	$node $dir_file_js/jd_xtg.js			#家电星推官
 	echo -e "$green run_03$stop_script_time $white"
 }
 
@@ -526,7 +530,6 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	monk_shop_lottery.js		#店铺大转盘
 	jd_jin_tie.js 			#领金贴
 	adolf_martin.js			#人头马x博朗
-	adolf_mi.js			#合成小金刚
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script_time $white"
@@ -672,7 +675,6 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 }
 
 concurrent_js_run_07() {
-	$node $openwrt_script/JD_Script/js/adolf_jxhb.js			#京喜阶梯红包
 	$node $openwrt_script/JD_Script/js/jd_redPacket.js #京东全民开红包，没时间要求
 	#$node $openwrt_script/JD_Script/js/jd_small_home.js #东东小窝
 	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
@@ -1974,6 +1976,12 @@ sys_additional_settings(){
 	export CITY_SHARECODES="$share_code_value&&"
 	echo "export CITY_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
 
+	#开启城城分现金抽奖
+	sed -i '/JD_CITY_EXCHANGE/d' /etc/profile >/dev/null 2>&1
+	export JD_CITY_EXCHANGE="true"
+	echo "JD_CITY_EXCHANGE="true"" >> /etc/profile
+
+
 	#财富岛
 	new_cfd="698098B001CF38EEEBCF66F9746EAFC7E1627164C06D4AADED9CCBC4B3A308EF@2F37BEBF8BFCDF8BEE92C1C2923706A4D1E39886C942A521A2A0353AED313BEC@74368D6374341F98E02515D2661AA24DDDF4780627137D1A2A93C1D968FE8698@161F722B03A9D0D88957B3A10D1993F0AC232B8CE6586F11D730AC247E887B31"
 	test_cfd="1A91CB7D423B0797C8FCB56F427D8DBE17FC2BC3429518690AE267598024A64F@D2B2DC26C59CE6F9D40087876C5E1365B167EC29D2F4A5A1E466AD6DC908FF13@5B674A6E0E797CF70F2D784210E24D19875694C418C215CB732C90C8534DE908@30267C61BC24DCF80B89925CCCB5B4C3900AAE08116E9F7EC18A0ACF8371482D@EC1EE0B8E9D14A159CB3ED96274FE27FAD7BC87B7873159A8EE7F60C5FD7D681"
@@ -2018,14 +2026,12 @@ zoo_share() {
 	new_zoo="ZXTKT024anXulbWUI_NR9ZpeTHmEoPlAFjRWn6-7zx55awQ@ZXTKT0205KkcPElQrCOQVnqP66FpFjRWn6-7zx55awQ@ZXTKT0225KkcRBpM_VSEKUz8kPENIQFjRWn6-7zx55awQ@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgbEmm15mndGsDU8xOB2HuY@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgeDWC-K5kCbbW3HgcATcUw@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgWfwcdG_tYuxcGJ39fvF0Q"
 	new_zoo_set="'$new_zoo',"
 
-	share_code_value="$new_zoo_set"
 	js_amount=$(echo "$js_cookie" | wc -l)
+	zoo_rows=$(grep -n ".innerPkInviteList \= \[" $dir_file_js/jd_zoo.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
-		share_code_value="$share_code_value$new_zoo_set"
+		sed -i "$zoo_rows a \ $new_zoo_set" $dir_file_js/jd_zoo.js
 		js_amount=$(($js_amount - 1))
 	done
-	zoo_rows=$(grep -n ".innerPkInviteList \= \[" $dir_file_js/jd_zoo.js | awk -F ":" '{print $1}')
-	sed -i "$zoo_rows a \ $share_code_value" $dir_file_js/jd_zoo.js
 }
 
 share_code_generate() {
