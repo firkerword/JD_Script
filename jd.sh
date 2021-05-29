@@ -2247,6 +2247,34 @@ EOF
 }
 
 
+action1="$1"
+action2="$2"
+
+if [[ -z $action1 ]]; then
+	stop_script
+	clear
+	echo "脚本抽风，休息，开放时间未知。。。"
+	exit 0
+else
+	stop_script
+	clear
+	echo "脚本抽风，休息，开放时间未知。。。"
+	exit 0
+fi
+
+if [[ -z $action2 ]]; then
+	stop_script
+	clear
+	echo "脚本抽风，休息，开放时间未知。。。"
+	exit 0
+else
+	stop_script
+	clear
+	echo "脚本抽风，休息，开放时间未知。。。"
+	exit 0
+fi
+
+:<<'COMMENT'
 system_variable
 action1="$1"
 action2="$2"
@@ -2289,5 +2317,6 @@ else
 	esac
 	fi
 fi
+COMMENT
 
 
