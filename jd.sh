@@ -1366,19 +1366,14 @@ cat >$backnas_config_file <<EOF
 ################################################################
 #填入你的nas账号(必填)
 user=''
-
 #填入你nas的密码(密码和密钥必须填一个)
 password=''
-
 #填入你nas的密钥位置(可以留空)(密钥 > 密码,有密钥的情况优先使用密钥而不是密码)
 secret_key=''
-
 #填入nas IP地址可以是域名(必填)
 nas_ip=''
-
 #填入nas保存路径(必填)
 nas_file=''
-
 #端口(默认即可，ssh端口有变填这里)
 port='22'
 EOF
@@ -2203,78 +2198,32 @@ system_variable() {
 jd_openwrt_config_description() {
 cat > $jd_openwrt_config <<EOF
 *****************jd_openwrt_config $jd_openwrt_config_version**************
-
 这里主要定义一些脚本的个性化操作，如果你不需要微调，那么保持默认不理他就行了
-
 这里的参数如果你看不懂或者想知道还有没有其他参数，你可以去$dir_file_js这里找相应的js脚本看说明
-
 修改完参数如何生效：sh \$jd update && sh \$jd
-
 *******************************************************
 #是否启用账号并发功能（多账号考虑打开，黑了不管） yes开启 默认no
 concurrent='no'
-
 #京东试用 yes开启  默认no
 jd_try='no'
-
 #农场不浇水换豆 false关闭 ture打开
 jd_fruit='false'
-
-
 #京小超默认兑换20豆子(可以改成你要的1000豆子或者其他)
 jd_blueCoin='20'
-
-
 #宠汪汪积分兑换500豆子，(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
 jd_joy_reward='500'
-
-
 #宠汪汪喂食(更多参数自己去看js脚本描述)
 jd_joy_feedPets='80'
-
-
 #宠汪汪不给好友喂食 false不喂食 ture喂食
 jd_joy_steal='false'
-
-
 #JOY兑换豆子(满2000开始兑换)
 jd_crazy_joy='2000'
-
-
 #取消店铺200个(觉得太多你可以自己调整)
 jd_unsubscribe='200'
 EOF
 }
 
 
-action1="$1"
-action2="$2"
-
-if [[ -z $action1 ]]; then
-	stop_script
-	clear
-	echo "脚本抽风，休息，开放时间未知。。。"
-	exit 0
-else
-	stop_script
-	clear
-	echo "脚本抽风，休息，开放时间未知。。。"
-	exit 0
-fi
-
-if [[ -z $action2 ]]; then
-	stop_script
-	clear
-	echo "脚本抽风，休息，开放时间未知。。。"
-	exit 0
-else
-	stop_script
-	clear
-	echo "脚本抽风，休息，开放时间未知。。。"
-	exit 0
-fi
-
-:<<'COMMENT'
 system_variable
 action1="$1"
 action2="$2"
@@ -2317,6 +2266,3 @@ else
 	esac
 	fi
 fi
-COMMENT
-
-
