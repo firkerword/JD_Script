@@ -305,6 +305,7 @@ done
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
 	wget https://raw.githubusercontent.com/fangpidedongsun/jd_scripts2/master/jd_friend.js -O $dir_file_js/jd_friend.js #joy总动员一次性脚本
+	wget https://raw.githubusercontent.com/Wenmoux/scripts/master/jd/babelDiy.js -O $dir_file_js/babelDiy.js #总裁送好礼,跑两次就行了日志骗人的
 
 
 #将所有文本汇总
@@ -315,6 +316,7 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
+	babelDiy.js 			#总裁送好礼,跑两次就行了日志骗人的
 	jd_check_cookie.js		#检测cookie是否存活（暂时不能看到还有几天到期）
 	monk_shop_lottery.js 		#店铺大转盘
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
@@ -476,7 +478,7 @@ run_02() {
 
 run_03() {
 	echo -e "$green run_03$start_script_time $white"
-	$node $dir_file_js/babelDiy.js.js #总裁送好礼
+	babelDiy.js #总裁送好礼,跑两次就行了日志骗人的
 	$node $openwrt_script/JD_Script/js/adolf_jxhb.js			#京喜阶梯红包
 	$node $dir_file_js/jd_city.js			#城城领现金
 	$node $dir_file_js/jd_xtg_help.js			#家电星推官好友互助脚本
@@ -2033,7 +2035,7 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 }
 
 zoo_share() {
-	new_zoo="'ZXTKT024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQFjRWn6-7zx55awQ',"
+	new_zoo="'ZXTKT024anXulbWUI_NR9ZpeTHmEoPlAFjRWn6-7zx55awQ@ZXTKT0205KkcPElQrCOQVnqP66FpFjRWn6-7zx55awQ@ZXTKT0225KkcRh1Lo1bWcxL3lf8NdQFjRWn6-7zx55awQ@ZXTKT024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQFjRWn6-7zx55awQ',"
 	new_zoopk1="'ZXTKT024anXulbWUI_NR9ZpeTHmEoPlAFjRWn6-7zx55awQ@ZXTKT0205KkcPElQrCOQVnqP66FpFjRWn6-7zx55awQ@ZXTKT0225KkcRBpM_VSEKUz8kPENIQFjRWn6-7zx55awQ@sSKNX-MpqKOJsNu_nZvYV-nCFtEoibN3nsRhO8g77euwQQhVn3QtBsoadt4CFkmg',"
 	new_zoopk2="'ZXTKT024anXulbWUI_NR9ZpeTHmEoPlAFjRWn6-7zx55awQ@ZXTKT0205KkcPElQrCOQVnqP66FpFjRWn6-7zx55awQ@ZXTKT0225KkcRBpM_VSEKUz8kPENIQFjRWn6-7zx55awQ@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgeDWC-K5kCbbW3HgcATcUjv',"
 	new_zoopk3="'sSKNX-MpqKOXrevjyMWdUScQdhgwySVYfKlCINKPUG9Dlg',"
