@@ -58,7 +58,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.09"
+	cron_version="3.15"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -82,13 +82,11 @@ cat >>/etc/crontabs/root <<EOF
 5 7 * * * $dir_file/jd.sh run_07 >/tmp/jd_run_07.log 2>&1 #不需要在零点运行的脚本#100#
 35 10,15,20 * * * $dir_file/jd.sh run_10_15_20 >/tmp/jd_run_10_15_20.log 2>&1 #不是很重要的，错开运行#100#
 10 8,12,16 * * * $dir_file/jd.sh run_08_12_16 >/tmp/jd_run_08_12_16.log 2>&1 #宠汪汪兑换礼品#100#
-00 22 * * * $dir_file/jd.sh update_script that_day >/tmp/jd_update_script.log 2>&1 #22点更新JD_Script脚本#100#
-5 9,11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 && source /etc/profile #9,11,19,22点05分更新lxk0301脚本#100#
-#*/30 1-22 * * * $dir_file/jd.sh joy >/tmp/jd_joy.log 2>&1 #1-22,每半个小时kill joy并运行一次joy挂机#100#
+00 8,12,22 * * * $dir_file/jd.sh update_script that_day >/tmp/jd_update_script.log 2>&1 #22点更新JD_Script脚本#100#
+5 8,9,11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 && source /etc/profile #9,11,19,22点05分更新lxk0301脚本#100#
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
-#30,31 20-23/1 18,21,28 5 * $node $dir_file_js/jd_live_redrain.js >/tmp/jd_live_redrain.log	#超级直播间红包雨#100#
 30 20-23/1 * * * $node $dir_file_js/jd_half_redrain.js	>/tmp/jd_half_redrain.log	#半点红包雨#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
@@ -185,6 +183,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_xtg.js			#家电星推官
 	jd_xtg_help.js			#家电星推官好友互助
 	jd_gold_creator.js		#金榜创造营
+	jd_zooCollect.js		#zoo收集金币
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -195,9 +194,10 @@ for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1
 do
 	echo -e "$yellow copy $green$script_name$white"
 	cp  $dir_file/git_clone/lxk0301/$script_name  $dir_file_js/$script_name
-	sleep 1
 done
+sleep 5
 
+rm -rf $dir_file_js/jd_party_night.js		#沸腾之夜
 
 #if [ $(date "+%-H") -ge 10 ]; then
 	#echo "大于10点，不拉取和尚库"
@@ -215,8 +215,8 @@ EOF
 for script_name in `cat $dir_file/config/tmp/i-chenzhe_script.txt | awk '{print $1}'`
 do
 	url="$url2"
-	wget $url2/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $url2/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 url3="https://raw.githubusercontent.com/monk-coder/dust/dust/normal"
@@ -238,8 +238,8 @@ rm -rf $dir_file_js/adolf_mi.js			#合成小金刚
 for script_name in `cat $dir_file/config/tmp/monk-normal.txt | awk '{print $1}'`
 do
 	url="$url3"
-	wget $url3/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $url3/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 url4="https://raw.githubusercontent.com/monk-coder/dust/dust/car"
@@ -251,8 +251,8 @@ EOF
 for script_name in `cat $dir_file/config/tmp/monk-car.txt | awk '{print $1}'`
 do
 	url="$url4"
-	wget $url4/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $url4/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 
@@ -264,13 +264,13 @@ EOF
 for script_name in `cat $dir_file/config/tmp/monk-member.txt | awk '{print $1}'`
 do
 	url="$url5"
-	wget $url5/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $url5/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 #fi
 
-url6="https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx"
+nianyuguai_url="https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx"
 cat >$dir_file/config/tmp/nianyuguai_qx.txt <<EOF
 	jd_super_redrain.js		#整点红包雨
 	jd_half_redrain.js		#半点红包雨
@@ -278,8 +278,8 @@ EOF
 
 for script_name in `cat $dir_file/config/tmp/nianyuguai_qx.txt | awk '{print $1}'`
 do
-	url="$url6"
-	wget $url6/$script_name -O $dir_file_js/$script_name
+	url="$nianyuguai_url"
+	wget $nianyuguai_url/$script_name -O $dir_file_js/$script_name
 	update_if
 done
 
@@ -301,7 +301,6 @@ done
 
 #检测cookie是否存活（暂时不能看到还有几天到期）
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
-
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
@@ -345,6 +344,7 @@ EOF
 	fi
 	chmod 755 $dir_file_js/*
 	additional_settings
+	sys_additional_settings
 	zoo_share
 	concurrent_js_update
 	source /etc/profile
@@ -405,6 +405,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	z_shop_captain.js		#超级无线组队分奖品
 	adolf_superbox.js		#超级盒子
+	jd_dreamFactory.js 		#京喜工厂
 EOF
 	echo -e "$green run_0$start_script_time $white"
 
@@ -432,7 +433,7 @@ run_020() {
 
 run_030() {
 	echo -e "$green run_030$start_script_time $white"
-	$node $dir_file_js/jd_dreamFactory.js #京喜工厂
+	$node $dir_file_js/jd_zooCollect.js	#zoo收集金币
 	$node $dir_file_js/jd_jdfactory.js #东东工厂，不是京喜工厂
 	$node $dir_file_js/jd_health_collect.js		#健康社区-收能量
 	$node $dir_file_js/jddj_fruit_collectWater.js 	#京东到家果园水车收水滴 作者5分钟收一次
@@ -475,6 +476,7 @@ run_02() {
 
 run_03() {
 	echo -e "$green run_03$start_script_time $white"
+	$node $dir_file_js/babelDiy.js.js #总裁送好礼
 	$node $openwrt_script/JD_Script/js/adolf_jxhb.js			#京喜阶梯红包
 	$node $dir_file_js/jd_city.js			#城城领现金
 	$node $dir_file_js/jd_xtg_help.js			#家电星推官好友互助脚本
@@ -856,6 +858,13 @@ concurrent_js_if() {
 		run_03)
 			run_03
 		;;
+		run_030)
+			$node $dir_file_js/jd_dreamFactory.js #京喜工厂
+			action="$action1"
+			concurrent_js
+			if_ps
+			concurrent_js_clean
+		;;
 		run_06_18)
 			$node $openwrt_script/JD_Script/js/jd_joy.js #jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
 			action="$action1"
@@ -863,7 +872,7 @@ concurrent_js_if() {
 			if_ps
 			concurrent_js_clean
 		;;
-		run_01|run_02|run_045|run_08_12_16|run_030|run_020)
+		run_01|run_02|run_045|run_08_12_16|run_020)
 			action="$action1"
 			concurrent_js
 			if_ps
@@ -899,7 +908,7 @@ concurrent_js_if() {
 			$action2
 			concurrent_js_run_07
 			;;
-			run_01|run_06_18|run_10_15_20|run_03|run_02|run_045|run_08_12_16|run_07|run_030|run_020)
+			run_01|run_06_18|run_10_15_20|run_03|run_02|run_045|run_08_12_16|run_07|run_020)
 			$action2
 			;;
 		esac
@@ -1366,14 +1375,19 @@ cat >$backnas_config_file <<EOF
 ################################################################
 #填入你的nas账号(必填)
 user=''
+
 #填入你nas的密码(密码和密钥必须填一个)
 password=''
+
 #填入你nas的密钥位置(可以留空)(密钥 > 密码,有密钥的情况优先使用密钥而不是密码)
 secret_key=''
+
 #填入nas IP地址可以是域名(必填)
 nas_ip=''
+
 #填入nas保存路径(必填)
 nas_file=''
+
 #端口(默认即可，ssh端口有变填这里)
 port='22'
 EOF
@@ -1592,6 +1606,11 @@ additional_settings() {
 	sed -i "s/本脚本开源免费使用 By：https:\/\/github.com\/LXK0301\/jd_scripts/#### 脚本仓库地址:https:\/\/github.com\/firkerword\/JD_Script\/tree\/main 核心JS采用lxk0301开源JS脚本/g" $openwrt_script_config/sendNotify.js
 	fi
 	
+	sed -i '/FRUITSHARECODES/d' /etc/profile >/dev/null 2>&1
+	sed -i '/PETSHARECODES/d' /etc/profile >/dev/null 2>&1
+	sed -i '/PETSHARECODES/d' /etc/profile >/dev/null 2>&1
+	sed -i '/DREAM_FACTORY_SHARE_CODES/d' /etc/profile >/dev/null 2>&1
+	
 
 	#东东农场
 	new_fruit1="0763443f7d6f4f5ea5e54adc1c6112ed@e61135aa1963447fa136f293a9d161c1@f9e6a916ad634475b8e77a7704b5c3d8@713f6d7bd3084b4eb157375e119ef521@6632c8135d5c4e2c9ad7f4aa964d4d11@31a2097b10db48429013103077f2f037@5aa64e466c0e43a98cbfbbafcc3ecd02@bf0cbdb0083d443499a571796af20896@690009b0d5674e85b751838b2fa6241e@5f952ad609b1440b94599eaec41d853f"
@@ -1603,6 +1622,7 @@ additional_settings() {
 	ashou_20210516_fr="9046fbd8945f48cb8e36a17fff9b0983@72abb03ca91a4569933c6c8a62a5622c@5e567ba1b9bd4389ae19fa09ca276f33@82b1494663f9484baa176589298ca4b3@616382e94efa476c90f241c1897742f1@d4e3080b06ed47d884e4ef9852cad568@ed2b2d28151a482eae49dff2e5a588f8@a8b204ae2a7541a18e54f5bfb7dcb04b"
 	xiaodengzi_20190516_fr="52dc669f77c54a26857c989c5b28221f@15cb130472c7494fbffec1758094a3e1@1db8e48de262417aaeaed456cadbc021"
 	xiaodengzi_random_20190516_fr="e004a4244e244863b14d7210f8513113@8284c080686b45c89a6c6f7d1ea7baac@f69821dde34540d39f95315c5290eb88@5e753c671d0644c7bb418523d3452975@c6f859ec57d74dda9dafc6b3c2af0a0f@8dda5802f0d54f38af48c4059c591007"
+	jidiyangguang_20190516_fr="3e6f0b7a2d054331a0b5b956f36645a9@304b39f17d6c4dac87933882d4dec6bc"
 
 	#比白人
 	wjq_20190516_fr="9aac4df8839742b6abae13606ad696cc@10828079c5ca49a1b2b56a9a3fe39671@2ce1c53010dc4f7ebb5e4803701220d3@a0927fb98a854126a045dbe1f320898c"
@@ -1614,18 +1634,29 @@ additional_settings() {
 	Lili_20210121_fr="48651377d7544f6bbf32cbd7ef50be30"
 	#己巳
 	jisi_20201211_fr="df3ae0b59ca74e7a8567cdfb8c383f02@917de51d75414ddda4a1bbb863b8bf8a@e3ec63e3ba65424881469526d8964657@9b9e10d0aab44cfcb579ac6e76bb29c5"
-
-
-	random_fruit="$wjq_20190516_fr@$NanshanFox_20210303_fr@$Lili_20210121_fr@$jisi_20201211_fr"
+	#Luckies
+	Luckies_20210205_fr="9c091f728d54497ba7bb814c0d9c241e@90c3664de385425fb44c7db2e40b6061"
+	#余生一个浪
+	yushengyigelang_2021017_fr="0d03ac05fdec4d729f81fb3d7bb54088@ddc79232c6e74725950ee42fde939483@61f21ef708c948568854ec50c3627085@2a9165ab1c4f44edbbeb40ab7c8742e8@72dd4d3e2245472986f729953c5be146@13be2ecb23344d86ada656a3d8a6cf92"
+	
+	random_fruit="$wjq_20190516_fr@$NanshanFox_20210303_fr@$Lili_20210121_fr@$jisi_20201211_fr@$Luckies_20210205_fr@$yushengyigelang_2021017_fr"
 	random="$random_fruit"
 	random_array
-	new_fruit_set="'$new_fruit1@$zuoyou_20190516_fr@$Javon_20201224_fr@$minty_20210114_fr@$ashou_20210516_fr@$xiaobandeng_fr@$chiyu_fr@$random_set',"
+	new_fruit_set="'$new_fruit1@$zuoyou_20190516_fr@$Javon_20201224_fr@$jidiyangguang_20190516_fr@$ashou_20210516_fr@$xiaobandeng_fr@$chiyu_fr@$random_set',"
 
+	js_amount=$(echo "$js_cookie" | wc -l)
 	fr_rows=$(grep -n "shareCodes =" $dir_file_js/jd_fruit.js | awk -F ":" '{print $1}')
-	frcode_rows=$(grep -n "FruitShareCodes = \[" $dir_file_js/jdFruitShareCodes.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$fr_rows a \ $new_fruit_set " $dir_file_js/jd_fruit.js
+		js_amount=$(($js_amount - 1))
+	done
 
-	sed -i "$fr_rows a \ $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jd_fruit.js
-	sed -i "$frcode_rows a  \ $new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set\n$new_fruit_set" $dir_file_js/jdFruitShareCodes.js
+	js_amount=$(echo "$js_cookie" | wc -l)
+	frcode_rows=$(grep -n "FruitShareCodes = \[" $dir_file_js/jdFruitShareCodes.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$frcode_rows a \ $new_fruit_set " $dir_file_js/jdFruitShareCodes.js
+		js_amount=$(($js_amount - 1))
+	done
 
 	sed -i "s/dFruitBeanCard = false/dFruitBeanCard = $jd_fruit/g" $dir_file_js/jd_fruit.js #农场不浇水开始换豆
 
@@ -1639,6 +1670,7 @@ additional_settings() {
 	ashou_20210516_pet="MTAxODEyOTI4MDAwMDAwMDM5NzM3Mjk5@MTEzMzI0OTE0NTAwMDAwMDAzOTk5ODU1MQ==@MTE1NDQ5OTIwMDAwMDAwNDIxMDIzMzM=@MTAxODEyMjkxMDAwMDAwMDQwMzc4ODU1@MTAxODc2NTEzMDAwMDAwMDAxOTcyMTM3Mw==@MTAxODc2NTEzMzAwMDAwMDAxOTkzMzM1MQ==@MTAxODc2NTEzNDAwMDAwMDAxNjA0NzEwNw=="
 	Jhone_Potte_20200824_pet="MTE1NDUyMjEwMDAwMDAwNDI4ODA5NDU=@MTE1NDQ5OTUwMDAwMDAwNDI4ODA5NTE=@MTE1NDAxNzcwMDAwMDAwNDE3MDkwNzE=@MTE1NDUyMjEwMDAwMDAwNDE3NDU2MjU="
 	xiaodengzi_20190516_pet="MTE1NDUwMTI0MDAwMDAwMDM5NTc4ODQz@MTAxODExNDYxMTEwMDAwMDAwNDAxMzI0NTk="
+	jidiyangguang_20190516_pet="MTE1NDQ5OTUwMDAwMDAwMzk2NTY2MTk=@MTE1NDQ5MzYwMDAwMDAwMzk2NTY2MTE="
 
 	#比白人
 	wjq_20190516_pet="MTAxODc2NTEzMTAwMDAwMDAyNDM5MjI0Mw==@MTAxODc2NTEzMDAwMDAwMDAyOTc5MTM1MQ==@MTE0MDE2NjI5MDAwMDAwMDQ2OTk2NjA5@MTEzMzI0OTE0NTAwMDAwMDA0Njk5NDUwMw=="
@@ -1650,20 +1682,33 @@ additional_settings() {
 	Lili_20210121_pet="MTE1NDUyMjEwMDAwMDAwNDM4MjYyMDE="
 	#己巳
 	jisi_20201211_pet="MTE1NDUwMTI0MDAwMDAwMDQyODExMzU1@MTE0MDQ3MzIwMDAwMDAwNDc0NDU4MTU=@MTEzMzI0OTE0NTAwMDAwMDA0Mjg4NTczOQ==@MTE1MzEzNjI2MDAwMDAwMDQ5NjUwMjkz"
+	#Luckies
+	Luckies_20210205_pet="MTE1NDUyMjEwMDAwMDAwNDQxMjY1MTM=@MTE1NDUwMTI0MDAwMDAwMDQ0MTI2NTc1"
+
+	#余生一个浪
+	yushengyigelang_2021017_pet="MTE1NDUyMjEwMDAwMDAwNDUyODcwOTM=@MTEzMzI0OTE0NTAwMDAwMDA0NTM1MTg4Nw==@MTEzMzI0OTE0NTAwMDAwMDA0NTIxOTk3MQ==@MTAxODcxOTI2NTAwMDAwMDAzMTE4MjU2Nw==@MTEyNjE4NjQ2MDAwMDAwMDQ4MTI4MjE3@MTEzMzE5ODE0NDAwMDAwMDA0OTYyMzYwNQ=="
+
 
 	
 	
-
-	random_pet="$wjq_20190516_pet@$NanshanFox_20210303_pet@$Lili_20210121_pet@$jisi_20201211_pet"
+	random_pet="$wjq_20190516_pet@$NanshanFox_20210303_pet@$Lili_20210121_pet@$jisi_20201211_pet@$Luckies_20210205_pet@$yushengyigelang_2021017_pet"
 	random="$random_pet"
 	random_array
-	new_pet_set="'$new_pet1@$zuoyou_20190516_pet@$Javon_20201224_pet@$minty_20210114_pet@$ashou_20210516_pet@$Jhone_Potte_20200824_pet@$chiyu_pet@$random_set',"
+	new_pet_set="'$new_pet1@$zuoyou_20190516_pet@$Javon_20201224_pet@$jidiyangguang_20190516_pet@$ashou_20210516_pet@$Jhone_Potte_20200824_pet@$chiyu_pet@$random_set',"
 
+	js_amount=$(echo "$js_cookie" | wc -l)
 	pet_rows=$(grep -n "shareCodes =" $dir_file_js/jd_pet.js | awk -F ":" '{print $1}')
-	petcode_rows=$(grep -n "PetShareCodes = \[" $dir_file_js/jdPetShareCodes.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$pet_rows a \ $new_pet_set " $dir_file_js/jd_pet.js
+		js_amount=$(($js_amount - 1))
+	done
 
-	sed -i "$pet_rows a \ $new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set" $dir_file_js/jd_pet.js
-	sed -i "$petcode_rows a  \ $new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set\n$new_pet_set" $dir_file_js/jdPetShareCodes.js
+	js_amount=$(echo "$js_cookie" | wc -l)
+	petcode_rows=$(grep -n "PetShareCodes = \[" $dir_file_js/jdPetShareCodes.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$petcode_rows a \ $new_pet_set " $dir_file_js/jdPetShareCodes.js
+		js_amount=$(($js_amount - 1))
+	done
 
 	#宠汪汪积分兑换奖品改成兑换500豆子，个别人会兑换错误(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
 	sed -i "s/let joyRewardName = 0/let joyRewardName = $jd_joy_reward/g" $dir_file_js/jd_joy_reward.js
@@ -1689,9 +1734,10 @@ additional_settings() {
 	Javon_20201224_pb="wpwzvgf3cyawfvqim3tlebm3evajyxv67k5fsza"
 	Javon_random_pb="g3ekvuxcunrery7ooivfylv2ci5ac3f4ijdgqji@wgkx2n7t2cr5oa6ro77edazro3kxfdgh6ixucea@qermg6jyrtndlahowraj6265fm@rug64eq6rdioosun4upct64uda5ac3f4ijdgqji@t4ahpnhib7i4hbcqqocijnecby@5a43e5atkvypfxat7paaht76zy@gdi2q3bsj3n4dgcs5lxnn2tyn4@mojrvk5gf5cfszku73tohtuwli@l4ex6vx6yynouzcgilo46gozezzpsoyqvp66rta@beda5sgrp3bnfrynnqutermxoe"
 	chiyu_pb="crydelzlvftgpeyuedndyctelq"
-ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtvev6em@mlrdw3aw26j3w2hy5trqwqmzn6ucqiz2ribf7na@olmijoxgmjutzdb4pf2fwevfnx4fxdmgld5xu2a@yaxz3zbedmnzhemvhmrbdc7xhq@olmijoxgmjutyy7u5s57pouxi5teo3r4r2mt36i@olmijoxgmjutzh77gykzjkyd6zwvkvm6oszb5ni@dixtq55kenw3ykejvsax6y3xrq"
+	ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtvev6em@mlrdw3aw26j3w2hy5trqwqmzn6ucqiz2ribf7na@olmijoxgmjutzdb4pf2fwevfnx4fxdmgld5xu2a@yaxz3zbedmnzhemvhmrbdc7xhq@olmijoxgmjutyy7u5s57pouxi5teo3r4r2mt36i@olmijoxgmjutzh77gykzjkyd6zwvkvm6oszb5ni@dixtq55kenw3ykejvsax6y3xrq"
 	xiaobandeng_pb="olmijoxgmjutzcbkzw4njrhy3l3gwuh6g2qzsvi@olmijoxgmjuty4tpgnpbnzvu4pl6hyxp3sferqa"
 	xiaodengzi_20190516_pb="kcpj4m5kmd4sfdp7ilsvvtkdvu@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi32mpzw3ekc36hh7feakdgbbfjky@j3yggpcyulgljlovo4pwsyi3xa@uvutkok52dcpuntu3gwko34qta@vu2gwcgpheqlm5vzyxutfzc774"
+	jidiyangguang_20190516_pb="e7lhibzb3zek2zin4gnao3gynqwqgrzjyopvbua@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi3smz2qmjorpg6ldw5otnabrmlei"
 
 	#比白人
 	wjq_20190516_pb="sv3wbqzfbzbip22dluyg3kqa5a@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi2fg36jqtqkr72x5jddqif4oiama@olmijoxgmjutzbcaz2ejl2cotlb5qzoacbk2sxy@47m36n7ro5guth5f23tvm5fyxx2owrpkwxpmb3q"
@@ -1703,21 +1749,30 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	Lili_20210121_pb="n24x4hzuumfuu3a26r2o45ydxe"
 	#己巳
 	jisi_20201211_pb="qm7basnqm6wnqtoyefmgh65nby@eeexxudqtlamobesoisd3c4ygur4f7o46eyzl3q@mnuvelsb76r27b4ovdbtrrl2u5a53z543epg7hi@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi2mpzzclrkctwylbyoffpyhsqwri"
-
+	#Luckies
+	Luckies_20210205_pb="5itdl72qrkd7lbepefbvkmopla@e7lhibzb3zek2qrn2fxojpzh5oatijgpijg73ba"
 	
+	#余生一个浪
+	yushengyigelang_2021017_pb="42jxwmz7ybhbkqdsfn5gpb5kde@pfuw5smhkmxx4gbokvsi3yifr4@uwgpfl3hsfqp3b4zn67l245x6cosobnqtyrbvaa@mlrdw3aw26j3xb6wpvnjtud5ktrtah4errvbety@66nvo67oyxpycucmbw7emjhuj6xfe3d3ellmesq@h3cggkcy6agkgtvxoy76nn63ki7ans4blqb54vq"
 	
-	random_plantBean="$wjq_20190516_pb$NanshanFox_20210303_pb@$Lili_20210121_pb@$jisi_20201211_pb"
+	random_plantBean="$wjq_20190516_pb$NanshanFox_20210303_pb@$Lili_20210121_pb@$jisi_20201211_pb@$Luckies_20210205_pb@$yushengyigelang_2021017_pb"
 	random="$random_plantBean"
 	random_array
-	new_plantBean_set="$new_plantBean1@$zuoyou_20190516_pb@$Javon_20201224_pb@$minty_20210114_pb@$ashou_20210516_pb@$xiaobandeng_pb@$chiyu_pb@$random_set"
+	new_plantBean_set="'$new_plantBean1@$zuoyou_20190516_pb@$Javon_20201224_pb@$jidiyangguang_20190516_pb@$ashou_20210516_pb@$xiaobandeng_pb@$chiyu_pb@$random_set',"
 
-	share_code="$new_pet_set"
-	share_code_value="$new_pet_set"
-	share_code_generate
-	sed -i '/PLANT_BEAN_SHARECODES/d' /etc/profile >/dev/null 2>&1
-	export PLANT_BEAN_SHARECODES="$share_code_value&&"
-	echo "export PLANT_BEAN_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
+	js_amount=$(echo "$js_cookie" | wc -l)
+	pb_rows=$(grep -n "shareCodes =" $dir_file_js/jd_plantBean.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$pb_rows a \ $new_plantBean_set " $dir_file_js/jd_plantBean.js
+		js_amount=$(($js_amount - 1))
+	done
 
+	js_amount=$(echo "$js_cookie" | wc -l)
+	pbcode_rows=$(grep -n "PlantBeanShareCodes = \[" $dir_file_js/jdPlantBeanShareCodes.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$pbcode_rows a \ $new_plantBean_set " $dir_file_js/jdPlantBeanShareCodes.js
+		js_amount=$(($js_amount - 1))
+	done
 
 	#京喜工厂
 	new_dreamFactory="X2poJVLcLoygZX0TgGmkl8EiBIkQe_zrMAZqtgL24-M=@5MIEocu93aHBEq_1DLOFFA==@DAJklWSqv4HcjA35zvIPGA==@4HL35B_v85-TsEGQbQTfFg==@q3X6tiRYVGYuAO4OD1-Fcg==@Gkf3Upy3YwQn2K3kO1hFFg==@w8B9d4EVh3e3eskOT5PR1A==@jwk7hHoEWAsvQyBkNrBS1Q==@iqAUAWEQx86GvVthAu7-jQ=="
@@ -1728,6 +1783,7 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	chiyu_df="us6se4fFC6cSjHDSS_ScMw=="
 	Jhone_Potte_20200824_df="Q4Rij5_6085kuANMaAvBMA==@gTLa05neWl8UFTGKpFLeog=="
 	ashou_20210516_df="1rQLjMF_eWMiQ-RAWARW_w==@6h514zWW6JNRE_Kp-L4cjA==@2G-4uh8CqPAv48cQT7BbXQ==@cxWqqvvoGwDhojw6JDJzaA==@pvMjBwEJuWqNrupO6Pjn6w==@nNK5doo5rxvF1HjnP0Kwjw==@BoMD6oFV2DhQRRo_w-h83g==@PqXKBSk3K1QcHUS0QRsCBg=="
+	jidiyangguang_20190516_df="w8B9d4EVh3e3eskOT5PR1A==@FyYWfETygv_4XjGtnl2YSg=="
 
 	#比白人
 	wjq_20190516_df="43I0xnmtfBvt5qiFm6ftxA==@aGGJ27ylclTmr20WGw-ePQ==@Suo8Gk5ZAB8bY5RgiNgdlw==@NoLbYPmp_p3aXBkDRwdE2Q=="
@@ -1739,18 +1795,41 @@ ashou_20210516_pb="3wmn5ktjfo7ukgaymbrakyuqry3h7wlwy7o5jii@chcdw36mwfu6bh72u7gtv
 	Lili_20210121_df="HQTSebNAjuGe4igMSpHeog=="
 	#己巳
 	jisi_20201211_df="5BOWMhgoVeCjMEjg-ssm1w==@sTpAUMutQkLF8w3r6u9wCw==@i2SuMzTz18a7afGrr9zn6H86hjAEmRIdJD54NZbw_dg="
-
 	
-	random_dreamFactory="$wjq_20190516_df@$NanshanFox_20210303_df@$Lili_20210121_df@$jisi_20201211_df"
+	#余生一个浪
+	yushengyigelang_2021017_df="qCG9QOJTxIDm0m8RAzmj_A==@3mO9RC7oitABfebSxFZntg==@jxV8UW_ZoHgE7HYvdofwtA==@q4hywbUaNk0XuRmiMP4Avg==@BFSsGKVKebcBAe1MG5cU8A==@rrO51OzURrvemMbKisbh0g=="
+
+	random_dreamFactory="$wjq_20190516_df@$NanshanFox_20210303_df@$Lili_20210121_df@$jisi_20201211_df@$yushengyigelang_2021017_df"
 	random="$random_dreamFactory"
 	random_array
-	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$minty_20210114_df@$ashou_20210516_df@$Jhone_Potte_20200824_df@$chiyu_df@$random_set',"
+	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$jidiyangguang_20190516_df@$ashou_20210516_df@$Jhone_Potte_20200824_df@$chiyu_df@$random_set',"
 
 	df_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_dreamFactory.js | awk -F ":" '{print $1}')
-	dfcode_rows=$(grep -n "shareCodes = \[" $dir_file_js/jdDreamFactoryShareCodes.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$df_rows a \ $new_dreamFactory_set " $dir_file_js/jd_dreamFactory.js
+		js_amount=$(($js_amount - 1))
+	done
 
-	sed -i "$df_rows a \ $new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set" $dir_file_js/jd_dreamFactory.js
-	sed -i "$dfcode_rows a  \ $new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set\n$new_dreamFactory_set" $dir_file_js/jdDreamFactoryShareCodes.js
+	js_amount=$(echo "$js_cookie" | wc -l)
+	dfcode_rows=$(grep -n "shareCodes = \[" $dir_file_js/jdDreamFactoryShareCodes.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$dfcode_rows a \ $new_dreamFactory_set " $dir_file_js/jdDreamFactoryShareCodes.js
+		js_amount=$(($js_amount - 1))
+	done
+
+	#东东工厂
+	new_ddgc="T024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQCjVWnYaS5kRrbA@T0225KkcRUhP9FCEKR79xaZYcgCjVWnYaS5kRrbA@T0205KkcH0RYsTOkY2iC8I10CjVWnYaS5kRrbA@T0205KkcJEZAjD2vYGGG4Ip0CjVWnYaS5kRrbA"
+
+	new_ddgc_set="'$new_ddgc',"
+
+	sed -i "s/inviteCodes = \[/inviteCodes = \[ \n/g" $dir_file_js/jd_jdfactory.js
+
+	js_amount=$(echo "$js_cookie" | wc -l)
+	ddgc_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_jdfactory.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$ddgc_rows a \ $new_ddgc_set " $dir_file_js/jd_jdfactory.js
+		js_amount=$(($js_amount - 1))
+	done
 
 	#京东试用
 	if [ "$jd_try" == "yes" ];then
@@ -1889,7 +1968,9 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 	jidiyangguang_cc="RtGKzOj3RgiqfYOSQtdl1eOd05gIN2tIDWFgjWB4l2Sa7XrYtw@RtGKz76gEA7yL4KeRd0w0EiokyucAF_KVx05gJUTx_688J1Bag"
 	zuoyou_cc="QMfizaDoDQrvMs_DSZBmlAsHuBuLVdQKBg@VMahgOmkDUbvfs_WW41tkt5YZBFWid-KJ-Vu@QcS2ieihDUbvfs_WW41tkgLgjGBi-F28nlc8@QNyynbLzBl_MI8_WW9R_moklKD3GKxv_PFsJWTo_Wg@Tty7n6XhRgijMs_WF5h_mndWxiCbUusIAV4mMd0A@RMyhmbLzAFP8INTWW5gzmo5OufFYwXAL7NcY1iiaTzo@RtGKz7mhEl6gKoCfEoI20PA4S5NDpZHXyKdLuDtaEwEnYlrCMw@W9GaibH3F2L4LMfwf5x_mq9Ys636pNQshUOB3RdlkZ2WTwc@RtGKzen2SQn1LNGbRoU03roWennJ-KWPcB_FTGg3JBGr6Wp4hw"
 	
-	new_cc_set="$new_cc@$chiyu_cc@$Javon_cc@$jidiyangguang_cc@$zuoyou_cc"
+	random="$new_cc@$chiyu_cc@$Javon_cc@$jidiyangguang_cc@$zuoyou_cc"
+	random_array
+	new_cc_set="$random_set"
 
 	share_code="$new_cc_set"
 	share_code_value="$new_cc_set"
@@ -1897,6 +1978,13 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 	sed -i '/CITY_SHARECODES/d' /etc/profile >/dev/null 2>&1
 	export CITY_SHARECODES="$share_code_value&&"
 	echo "export CITY_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
+
+	js_amount=$(echo "$js_cookie" | wc -l)
+	cc_rows=$(grep -n " inviteCodes \=" $dir_file_js/jd_city.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$cc_rows a \ '$new_cc_set'," $dir_file_js/jd_city.js
+		js_amount=$(($js_amount - 1))
+	done
 
 	#开启城城分现金抽奖
 	sed -i '/JD_CITY_EXCHANGE/d' /etc/profile >/dev/null 2>&1
@@ -1908,7 +1996,7 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 	new_cfd="698098B001CF38EEEBCF66F9746EAFC7E1627164C06D4AADED9CCBC4B3A308EF@2F37BEBF8BFCDF8BEE92C1C2923706A4D1E39886C942A521A2A0353AED313BEC@74368D6374341F98E02515D2661AA24DDDF4780627137D1A2A93C1D968FE8698@161F722B03A9D0D88957B3A10D1993F0AC232B8CE6586F11D730AC247E887B31"
 	test_cfd="1A91CB7D423B0797C8FCB56F427D8DBE17FC2BC3429518690AE267598024A64F@D2B2DC26C59CE6F9D40087876C5E1365B167EC29D2F4A5A1E466AD6DC908FF13@5B674A6E0E797CF70F2D784210E24D19875694C418C215CB732C90C8534DE908@30267C61BC24DCF80B89925CCCB5B4C3900AAE08116E9F7EC18A0ACF8371482D@EC1EE0B8E9D14A159CB3ED96274FE27FAD7BC87B7873159A8EE7F60C5FD7D681"
 	zuoyou_20190516_cfd="FEDB2AF96850881075FA08A13F621BA2@492629151F9A4D58FD1396DF6A89283271310967BE165544D8C825F27C4A2BA3@B07EC6F47A9BBA48D730300D742021D4AB091E6E8BC38C6FC83951F090865B4D@5266AB2AB4A420E011FDE365CD3761DEA004AF26497E96FE787CEA61D3B9CC5D@E36DC4BBF3C37E38C7E986E8836ECA97D7CC19A31C9E2A1F98A102AEE7E4CCC2@BC11A30DDE0C69ACBA90C9374FB64AF6648270AC47BB30E4340A23CB0B286411@BE23B69794FF9225CA2A11A4FD324D9973306BE33A756B36D5DD201B2D661F69@0FD477A54177EE4FA6B4128DC6C4FE442B153AE2B4C40E1EEC9CA76696BC61CB@11F743A9D0C5D5ADFBBAA2DF0413382B53EC91F0510E9968157559A4B38F176C@02891BCA03C90A1927B0A6B7AEAF2C60255B1E1317B509B477793869356E8D81@9D3BBBB7C428ACF58C7380ACA3EBE0798CBD1466AFAF50B327F3168977EBAF5A@4258CC830AA9723630A626F5CD2CE5E39EB5941364F3A8C9E0E0A04CC41ABAC9"
-	jidiyangguang_20190516_cfd="7EFA02FBA93D2428836E5046ACC9F0BA851F3F531F2B19A574E82C6612D063E6@0CEBB972109F10663A8D5E663E617B5E9DB6862E81793277DFAC711F9FA7665D"
+	jidiyangguang_20190516_cfd="7EFA02FBA93D2428836E5046ACC9F0BA82A37AE1B41810B042C93A6ED443E619@0CEBB972109F10663A8D5E663E617B5E9DB6862E81793277DFAC711F9FA7665D"
 	Jhone_Potte_20200824_cfd="489E0A39F03311FB59083A7006A35FCB45F5EB3DA92FA7B4446168FAF5EA64DE@45E0C9745C26474C1DBB0E2F5D4E3D661F744C456D2D2516FDADD0689C455C1D"
 	Javon_20201224_cfd="859D1EACFE0FB0DE30DF970EC5DF56A6FBF3F70095B62A4D76529F62AC57EAB8@3108F77AE5B711A96FBEE78E952FDE207C976D1BA12EE4A880629BA678290EEE"
 	
@@ -1945,15 +2033,26 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 }
 
 zoo_share() {
-	new_zoo="ZXTKT024anXulbWUI_NR9ZpeTHmEoPlAFjRWn6-7zx55awQ@ZXTKT0205KkcPElQrCOQVnqP66FpFjRWn6-7zx55awQ@ZXTKT0225KkcRBpM_VSEKUz8kPENIQFjRWn6-7zx55awQ@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgbEmm15mndGsDU8xOB2Hug"
-	new_zoo_set="'$new_zoo',"
+	new_zoo="'ZXTKT024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQFjRWn6-7zx55awQ',"
+	new_zoopk1="'ZXTKT024anXulbWUI_NR9ZpeTHmEoPlAFjRWn6-7zx55awQ@ZXTKT0205KkcPElQrCOQVnqP66FpFjRWn6-7zx55awQ@ZXTKT0225KkcRBpM_VSEKUz8kPENIQFjRWn6-7zx55awQ@sSKNX-MpqKOJsNu_nZvYV-nCFtEoibN3nsRhO8g77euwQQhVn3QtBsoadt4CFkmg',"
+	new_zoopk2="'ZXTKT024anXulbWUI_NR9ZpeTHmEoPlAFjRWn6-7zx55awQ@ZXTKT0205KkcPElQrCOQVnqP66FpFjRWn6-7zx55awQ@ZXTKT0225KkcRBpM_VSEKUz8kPENIQFjRWn6-7zx55awQ@sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgeDWC-K5kCbbW3HgcATcUjv',"
+	new_zoopk3="'sSKNX-MpqKOXrevjyMWdUScQdhgwySVYfKlCINKPUG9Dlg',"
+	new_zoopk4="'sSKNX-MpqKPQ5rO9mJ3eA9kQEewE3VAI3sBFbJT22o438AhSpqTxO3dqDFxqEXNY',"
+	new_zoopk5="'sSKNX-MpqKObp_DwnJu2BGGTUTWUfPSxwzGOzw',"
 
-	js_amount=$(echo "$js_cookie" | wc -l)
-	zoo_rows=$(grep -n ".innerPkInviteList \= \[" $dir_file_js/jd_zoo.js | awk -F ":" '{print $1}')
-	while [[ ${js_amount} -gt 0 ]]; do
-		sed -i "$zoo_rows a \ $new_zoo_set" $dir_file_js/jd_zoo.js
-		js_amount=$(($js_amount - 1))
-	done
+	sed -i "s/$.inviteList = \[/$.inviteList = \[ \n/g" $dir_file_js/jd_zoo.js
+
+	zoo_rows=$(grep -n "\$.inviteList \= \[" $dir_file_js/jd_zoo.js | awk -F ":" '{print $1}')
+	zoopk_rows=$(grep -n "\$.pkInviteList \= \[" $dir_file_js/jd_zoo.js | awk -F ":" '{print $1}')
+	zoopk_rows1=$(expr $zoopk_rows + 1)
+	sed -i "$zoopk_rows1 d" $dir_file_js/jd_zoo.js
+	sed -i "$zoopk_rows a \ $new_zoopk5" $dir_file_js/jd_zoo.js
+	sed -i "$zoopk_rows a \ $new_zoopk4" $dir_file_js/jd_zoo.js
+	sed -i "$zoopk_rows a \ $new_zoopk3" $dir_file_js/jd_zoo.js
+	sed -i "$zoopk_rows a \ $new_zoopk2" $dir_file_js/jd_zoo.js
+	sed -i "$zoopk_rows a \ $new_zoopk1" $dir_file_js/jd_zoo.js
+
+	sed -i "s/pKHelpAuthorFlag = true/pKHelpAuthorFlag = false/g" $dir_file_js/jd_zoo.js
 }
 
 share_code_generate() {
@@ -2191,38 +2290,53 @@ system_variable() {
 	close_notification
 
 	script_black
-
-	sys_additional_settings
 }
 
 jd_openwrt_config_description() {
 cat > $jd_openwrt_config <<EOF
 *****************jd_openwrt_config $jd_openwrt_config_version**************
+
 这里主要定义一些脚本的个性化操作，如果你不需要微调，那么保持默认不理他就行了
+
 这里的参数如果你看不懂或者想知道还有没有其他参数，你可以去$dir_file_js这里找相应的js脚本看说明
+
 修改完参数如何生效：sh \$jd update && sh \$jd
+
 *******************************************************
 #是否启用账号并发功能（多账号考虑打开，黑了不管） yes开启 默认no
 concurrent='no'
+
 #京东试用 yes开启  默认no
 jd_try='no'
+
 #农场不浇水换豆 false关闭 ture打开
 jd_fruit='false'
+
+
 #京小超默认兑换20豆子(可以改成你要的1000豆子或者其他)
 jd_blueCoin='20'
+
+
 #宠汪汪积分兑换500豆子，(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
 jd_joy_reward='500'
+
+
 #宠汪汪喂食(更多参数自己去看js脚本描述)
 jd_joy_feedPets='80'
+
+
 #宠汪汪不给好友喂食 false不喂食 ture喂食
 jd_joy_steal='false'
+
+
 #JOY兑换豆子(满2000开始兑换)
 jd_crazy_joy='2000'
+
+
 #取消店铺200个(觉得太多你可以自己调整)
 jd_unsubscribe='200'
 EOF
 }
-
 
 system_variable
 action1="$1"
@@ -2266,3 +2380,5 @@ else
 	esac
 	fi
 fi
+
+

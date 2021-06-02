@@ -1,18 +1,18 @@
 /*
 关注有礼
 
-更新地址：https://raw.githubusercontent.com/monk-coder/dust/dust/normal/monk_shop_follow_sku.js
+更新地址：https://share.r2ray.com/dust/normal/monk_shop_follow_sku.js
 ============Quantumultx===============
 [task_local]
 #关注有礼
-15 15 * * * https://raw.githubusercontent.com/monk-coder/dust/dust/normal/monk_shop_follow_sku.js, tag=关注有礼,  enabled=true
+15 15 * * * https://share.r2ray.com/dust/normal/monk_shop_follow_sku.js, tag=关注有礼,  enabled=true
 ================Loon==============
 [Script]
-cron "15 15 * * *" script-path=https://raw.githubusercontent.com/monk-coder/dust/dust/normal/monk_shop_follow_sku.js,tag=关注有礼
+cron "15 15 * * *" script-path=https://share.r2ray.com/dust/normal/monk_shop_follow_sku.js,tag=关注有礼
 ===============Surge=================
-关注有礼 = type=cron,cronexp="15 15 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/monk-coder/dust/dust/normal/monk_shop_follow_sku.js
+关注有礼 = type=cron,cronexp="15 15 * * *",wake-system=1,timeout=3600,script-path=https://share.r2ray.com/dust/normal/monk_shop_follow_sku.js
 ============小火箭=========
-关注有礼 = type=cron,script-path=https://raw.githubusercontent.com/monk-coder/dust/dust/normal/monk_shop_follow_sku.js, cronexpr="15 15 * * *", timeout=3600, enable=true
+关注有礼 = type=cron,script-path=https://share.r2ray.com/dust/normal/monk_shop_follow_sku.js, cronexpr="15 15 * * *", timeout=3600, enable=true
 */
 const $ = new Env('店铺关注有礼');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

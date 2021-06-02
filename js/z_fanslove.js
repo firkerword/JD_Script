@@ -4,20 +4,20 @@
 有看到新活动可以私信我添加活动ID。 GitHub@i-chenzhe
 新手写脚本，难免有bug，能用且用。
 
-更新地址：https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_fanslove.js
+更新地址：https://share.r2ray.com/dust/i-chenzhe/z_fanslove.js
 ============Quantumultx===============
 [task_local]
 #粉丝互动
-3 10 * * * https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_fanslove.js, tag=粉丝互动,  enabled=true
+3 10 * * * https://share.r2ray.com/dust/i-chenzhe/z_fanslove.js, tag=粉丝互动,  enabled=true
 [rewrite_local]
-^https://lzkjdz\-isv\.isvjcloud\.com\/wxFansInterActionActivity\/activityContent url script-response-body https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/jd_getFanslove.js
+^https://lzkjdz\-isv\.isvjcloud\.com\/wxFansInterActionActivity\/activityContent url script-response-body https://share.r2ray.com/dust/i-chenzhe/jd_getFanslove.js
 ================Loon==============
 [Script]
-cron "3 10 * * *" script-path=https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_fanslove.js,tag=粉丝互动
+cron "3 10 * * *" script-path=https://share.r2ray.com/dust/i-chenzhe/z_fanslove.js,tag=粉丝互动
 ===============Surge=================
-粉丝互动 = type=cron,cronexp="3 10 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_fanslove.js
+粉丝互动 = type=cron,cronexp="3 10 * * *",wake-system=1,timeout=3600,script-path=https://share.r2ray.com/dust/i-chenzhe/z_fanslove.js
 ============小火箭=========
-粉丝互动 = type=cron,script-path=https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe/z_fanslove.js, cronexpr="3 10 * * *", timeout=3600, enable=true
+粉丝互动 = type=cron,script-path=https://share.r2ray.com/dust/i-chenzhe/z_fanslove.js, cronexpr="3 10 * * *", timeout=3600, enable=true
 */
 
 const $ = new Env('粉丝互动');
