@@ -299,7 +299,20 @@ do
 	update_if
 done
 
-#检测cookie是否存活（暂时不能看到还有几天到期）
+zooPanda_url="https://raw.githubusercontent.com/zooPanda/zoo/dev"
+cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
+	zooBaojiexiaoxiaole.js			#宝洁消消乐 一天一次
+	zooLongzhou.js				#浓情618 与“粽”不同 一天一次
+EOF
+
+for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
+do
+	url="$zooPanda_url"
+	wget $zooPanda_url/$script_name -O $dir_file_js/$script_name
+	update_if
+done
+
+	#检测cookie是否存活（暂时不能看到还有几天到期）
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
@@ -537,6 +550,8 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_jin_tie.js 			#领金贴
 	adolf_martin.js			#人头马x博朗
 	adolf_urge.js			#坐等更新
+	zooBaojiexiaoxiaole.js			#宝洁消消乐 一天一次
+	zooLongzhou.js				#浓情618 与“粽”不同 一天一次
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script_time $white"
@@ -1889,11 +1904,6 @@ additional_settings() {
 	new_jdss_set="'$new_jdss',"
 
 	jdss_rows=$(grep -n "\$.authorCodeList \= \[" $dir_file_js/jd_star_shop.js | awk -F ":" '{print $1}')
-	jdss_rows1=$(expr $jdss_rows + 1)
-	
-	sed -i "$jdss_rows1 d" $dir_file_js/jd_star_shop.js
-	sed -i "$jdss_rows1 d" $dir_file_js/jd_star_shop.js
-	sed -i "$jdss_rows1 d" $dir_file_js/jd_star_shop.js
 	
 	js_amount=$(echo "$js_cookie" | wc -l)
 	while [[ ${js_amount} -gt 0 ]]; do
