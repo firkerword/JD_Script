@@ -1899,7 +1899,7 @@ additional_settings() {
 	done
 
 	#明星小店
-	new_jdss="VYlzzuDz-Y8seOROZFxje-gusZ0qMCAXkWRSg4DzCCQ"
+	new_jdss="Ap5_KQYFx2OrXRqHM1TPL3_afnNsJWQ5igvlJ-mfKnI@CXafdU6tKsdt11G6DMpXnA@OyvDBjSDMv-C64g3En4moXyHqz9xFr_ukU3EkW3c_SM@VYlzzuDz-Y8seOROZFxje-gusZ0qMCAXkWRSg4DzCCQ"
 
 	new_jdss_set="'$new_jdss',"
 
