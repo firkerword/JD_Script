@@ -270,7 +270,7 @@ done
 
 #fi
 
-nianyuguai_url="https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx"
+nianyuguai_url="https://raw.githubusercontent.com/wuzhi03/MyActions/main"
 cat >$dir_file/config/tmp/nianyuguai_qx.txt <<EOF
 	jd_super_redrain.js		#整点红包雨
 	jd_half_redrain.js		#半点红包雨
