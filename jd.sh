@@ -305,10 +305,10 @@ zooPanda_url="https://raw.githubusercontent.com/zooPanda/zoo/dev"
 cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
 	zooBaojiexiaoxiaole.js			#宝洁消消乐 一天一次
 	zooLongzhou.js				#浓情618 与“粽”不同 一天一次
-	zooOpencard01.js			#纯开卡 大牌联合618提前购
-	zooOpencard02.js			#纯开卡 大牌强联合好物提前购
-	zooOpencard03.js			#纯开卡 大牌强联合好物提前购
-	zooOpencard04.js			#纯开卡 大牌联合宠爱有礼
+	zooOpencard01.js			#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
+	zooOpencard02.js			#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
+	zooOpencard03.js			#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
+	zooOpencard04.js			#纯开卡 大牌联合宠爱有礼(默认不运行，自己考虑要不要运行)
 EOF
 
 for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
