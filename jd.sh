@@ -58,7 +58,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.15"
+	cron_version="3.16"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -88,6 +88,7 @@ cat >>/etc/crontabs/root <<EOF
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 30 20-23/1 * * * $node $dir_file_js/jd_half_redrain.js	>/tmp/jd_half_redrain.log	#半点红包雨#100#
+1 20-21/1 * * * $node $dir_file_js/jd_hby_lottery.js >/tmp/jd_hby_lottery.log #618主会场红包雨#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -177,7 +178,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_health_collect.js		#健康社区-收能量
 	jd_daily_lottery.js		#每日抽奖
 	jd_jump.js			#跳跳乐瓜分京豆
-	jd_city.js			#城城领现金
 	jd_carnivalcity.js		#京东手机狂欢城
 	jd_zoo.js 			#动物联萌 618活动
 	jd_xtg.js			#家电星推官
@@ -186,6 +186,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_zooCollect.js		#zoo收集金币
 	jd_mohe.js			#5G超级盲盒
 	jd_star_shop.js			#明星小店
+	jd_mcxhd.js			#新潮品牌狂欢
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -272,9 +273,10 @@ done
 
 nianyuguai_url="https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx"
 cat >$dir_file/config/tmp/nianyuguai_qx.txt <<EOF
-	jd_super_redrain.js		#整点红包雨
-	jd_half_redrain.js		#半点红包雨
+
 EOF
+	#jd_super_redrain.js		#整点红包雨
+	#jd_half_redrain.js		#半点红包雨
 
 for script_name in `cat $dir_file/config/tmp/nianyuguai_qx.txt | awk '{print $1}'`
 do
@@ -312,15 +314,43 @@ do
 	update_if
 done
 
+Wenmoux_url="https://raw.githubusercontent.com/Wenmoux/scripts/master/jd"
+cat >$dir_file/config/tmp/Wenmoux_url.txt <<EOF
+	jd_618redpacket.js			#翻翻乐
+	jd_superBrand.js 			#特物ZX联想
+EOF
+
+for script_name in `cat $dir_file/config/tmp/Wenmoux_url.txt | awk '{print $1}'`
+do
+	url="$Wenmoux_url"
+	wget $Wenmoux_url/$script_name -O $dir_file_js/$script_name
+	update_if
+done
+
+panghu999_url="https://raw.githubusercontent.com/panghu999/panghu/master"
+cat >$dir_file/config/tmp/panghu999_url.txt <<EOF
+	jd_xcpp.js 				#柠檬新潮品牌
+	jd_dphby.js				#柠檬大牌闪购红包雨 一天一次
+	jd_gcip.js 				#柠檬特物国创I
+	jd_ppdz.js				#柠檬东东泡泡大战
+EOF
+
+for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}'`
+do
+	url="$panghu999_url"
+	wget $panghu999_url/$script_name -O $dir_file_js/$script_name
+	update_if
+done
+
 	#检测cookie是否存活（暂时不能看到还有几天到期）
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
 	wget https://raw.githubusercontent.com/fangpidedongsun/jd_scripts2/master/jd_friend.js -O $dir_file_js/jd_friend.js #joy总动员一次性脚本
-	wget https://raw.githubusercontent.com/Wenmoux/scripts/master/jd/jd_mcxhd_brandcity.js -O $dir_file_js/jd_mcxhd_brandcity.js  #新潮品牌狂欢
 
-rm -rf $dir_file_js/babelDiy.js
+
+rm -rf $dir_file_js/jd_city.js
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
@@ -330,7 +360,7 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
-	jd_mcxhd_brandcity.js  		#新潮品牌狂欢
+	pk.js				#新的PK京享值脚本
 	jd_check_cookie.js		#检测cookie是否存活（暂时不能看到还有几天到期）
 	monk_shop_lottery.js 		#店铺大转盘
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
@@ -360,7 +390,7 @@ EOF
 	fi
 	chmod 755 $dir_file_js/*
 	additional_settings
-	sys_additional_settings
+	#sys_additional_settings
 	zoo_share
 	concurrent_js_update
 	source /etc/profile
@@ -423,6 +453,11 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	z_shop_captain.js		#超级无线组队分奖品
 	adolf_superbox.js		#超级盒子
 	jd_dreamFactory.js 		#京喜工厂
+	jd_xcpp.js 			#柠檬新潮品牌
+	jd_dphby.js			#柠檬大牌闪购红包雨 一天一次
+	jd_gcip.js 			#柠檬特物国创I
+	jd_ppdz.js			#柠檬东东泡泡大战
+	jd_superBrand.js 		#特物ZX联想
 EOF
 	echo -e "$green run_0$start_script_time $white"
 
@@ -465,12 +500,22 @@ run_045() {
 }
 
 run_01() {
+cat >/tmp/jd_tmp/run_01 <<EOF
+	jd_zoo.js 			#动物联萌 618活动
+	jd_618redpacket.js			#翻翻乐
+	jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
+	jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
+EOF
+	#jd_super_redrain.js		#整点红包雨
 	echo -e "$green run_01$start_script_time $white"
-	$node $dir_file_js/jd_zoo.js 			#动物联萌 618活动
-	$node $dir_file_js/jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
-	$node $dir_file_js/jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
+
+	for i in `cat /tmp/jd_tmp/run_01 | awk '{print $1}'`
+	do
+		$node $dir_file_js/$i
+		$run_sleep
+	done
 	export RAIN_NOTIFY_CONTROL="false"
-	$node $dir_file_js/jd_super_redrain.js		#整点红包雨
+
 	echo -e "$green run_01$stop_script_time $white"
 }
 
@@ -488,26 +533,35 @@ run_02() {
 	fi
 	$node $dir_file_js/monk_pasture.js #有机牧场
 	$node $dir_file_js/jd_xtg.js			#家电星推官
+	$node $dir_file_js/pk.js			#新的PK京享值脚本
 	echo -e "$green run_02$stop_script_time $white"
 }
 
 run_03() {
+cat >/tmp/jd_tmp/run_03 <<EOF
+	adolf_jxhb.js			#京喜阶梯红包
+	jd_xtg_help.js			#家电星推官好友互助脚本
+	jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
+	jd_health.js		#健康社区
+	jddj_fruit.js			#京东到家果园 0,8,11,17
+	jd_daily_lottery.js		#每日抽奖
+	jd_mohe.js			#5G超级盲盒
+EOF
 	echo -e "$green run_03$start_script_time $white"
-	$node $dir_file_js/adolf_jxhb.js			#京喜阶梯红包
-	$node $dir_file_js/jd_city.js			#城城领现金
-	$node $dir_file_js/jd_xtg_help.js			#家电星推官好友互助脚本
-	$node $dir_file_js/jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
-	$node $dir_file_js/jd_health.js		#健康社区
-	$node $dir_file_js/jddj_fruit.js			#京东到家果园 0,8,11,17
-	$node $dir_file_js/jd_daily_lottery.js		#每日抽奖
-	$node $dir_file_js/jd_mohe.js			#5G超级盲盒
+
+	for i in `cat /tmp/jd_tmp/run_03 | awk '{print $1}'`
+	do
+		$node $dir_file_js/$i
+		$run_sleep
+	done
+
 	echo -e "$green run_03$stop_script_time $white"
 }
 
 
 run_06_18() {
 cat >/tmp/jd_tmp/run_06_18 <<EOF
-	jd_mcxhd_brandcity.js  		#新潮品牌狂欢
+	jd_mcxhd.js  		#新潮品牌狂欢
 	jd_blueCoin.js  #东东超市兑换，有次数限制，没时间要求
 	jd_shop.js #进店领豆，早点领，一天也可以执行两次以上
 	jd_fruit.js #东东水果，6-9点 11-14点 17-21点可以领水滴
@@ -721,7 +775,11 @@ concurrent_js() {
 
 concurrent_js_update() {
 	if [ "$ccr_if" == "yes" ];then
-		rm -rf $ccr_js_file/*
+
+		for i in `ls $ccr_js_file | grep -E "^js"`
+		do
+			rm -rf $ccr_js_file/$i
+		done
 
 		js_amount=$(echo "$js_cookie" |wc -l)
 		while [[ ${js_amount} -gt 0 ]]; do
@@ -2040,37 +2098,6 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 	export JDSGMH_SHARECODES="$share_code_value&&"
 	echo "export JDSGMH_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
 
-	#城城分现金
-	new_cc="yA14HUcpl60lqwMwz1q9Ath0TJZGZJaiggXDQHv5Jvt6FTlDFtFx@RtGKtLvtGH3kCOPhaIJQmuiyd-flkynvTBf-d-r0MV_rt2-f@RtGKzOjxSQrwd9WSE9I0g3038GeOvTcUJm5WJvgafs44wjUGig@RtGKzu_2FwiiLYuZFtw01xSvrB-HuUEgE5LT3P2Kw4NpSfFWWA@RtGKzOWnQwPxeNefHtM309LeOcgmvJAhqMiaAxCsakLCmTAuHg@RtGKz--mRwmlfNHOQ4Vl04WNzI1eNfWttLYZZhez82Z1NDXNTQ@RtGKz-ikQFmhKoeeRddlgy5fN15EGbxpkR8Hbii5cgoyTbfmdQ@RtGKzbryQA7wd4eTRoVh0LMrs5aJ5bA8HqX-MAWT_tmtr1Y6aA@RtGKl7blBW3QPfHsc65Nmnyr9cMU4yMYm4XOVHjO_cQ1jV0c@RtGKrLT9OGPbPvjoY6lNmn1fBMAgnWU33U4pTz3UaKy0C0GI"
-	chiyu_cc="T928gamhQwvvMs-aW5h_jzzHqsqm41LRlvzvIEs"
-	Javon_cc="GILgzOWlSQ--doCZENA11uAb_zbPuBcU4Jy0Wmd3epBVjfOSbWM"
-	shqn_cc="RtGKzumjEAimfILLEIIyg6o7DZAQBg28KVO_AUHkbPE2KDZhhw@RtGKzr-tEgjwf4HOQoU2h1ItdL5a4VkUCV3wwbEaLpBUuS5eu"
-	jidiyangguang_cc="RtGKzOj3RgiqfYOSQtdl1eOd05gIN2tIDWFgjWB4l2Sa7XrYtw@RtGKz76gEA7yL4KeRd0w0EiokyucAF_KVx05gJUTx_688J1Bag"
-	zuoyou_cc="QMfizaDoDQrvMs_DSZBmlAsHuBuLVdQKBg@VMahgOmkDUbvfs_WW41tkt5YZBFWid-KJ-Vu@QcS2ieihDUbvfs_WW41tkgLgjGBi-F28nlc8@QNyynbLzBl_MI8_WW9R_moklKD3GKxv_PFsJWTo_Wg@Tty7n6XhRgijMs_WF5h_mndWxiCbUusIAV4mMd0A@RMyhmbLzAFP8INTWW5gzmo5OufFYwXAL7NcY1iiaTzo@RtGKz7mhEl6gKoCfEoI20PA4S5NDpZHXyKdLuDtaEwEnYlrCMw@W9GaibH3F2L4LMfwf5x_mq9Ys636pNQshUOB3RdlkZ2WTwc@RtGKzen2SQn1LNGbRoU03roWennJ-KWPcB_FTGg3JBGr6Wp4hw"
-	
-	random="$new_cc@$chiyu_cc@$Javon_cc@$jidiyangguang_cc@$zuoyou_cc"
-	random_array
-	new_cc_set="$random_set"
-
-	share_code="$new_cc_set"
-	share_code_value="$new_cc_set"
-	share_code_generate
-	sed -i '/CITY_SHARECODES/d' /etc/profile >/dev/null 2>&1
-	export CITY_SHARECODES="$share_code_value&&"
-	echo "export CITY_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
-
-	js_amount=$(echo "$js_cookie" | wc -l)
-	cc_rows=$(grep -n " inviteCodes \=" $dir_file_js/jd_city.js | awk -F ":" '{print $1}')
-	while [[ ${js_amount} -gt 0 ]]; do
-		sed -i "$cc_rows a \ '$new_cc_set'," $dir_file_js/jd_city.js
-		js_amount=$(($js_amount - 1))
-	done
-
-	#开启城城分现金抽奖
-	sed -i '/JD_CITY_EXCHANGE/d' /etc/profile >/dev/null 2>&1
-	export JD_CITY_EXCHANGE="true"
-	echo "JD_CITY_EXCHANGE="true"" >> /etc/profile
-
 
 	#财富岛
 	new_cfd="698098B001CF38EEEBCF66F9746EAFC7E1627164C06D4AADED9CCBC4B3A308EF@2F37BEBF8BFCDF8BEE92C1C2923706A4D1E39886C942A521A2A0353AED313BEC@74368D6374341F98E02515D2661AA24DDDF4780627137D1A2A93C1D968FE8698@161F722B03A9D0D88957B3A10D1993F0AC232B8CE6586F11D730AC247E887B31"
@@ -2113,19 +2140,17 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 }
 
 zoo_share() {
-	new_zoo="'ZXTKT024anXulbWUI_NR9ZpeTHmEoPlAFjRWn6-7zx55awQ@ZXTKT0205KkcPElQrCOQVnqP66FpFjRWn6-7zx55awQ@ZXTKT0225KkcRh1Lo1bWcxL3lf8NdQFjRWn6-7zx55awQ@ZXTKT024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQFjRWn6-7zx55awQ',"
-	new_zoopk1="'sSKNX-MpqKOJsNu_nZvYV-nCFtEoibN3nsRhO8g77euwQQhVn3QtBsoadt4CFkmh',"
-	new_zoopk2="'sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgeDWC-K5kCbbW3HgcATcUju',"
-	new_zoopk3="'sSKNX-MpqKPQ5rO9mJ3eA9kQEewE3VAI3sBFbJT22o438AhSpqTxO3dqDFxqEXNZ',"
-	new_zoopk4="'sSKNX-MpqKOJsNvEztKAc5H2E9LVXPzyA3Qfku52mo3eG27c-bATrNBHSnpWFSq_hQ@sSKNX-MpqKOJsNvEztKAc5H2E9LVXPzyA3QfHDKEM3F4WhzJlmCFkUZMa_rTcg@sSKNX-MpqKOJsNvEztKAc5H2E9LVXPzyA3QfHDKESyKGUmQpAdf-Tp33nr5WuKo@sSKNX-MpqKObp_DwnJu2BGGTUTWUfPSxwzGOzg',"
-	new_zoopk5="'sSKNX-MpqKOXrevjyMWdUScQdhgwySVYfKlCINKPUG9Dlw',"
+	new_zoopk1="'sSKNX-MpqKOJsNu_nZvYV-nCFtEoibN3nsRhO8g77euwQQhVn3QtBsoadt4CFkmm',"
+	new_zoopk2="'sSKNX-MpqKOJsNu-nJyIBnzohu1bg555wuah8sFivgeDWC-K5kCbbW3HgcATcUjp',"
+	new_zoopk3="'sSKNX-MpqKOJsNvEztKAc5H2E9LVXPzyA3Qfku52mo3eG27c-bATrNBHSnpWFSq_hQ@sSKNX-MpqKOJsNvEztKAc5H2E9LVXPzyA3QfHDKEM3F4WhzJlmCFkUZMa_rTcg@sSKNX-MpqKOJsNvEztKAc5H2E9LVXPzyA3QfHDKESyKGUmQpAdf-Tp33nr5WuKo@sSKNX-MpqKObp_DwnJu2BGGTUTWUfPSxwzGOyQ',"
+	new_zoopk4="'sSKNX-MpqKPQ5rO9mJ3eA9kQEewE3VAI3sBFbJT22o438AhSpqTxO3dqDFxqEXNe',"
+	new_zoopk5="'sSKNX-MpqKOXrevjyMWdUScQdhgwySVYfKlCINKPUG9DkA',"
 
 	sed -i "s/$.inviteList = \[/$.inviteList = \[ \n/g" $dir_file_js/jd_zoo.js
 
-	zoo_rows=$(grep -n "\$.inviteList \= \[" $dir_file_js/jd_zoo.js | awk -F ":" '{print $1}')
 	zoopk_rows=$(grep -n "\$.pkInviteList \= \[" $dir_file_js/jd_zoo.js | awk -F ":" '{print $1}')
-	zoopk_rows1=$(expr $zoopk_rows + 1)
-	sed -i "$zoopk_rows1 d" $dir_file_js/jd_zoo.js
+
+	sed -i "s/\$.pkInviteList \= \[/\$.pkInviteList \= \[ \n/g" $dir_file_js/jd_zoo.js
 	sed -i "$zoopk_rows a \ $new_zoopk5" $dir_file_js/jd_zoo.js
 	sed -i "$zoopk_rows a \ $new_zoopk4" $dir_file_js/jd_zoo.js
 	sed -i "$zoopk_rows a \ $new_zoopk3" $dir_file_js/jd_zoo.js
