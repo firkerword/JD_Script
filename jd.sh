@@ -87,8 +87,8 @@ cat >>/etc/crontabs/root <<EOF
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
 0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
-30 20-23/1 * * * $node $dir_file_js/jd_half_redrain.js	>/tmp/jd_half_redrain.log	#半点红包雨#100#
-1 20-21/1 * * * $node $dir_file_js/jd_hby_lottery.js >/tmp/jd_hby_lottery.log #618主会场红包雨#100#
+30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
+1 20-21/1 * * * $node $dir_file_js/long_hby_lottery.js >/tmp/long_hby_lottery.log #618主会场红包雨#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -270,18 +270,18 @@ done
 
 #fi
 
-nianyuguai_url="https://raw.githubusercontent.com/nianyuguai/longzhuzhu/main/qx"
-cat >$dir_file/config/tmp/nianyuguai_qx.txt <<EOF
-
+longzhuzhu_url="https://raw.githubusercontent.com/longzhuzhu/nianyu/main/qx"
+cat >$dir_file/config/tmp/longzhuzhu_qx.txt <<EOF
+	long_half_redrain.js		#半点红包雨
+	long_super_redrain.js 		#整点红包雨
+	long_hby_lottery.js		#主会场红包雨
 EOF
-	#jd_super_redrain.js		#整点红包雨
-	#jd_half_redrain.js		#半点红包雨
 
-for script_name in `cat $dir_file/config/tmp/nianyuguai_qx.txt | awk '{print $1}'`
+for script_name in `cat $dir_file/config/tmp/longzhuzhu_qx.txt | awk '{print $1}'`
 do
-	url="$nianyuguai_url"
-	#wget $nianyuguai_url/$script_name -O $dir_file_js/$script_name
-	#update_if
+	url="$longzhuzhu_url"
+	wget $nianyuguai_url/$script_name -O $dir_file_js/$script_name
+	update_if
 done
 
 passerby_url="https://raw.githubusercontent.com/passerby-b/JDDJ/main"
@@ -518,7 +518,7 @@ cat >/tmp/jd_tmp/run_01 <<EOF
 	jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
 	jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
 EOF
-	#jd_super_redrain.js		#整点红包雨
+	long_super_redrain.js		#整点红包雨
 	echo -e "$green run_01$start_script_time $white"
 
 	for i in `cat /tmp/jd_tmp/run_01 | awk '{print $1}'`
@@ -1247,10 +1247,6 @@ checklog() {
 	rm -rf $log1
 	rm -rf $log2
 }
-cd $dir_file
-if [ ! `git remote -v | grep -o "https:\/\/github.com\/firkerword\/JD_Script.git" | wc -l` == "2" ];then 
-exit 0
-fi
 
 #检测当天更新情况并推送
 that_day() {
@@ -1307,7 +1303,10 @@ that_day() {
 	fi
 
 }
-
+cd $dir_file
+if [ ! `git remote -v | grep -o "https:\/\/github.com\/firkerword\/JD_Script.git" | wc -l` == "2" ];then 
+exit 0
+fi
 backnas() {
 	date_time=$(date +%Y-%m-%d-%H:%M | sed "s/:/_/")
 	back_file_name="script_${date_time}.tar.gz"
