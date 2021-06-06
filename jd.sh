@@ -309,6 +309,7 @@ cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
 	zooOpencard03.js			#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
 	zooOpencard04.js			#纯开卡 大牌联合宠爱有礼(默认不运行，自己考虑要不要运行)
 	zooOpencard05.js			#纯开卡 大牌联合宠爱有礼(默认不运行，自己考虑要不要运行)
+	zooJointeam01.js			#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooLimitbox.js				#限时盲盒
 EOF
 
