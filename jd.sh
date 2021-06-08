@@ -186,6 +186,8 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_mohe.js			#5G超级盲盒
 	jd_star_shop.js			#明星小店
 	jd_mcxhd.js			#新潮品牌狂欢
+	jd_jxlhb.js			#京喜领88元红包
+	jd_jxmc.js			#惊喜牧场(先将新手任务做完，再执行本脚本，不然会出现未知错误)
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -230,7 +232,6 @@ cat >$dir_file/config/tmp/monk-normal.txt <<EOF
 	adolf_martin.js			#人头马x博朗
 	adolf_superbox.js		#超级盒子
 	adolf_newInteraction.js		#618大势新品赏
-	adolf_jxhb.js			#京喜阶梯红包
 	adolf_urge.js			#坐等更新
 EOF
 
@@ -310,6 +311,7 @@ cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
 	zooOpencard04.js			#纯开卡 大牌联合宠爱有礼(默认不运行，自己考虑要不要运行)
 	zooOpencard05.js			#纯开卡 大牌联合宠爱有礼(默认不运行，自己考虑要不要运行)
 	zooJointeam01.js			#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooSupershophf.js			#合肥旗舰店开业(手动运行吧)
 	zooLimitbox.js				#限时盲盒
 EOF
 
@@ -341,6 +343,7 @@ cat >$dir_file/config/tmp/panghu999_url.txt <<EOF
 	jd_gcip.js 				#柠檬特物国创I
 	jd_ppdz.js				#柠檬东东泡泡大战
 	jd_ry618.js				#柠檬华为荣耀618
+	jd_sq.js				#柠檬省钱大赢家
 EOF
 
 for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}'`
@@ -467,6 +470,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_gcip.js 			#柠檬特物国创I
 	jd_ppdz.js			#柠檬东东泡泡大战
 	jd_ry618.js			#柠檬华为荣耀618
+	jd_sq.js			#柠檬省钱大赢家
 	jd_superBrand.js 		#特物ZX联想
 	zooLimitbox.js				#限时盲盒
 EOF
@@ -557,6 +561,7 @@ cat >/tmp/jd_tmp/run_03 <<EOF
 	jddj_fruit.js			#京东到家果园 0,8,11,17
 	jd_daily_lottery.js		#每日抽奖
 	jd_mohe.js			#5G超级盲盒
+	jd_jxmc.js			#惊喜牧场
 EOF
 	echo -e "$green run_03$start_script_time $white"
 
@@ -572,7 +577,6 @@ EOF
 
 run_06_18() {
 cat >/tmp/jd_tmp/run_06_18 <<EOF
-	adolf_jxhb.js      #京喜阶梯红包
 	jd_mcxhd.js  		#新潮品牌狂欢
 	jd_blueCoin.js  #东东超市兑换，有次数限制，没时间要求
 	jd_shop.js #进店领豆，早点领，一天也可以执行两次以上
@@ -925,7 +929,7 @@ concurrent_js_if() {
 		run_0)
 			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
-			$node $openwrt_script/JD_Script/js/adolf_jxhb.js      #京喜阶梯红包
+			$node $openwrt_script/JD_Script/js/jd_jxlhb.js	#京喜领88元红包
 			concurrent_js && if_ps
 			if [ ! $action2 ];then
 				if_ps
@@ -1943,7 +1947,7 @@ additional_settings() {
 	wuliao_20210214_df="JErwGyIaLAyHtTRlNVQFFg==@CIbMmbN2ZCilYQLCGc_3iQ=="
 
 	#whiteboy
-	whiteboy__20190711_df=“U_NgGvEUnbU6IblJUTMQV3F7G5ihingk9kVobx99yrY=@BXXbkqJN7sr-0Qkid6v27A==@QVCi7bxRyA1QRDnBd4LMHQ==@H0ksRV4EFpcIfUdUQBzX7A==”
+	whiteboy__20190711_df="U_NgGvEUnbU6IblJUTMQV3F7G5ihingk9kVobx99yrY=@BXXbkqJN7sr-0Qkid6v27A==@QVCi7bxRyA1QRDnBd4LMHQ==@H0ksRV4EFpcIfUdUQBzX7A=="
 
 	#阿东
 	adong_20201108_df="QBGc1MnsD3uSN5nGDMAl7A==@a8PK5kDEvblgKUUTLP0e2w=="
@@ -2504,5 +2508,3 @@ else
 	esac
 	fi
 fi
-
-
