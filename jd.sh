@@ -186,7 +186,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_mohe.js			#5G超级盲盒
 	jd_star_shop.js			#明星小店
 	jd_mcxhd.js			#新潮品牌狂欢
-	jd_jxlhb.js			#京喜领88元红包
 	jd_jxmc.js			#惊喜牧场(先将新手任务做完，再执行本脚本，不然会出现未知错误)
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
@@ -313,6 +312,7 @@ cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
 	zooJointeam01.js			#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooSupershophf.js			#合肥旗舰店开业(手动运行吧)
 	zooLimitbox.js				#限时盲盒
+	zooJx88hongbao.js			#京喜88红包
 EOF
 
 for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
@@ -929,7 +929,7 @@ concurrent_js_if() {
 		run_0)
 			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
-			$node $openwrt_script/JD_Script/js/jd_jxlhb.js	#京喜领88元红包
+			$node $openwrt_script/JD_Script/js/zooJx88hongbao.js	#京喜领88元红包
 			concurrent_js && if_ps
 			if [ ! $action2 ];then
 				if_ps
