@@ -2024,14 +2024,41 @@ additional_settings() {
 	sed -i "s/..\/sendNotify/.\/sendNotify/g" $dir_file_js/jd_unbind.js
 	sed -i "s/..\/USER_AGENTS/.\/USER_AGENTS/g" $dir_file_js/jd_unbind.js
 
+	#签到领现金
+	new_jdcash="95OquUc_sFugJO5_E_2dAgm-@eU9YELv7P4thhw6utCVw@eU9YaOjnbvx1-Djdz3UUgw@eU9Yau_gMP4nombWynsU1w@eU9Ya--wYP8g8zyBnyJF0w@eU9Ya-iyZ68kpWrRmXBFgw@eU9YabrkZ_h1-GrcmiJB0A@eU9YM7bzIptVshyjrwlteU9YCLTrH5VesRWnvw5t@P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8=@JuMHWNtZt4Ny_0ltvG6Ipg==@IRM2beu1b-En9mzUwnU@eU9YaOSwMP8m-D_XzHpF0w@eU9Yau-yMv8ho2fcnXAQ1Q@eU9YCovbMahykhWdvS9R@JxwyaOWzbvk7-W3WzHcV1mw"
+	zuoyou_20190516_jdcash="f1kwaQ@a1hzJOmy@eU9Ya7-wM_Qg-T_SyXIb0g@flpkLei3@f0JgObLlIalJrA@cUJpO6X3Yf4m@e1JzPbLlJ6V5rzk@eU9Ya7m3NaglpW3QziUW0A@eU9YFbnVJ6VArC-2lQtI@ZE9ILbHhMJR9oyq_ozs@eU9Yaengbv9wozzUmiIU3g@eU9YaO22Z_og-DqGz3AX1Q"
+	chiyu_jdcash="cENuJam3ZP0"
+	Jhone_Potte_20200824_jdcash="eU9Yaum1N_4j82-EzCUSgw@eU9Yar-7Nf518GyBniIWhw"
+	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
+	ashou_20210516_jdcash="IhMxaeq0bvsj92i6iw@9qagtEUMPKtx@eU9YaenmYKhwpDyHySFChQ@eU9YariwMvp19G7WmXYU1w@YER3NLXuM6l4pg@eU9YaujjYv8moGrcnSFFgg@eU9Yar_kYvwjpD2DmXER3w@ZEFvJu27bvk"
+
+	new_jdcash_set="$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$ashou_20210516_jdcash"
+
+	sed -i '/JD_CASH_SHARECODES/d' /etc/profile >/dev/null 2>&1
+	export JD_CASH_SHARECODES="$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&&"
+	echo "export JD_CASH_SHARECODES=\"$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&&\"" >> /etc/profile
+
+	sed -i "s/https:\/\/gitee.com\/shylocks\/updateTeam\/raw\/main\/jd_cash.json/https:\/\/raw.githubusercontent.com\/firkerword\/JD_Script\/main\/JSON\/jd_cash.json/g"  $dir_file_js/jd_cash.js
+
+	if [ `date +%A` == "Sunday" ];then
+		echo "周日提前开启2元兑换200豆子功能"
+		sed -i "s/cash_exchange = false/cash_exchange = true/g" $dir_file_js/jd_cash.js
+	else
+		echo > /dev/null 2>&1
+	fi
+
+	if [ `date +%A` == "Wednesday" ];then
+		echo "开启2元兑换200豆子功能"
+		sed -i "s/cash_exchange = false/cash_exchange = true/g" $dir_file_js/jd_cash.js
+	else
+		echo > /dev/null 2>&1
+	fi
+
 	#脚本黑名单
 	script_black
 
 	#农场萌宠关闭通知
 	close_notification
-
-	#极速版红包
-	sed -i "s/jOkIZzWCgGa9NfPuHBSx1A/AkOULcXbUA_8EAPbYLLMgg/g" $dir_file_js/jd_speed_redpocke.js
 
 	#关闭整点红包雨通知
 	if [ ! `grep "RAIN_NOTIFY_CONTROL" /etc/profile | wc -l` == "1" ];then
