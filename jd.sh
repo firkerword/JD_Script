@@ -117,11 +117,12 @@ update() {
 	fi
 
 	if [ ! -d $dir_file/git_clone/lxk0301 ];then
-		git clone -b master git@gitee.com:lxk0301/jd_scripts.git $dir_file/git_clone/lxk0301
+		echo ""
+		#git clone -b master git@gitee.com:lxk0301/jd_scripts.git $dir_file/git_clone/lxk0301
 	else
 		cd $dir_file/git_clone/lxk0301
 		git fetch --all
-		git reset --hard origin/master
+		git reset --hard a38137a
 	fi
 	echo -e "$green update$start_script_time $white"
 	echo -e "$green开始下载JS脚本，请稍等$white"
@@ -318,22 +319,22 @@ EOF
 for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
 do
 	url="$zooPanda_url"
-	wget $zooPanda_url/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $zooPanda_url/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 Wenmoux_url="https://raw.githubusercontent.com/Wenmoux/scripts/master/jd"
 cat >$dir_file/config/tmp/Wenmoux_url.txt <<EOF
 	jd_618redpacket.js			#翻翻乐
 	jd_superBrand.js 			#特物ZX联想
-	jd_limitBox.js				#618盲盒
+
 EOF
 
 for script_name in `cat $dir_file/config/tmp/Wenmoux_url.txt | awk '{print $1}'`
 do
 	url="$Wenmoux_url"
-	wget $Wenmoux_url/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $Wenmoux_url/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 panghu999_url="https://raw.githubusercontent.com/panghu999/panghu/master"
@@ -359,7 +360,6 @@ done
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
 	wget https://raw.githubusercontent.com/fangpidedongsun/jd_scripts2/master/jd_friend.js -O $dir_file_js/jd_friend.js #joy总动员一次性脚本
-	wget https://raw.githubusercontent.com/Ariszy/Private-Script/master/Scripts/zy_618jc.js -O $dir_file_js/zy_618jc.js #618竞猜
 
 rm -rf $dir_file_js/jd_city.js
 
@@ -371,7 +371,6 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
-	zy_618jc.js 			#618竞猜
 	pk.js				#新的PK京享值脚本
 	jd_check_cookie.js		#检测cookie是否存活（暂时不能看到还有几天到期）
 	monk_shop_lottery.js 		#店铺大转盘
@@ -645,7 +644,6 @@ cat >/tmp/jd_tmp/run_08_12_16 <<EOF
 	adolf_pk.js 			#京享值PK
 	jd_jump.js			#跳跳乐瓜分京豆
 	jd_carnivalcity.js		#京东手机狂欢城
-	jd_limitBox.js				#618盲盒
 EOF
 	echo -e "$green run_08_12_16$start_script_time $white"
 
