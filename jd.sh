@@ -609,10 +609,6 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_sgmh.js #闪购盲盒长期活动
 	jd_speed_sign.js #京东极速版签到+赚现金任务
 	jd_speed_redpocke.js		#极速版红包
-	z_fanslove.js #粉丝互动
-	z_shake.js  #超级摇一摇
-	z_marketLottery.js 		#京东超市-大转盘
-	z_mother_jump.js		#新一期母婴跳一跳开始咯
 	monk_shop_follow_sku.js #关注有礼
 	jd_cash.js #签到领现金，每日2毛～5毛长期
 	monk_shop_lottery.js		#店铺大转盘
@@ -631,7 +627,10 @@ EOF
 		$node $dir_file_js/$i
 		$run_sleep
 	done
-
+	#z_fanslove.js #粉丝互动
+	#z_shake.js  #超级摇一摇
+	#z_marketLottery.js 		#京东超市-大转盘
+	#z_mother_jump.js		#新一期母婴跳一跳开始咯
 	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	echo -e "$green run_07$stop_script_time $white"
 }
