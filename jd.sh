@@ -51,8 +51,6 @@ current_time=$(date +"%Y-%m-%d")
 by="#### 脚本仓库地址:https://github.com/firkerword/JD_Script/tree/main 核心JS采用lxk0301开源JS脚本"
 SCKEY=$(grep "let SCKEY" $openwrt_script_config/sendNotify.js  | awk -F "'" '{print $2}')
 
-js_cookie=$(cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | grep -v "//'" |grep -v "// '")
-
 start_script_time="脚本开始运行，当前时间：`date "+%Y-%m-%d %H:%M"`"
 stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
@@ -403,6 +401,7 @@ EOF
 	additional_settings
 	#sys_additional_settings
 	zoo_share
+	cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | grep -v "//'" |grep -v "// '" > $openwrt_script_config/js_cookie.txt
 	concurrent_js_update
 	source /etc/profile
 	echo -e "$green update$stop_script_time $white"
@@ -796,7 +795,7 @@ concurrent_js_update() {
 			rm -rf $ccr_js_file/$i
 		done
 
-		js_amount=$(echo "$js_cookie" |wc -l)
+		js_amount=$(cat $openwrt_script_config/js_cookie.txt |wc -l)
 		while [[ ${js_amount} -gt 0 ]]; do
 			mkdir $ccr_js_file/js_$js_amount
 			cp $openwrt_script_config/jdCookie.js $ccr_js_file/js_$js_amount/jdCookie.js
@@ -806,7 +805,7 @@ concurrent_js_update() {
 				ln -s $openwrt_script_config/sendNotify.js $ccr_js_file/js_$js_amount/sendNotify.js
 			fi
 
-			js_cookie_obtain=$(echo "$js_cookie" | awk -v a="$js_amount" 'NR==a{ print $0}') #获取pt
+			js_cookie_obtain=$(sed -n $js_amount\p "$openwrt_script_config/js_cookie.txt") #获取pt
 			sed -i '/pt_pin/d' $ccr_js_file/js_$js_amount/jdCookie.js >/dev/null 2>&1
 			sed -i "5a $js_cookie_obtain" $ccr_js_file/js_$js_amount/jdCookie.js
 
@@ -814,7 +813,6 @@ concurrent_js_update() {
 			do
 				cp $dir_file_js/$i $ccr_js_file/js_$js_amount/$i
 			done
-
 			js_amount=$(($js_amount - 1))
 		done
 
@@ -1752,14 +1750,14 @@ additional_settings() {
 	random_array
 	new_fruit_set="'$new_fruit1@$zuoyou_20190516_fr@$Javon_20201224_fr@$jidiyangguang_20190516_fr@$ashou_20210516_fr@$xiaobandeng_fr@$chiyu_fr@$random_set',"
 
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	fr_rows=$(grep -n "shareCodes =" $dir_file_js/jd_fruit.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
 		sed -i "$fr_rows a \ $new_fruit_set " $dir_file_js/jd_fruit.js
 		js_amount=$(($js_amount - 1))
 	done
 
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	frcode_rows=$(grep -n "FruitShareCodes = \[" $dir_file_js/jdFruitShareCodes.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
 		sed -i "$frcode_rows a \ $new_fruit_set " $dir_file_js/jdFruitShareCodes.js
@@ -1816,14 +1814,14 @@ additional_settings() {
 	random_array
 	new_pet_set="'$new_pet1@$zuoyou_20190516_pet@$Javon_20201224_pet@$jidiyangguang_20190516_pet@$ashou_20210516_pet@$Jhone_Potte_20200824_pet@$chiyu_pet@$random_set',"
 
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	pet_rows=$(grep -n "shareCodes =" $dir_file_js/jd_pet.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
 		sed -i "$pet_rows a \ $new_pet_set " $dir_file_js/jd_pet.js
 		js_amount=$(($js_amount - 1))
 	done
 
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	petcode_rows=$(grep -n "PetShareCodes = \[" $dir_file_js/jdPetShareCodes.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
 		sed -i "$petcode_rows a \ $new_pet_set " $dir_file_js/jdPetShareCodes.js
@@ -1839,7 +1837,7 @@ additional_settings() {
 	#宠汪汪不给好友喂食
 	sed -i "s/let jdJoyHelpFeed = true/let jdJoyHelpFeed = $jd_joy_steal/g" $dir_file_js/jd_joy_steal.js
 
-	if [ `echo "$js_cookie" | wc -l`  -ge "10" ];then
+	if [ `cat $openwrt_script_config/js_cookie.txt | wc -l`  -ge "10" ];then
 		export JOY_TEAM_LEVEL="10"
 	else
 		export JOY_TEAM_LEVEL="2"
@@ -1895,14 +1893,14 @@ additional_settings() {
 	random_array
 	new_plantBean_set="'$new_plantBean1@$zuoyou_20190516_pb@$Javon_20201224_pb@$jidiyangguang_20190516_pb@$ashou_20210516_pb@$xiaobandeng_pb@$chiyu_pb@$random_set',"
 
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	pb_rows=$(grep -n "shareCodes =" $dir_file_js/jd_plantBean.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
 		sed -i "$pb_rows a \ $new_plantBean_set " $dir_file_js/jd_plantBean.js
 		js_amount=$(($js_amount - 1))
 	done
 
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	pbcode_rows=$(grep -n "PlantBeanShareCodes = \[" $dir_file_js/jdPlantBeanShareCodes.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
 		sed -i "$pbcode_rows a \ $new_plantBean_set " $dir_file_js/jdPlantBeanShareCodes.js
@@ -1960,7 +1958,7 @@ additional_settings() {
 		js_amount=$(($js_amount - 1))
 	done
 
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	dfcode_rows=$(grep -n "shareCodes = \[" $dir_file_js/jdDreamFactoryShareCodes.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
 		sed -i "$dfcode_rows a \ $new_dreamFactory_set " $dir_file_js/jdDreamFactoryShareCodes.js
@@ -1974,7 +1972,7 @@ additional_settings() {
 
 	sed -i "s/inviteCodes = \[/inviteCodes = \[ \n/g" $dir_file_js/jd_jdfactory.js
 
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	ddgc_rows=$(grep -n "inviteCodes =" $dir_file_js/jd_jdfactory.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
 		sed -i "$ddgc_rows a \ $new_ddgc_set " $dir_file_js/jd_jdfactory.js
@@ -1990,7 +1988,7 @@ additional_settings() {
 	
 	sed -i "s/{'id':'YCDXNN','name':'蔡徐坤'},//g" $dir_file_js/jd_star_shop.js
 	sed -i "s/蔡徐坤//g" $dir_file_js/jd_star_shop.js
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	while [[ ${js_amount} -gt 0 ]]; do
 		sed -i "$jdss_rows a \ $new_jdss_set " $dir_file_js/jd_star_shop.js
 		js_amount=$(($js_amount - 1))
@@ -2029,27 +2027,18 @@ additional_settings() {
 	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
 	ashou_20210516_jdcash="IhMxaeq0bvsj92i6iw@9qagtEUMPKtx@eU9YaenmYKhwpDyHySFChQ@eU9YariwMvp19G7WmXYU1w@YER3NLXuM6l4pg@eU9YaujjYv8moGrcnSFFgg@eU9Yar_kYvwjpD2DmXER3w@ZEFvJu27bvk"
 
-	new_jdcash_set="$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$ashou_20210516_jdcash"
+	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$ashou_20210516_jdcash',"
 
 	sed -i '/JD_CASH_SHARECODES/d' /etc/profile >/dev/null 2>&1
-	export JD_CASH_SHARECODES="$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&&"
-	echo "export JD_CASH_SHARECODES=\"$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&$new_jdcash_set&&\"" >> /etc/profile
+
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
+	cashcode_rows=$(grep -n "inviteCodes = \[" $dir_file_js/jd_cash.js | awk -F ":" '{print $1}')
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$cashcode_rows a \ $new_jdcash_set " $dir_file_js/jd_cash.js
+		js_amount=$(($js_amount - 1))
+	done
 
 	sed -i "s/https:\/\/gitee.com\/shylocks\/updateTeam\/raw\/main\/jd_cash.json/https:\/\/raw.githubusercontent.com\/firkerword\/JD_Script\/main\/JSON\/jd_cash.json/g"  $dir_file_js/jd_cash.js
-
-	if [ `date +%A` == "Sunday" ];then
-		echo "周日提前开启2元兑换200豆子功能"
-		sed -i "s/cash_exchange = false/cash_exchange = true/g" $dir_file_js/jd_cash.js
-	else
-		echo > /dev/null 2>&1
-	fi
-
-	if [ `date +%A` == "Wednesday" ];then
-		echo "开启2元兑换200豆子功能"
-		sed -i "s/cash_exchange = false/cash_exchange = true/g" $dir_file_js/jd_cash.js
-	else
-		echo > /dev/null 2>&1
-	fi
 
 	#脚本黑名单
 	script_black
@@ -2189,26 +2178,23 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 	share_code_value="$new_health_set"
 	share_code_generate
 	sed -i '/JDHEALTH_SHARECODES/d' /etc/profile >/dev/null 2>&1
-	echo "export JDHEALTH_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
-	export JDHEALTH_SHARECODES="$share_code_value&&"
+	#echo "export JDHEALTH_SHARECODES=\"$share_code_value&&\"" >> /etc/profile
+	#export JDHEALTH_SHARECODES="$share_code_value&&"
 }
 
 zoo_share() {
 	wget https://raw.githubusercontent.com/firkerword/JD_Script/main/JSON/zoo.txt -O  $dir_file/JSON/zoo.txt
 	new_zoopk=$(cat $dir_file/JSON/zoo.txt  | sed ':t;N;s/\n//;b t')
-
-	sed -i "s/$.inviteList = \[/$.inviteList = \[ \n/g" $dir_file_js/jd_zoo.js
-
 	zoopk_rows=$(grep -n "\$.pkInviteList \= \[" $dir_file_js/jd_zoo.js | awk -F ":" '{print $1}')
 
 	sed -i "s/\$.pkInviteList \= \[/\$.pkInviteList \= \[ \n/g" $dir_file_js/jd_zoo.js
 	sed -i "$zoopk_rows a  $new_zoopk" $dir_file_js/jd_zoo.js
 
-	sed -i "s/pKHelpAuthorFlag = true/pKHelpAuthorFlag = false/g" $dir_file_js/jd_zoo.js
+	#sed -i "s/pKHelpAuthorFlag = true/pKHelpAuthorFlag = false/g" $dir_file_js/jd_zoo.js
 }
 
 share_code_generate() {
-	js_amount=$(echo "$js_cookie" | wc -l)
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	while [[ ${js_amount} -gt 0 ]]; do
 		share_code_value="$share_code_value&$share_code"
 		js_amount=$(($js_amount - 1))
@@ -2224,25 +2210,11 @@ close_notification() {
 		22|23|00|01|02|03)
 			sed -i "s/jdNotify = true/jdNotify = false/g" $dir_file_js/jd_fruit.js
 			sed -i "s/jdNotify = true/jdNotify = false/g" $dir_file_js/jd_pet.js
-			if [ "$ccr_if" == "yes" ];then
-				for i in `ls $ccr_js_file`
-				do
-					sed -i "s/jdNotify = true/jdNotify = false/g" $ccr_js_file/$i/jd_fruit.js
-					sed -i "s/jdNotify = true/jdNotify = false/g" $ccr_js_file/$i/jd_pet.js
-				done
-			fi
 			echo -e "$green暂时不关闭农场和萌宠通知$white"
 		;;
 		*)
 			sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_fruit.js
 			sed -i "s/jdNotify = false/jdNotify = true/g" $dir_file_js/jd_pet.js
-			if [ "$ccr_if" == "yes" ];then
-				for i in `ls $ccr_js_file`
-				do
-					sed -i "s/jdNotify = false/jdNotify = true/g" $ccr_js_file/$i/jd_fruit.js
-					sed -i "s/jdNotify = false/jdNotify = true/g" $ccr_js_file/$i/jd_pet.js
-				done
-			fi
 			echo -e "$green时间大于凌晨三点开始关闭农场和萌宠通知$white"
 		;;
 		esac
@@ -2437,9 +2409,6 @@ system_variable() {
 		echo -e "$green唯一的github地址：https://github.com/firkerword/JD_Script.git$white"
 		exit 0
 	fi
-
-	#农场萌宠关闭通知
-	close_notification
 
 	script_black
 }
