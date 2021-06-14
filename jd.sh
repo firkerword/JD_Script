@@ -190,7 +190,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_unsubscribe.js		#取关京东店铺和商品
 EOF
 cp  $dir_file/git_clone/lxk0301/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
-cp  $dir_file/JSON/jd_zoo.js 	$dir_file_js/jd_zoo.js		#动物联萌 618活动
+wget https://raw.githubusercontent.com/star261/jd/main/scripts/jd_zoo.js -O 	$dir_file_js/jd_zoo.js		#动物联萌 618活动
 
 for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
 do
@@ -460,7 +460,6 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_jin_tie.js #领金贴
 	jddj_bean.js			#京东到家鲜豆 一天一次
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
-	z_shop_captain.js		#超级无线组队分奖品
 	adolf_superbox.js		#超级盒子
 	jd_dreamFactory.js 		#京喜工厂
 	jd_xcpp.js 			#柠檬新潮品牌
