@@ -114,12 +114,12 @@ update() {
 		mkdir $dir_file/git_clone
 	fi
 
-	if [ ! -d $dir_file/git_clone/lxk0301 ];then
+	if [ ! -d $dir_file/git_clone/lxk0301_back ];then
 		echo ""
 		#git clone -b master git@gitee.com:lxk0301/jd_scripts.git $dir_file/git_clone/lxk0301
-		git clone https://github.com/firkerword/script_back.git $dir_file/git_clone/lxk0301
+		git clone https://github.com/firkerword/script_back.git $dir_file/git_clone/lxk0301_back
 	else
-		cd $dir_file/git_clone/lxk0301
+		cd $dir_file/git_clone/lxk0301_back
 		git fetch --all
 		git reset --hard a38137a
 	fi
@@ -190,13 +190,13 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
 EOF
-cp  $dir_file/git_clone/lxk0301/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
+cp  $dir_file/git_clone/lxk0301_back/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
 wget https://raw.githubusercontent.com/star261/jd/main/scripts/jd_zoo.js -O 	$dir_file_js/jd_zoo.js		#动物联萌 618活动
 
 for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
 do
 	echo -e "$yellow copy $green$script_name$white"
-	cp  $dir_file/git_clone/lxk0301/$script_name  $dir_file_js/$script_name
+	cp  $dir_file/git_clone/lxk0301_back/$script_name  $dir_file_js/$script_name
 done
 sleep 5
 
@@ -306,9 +306,12 @@ cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
 	zooLongzhou.js				#浓情618 与“粽”不同 一天一次
 	zooOpencard01.js			#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
 	zooOpencard02.js			#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
-	zooOpencard03.js			#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
-	zooOpencard04.js			#纯开卡 大牌联合宠爱有礼(默认不运行，自己考虑要不要运行)
-	zooOpencard05.js			#纯开卡 大牌联合宠爱有礼(默认不运行，自己考虑要不要运行)
+	zooOpencard03.js			#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard04.js			#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard05.js			#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard06.js			#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard07.js			#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard08.js			#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooJointeam01.js			#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooSupershophf.js			#合肥旗舰店开业(手动运行吧)
 	zooLimitbox.js				#限时盲盒
@@ -636,6 +639,7 @@ EOF
 
 run_08_12_16() {
 cat >/tmp/jd_tmp/run_08_12_16 <<EOF
+	jd_fndd.js			#福牛多多
 	jd_star_shop.js			#明星小店
 	jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
 	jd_syj.js #赚京豆
