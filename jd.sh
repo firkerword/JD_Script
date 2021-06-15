@@ -117,6 +117,7 @@ update() {
 	if [ ! -d $dir_file/git_clone/lxk0301 ];then
 		echo ""
 		#git clone -b master git@gitee.com:lxk0301/jd_scripts.git $dir_file/git_clone/lxk0301
+		git clone https://github.com/firkerword/script_back.git $dir_file/git_clone/lxk0301
 	else
 		cd $dir_file/git_clone/lxk0301
 		git fetch --all
