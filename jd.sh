@@ -305,6 +305,7 @@ zooPanda_url="https://raw.githubusercontent.com/zooPanda/zoo/dev"
 cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
 	zooBaojiexiaoxiaole.js			#宝洁消消乐 一天一次
 	zooLongzhou.js				#浓情618 与“粽”不同 一天一次
+	zooLongzhou02.js			#粽情端午
 	zooOpencard01.js			#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
 	zooOpencard02.js			#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
 	zooOpencard03.js			#纯开卡 (默认不运行，自己考虑要不要运行)
@@ -313,6 +314,8 @@ cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
 	zooOpencard06.js			#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooOpencard07.js			#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooOpencard08.js			#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard09.js			#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard10.js			#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooJointeam01.js			#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooSupershophf.js			#合肥旗舰店开业(手动运行吧)
 	zooLimitbox.js				#限时盲盒
@@ -322,8 +325,8 @@ EOF
 for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
 do
 	url="$zooPanda_url"
-	#wget $zooPanda_url/$script_name -O $dir_file_js/$script_name
-	#update_if
+	wget $zooPanda_url/$script_name -O $dir_file_js/$script_name
+	update_if
 done
 
 Wenmoux_url="https://raw.githubusercontent.com/Wenmoux/scripts/master/jd"
@@ -340,22 +343,6 @@ do
 	#update_if
 done
 
-panghu999_url="https://raw.githubusercontent.com/panghu999/panghu/master"
-cat >$dir_file/config/tmp/panghu999_url.txt <<EOF
-	jd_xcpp.js 				#柠檬新潮品牌
-	jd_dphby.js				#柠檬大牌闪购红包雨 一天一次
-	jd_gcip.js 				#柠檬特物国创I
-	jd_ppdz.js				#柠檬东东泡泡大战
-	jd_ry618.js				#柠檬华为荣耀618
-	jd_sq.js				#柠檬省钱大赢家
-EOF
-
-for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}'`
-do
-	url="$panghu999_url"
-	wget $panghu999_url/$script_name -O $dir_file_js/$script_name
-	update_if
-done
 
 	#检测cookie是否存活（暂时不能看到还有几天到期）
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
@@ -467,12 +454,6 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	adolf_superbox.js		#超级盒子
 	jd_dreamFactory.js 		#京喜工厂
-	jd_xcpp.js 			#柠檬新潮品牌
-	jd_dphby.js			#柠檬大牌闪购红包雨 一天一次
-	jd_gcip.js 			#柠檬特物国创I
-	jd_ppdz.js			#柠檬东东泡泡大战
-	jd_ry618.js			#柠檬华为荣耀618
-	jd_sq.js			#柠檬省钱大赢家
 	jd_superBrand.js 		#特物ZX联想
 	zooLimitbox.js				#限时盲盒
 EOF
@@ -620,6 +601,7 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	adolf_urge.js			#坐等更新
 	zooBaojiexiaoxiaole.js			#宝洁消消乐 一天一次
 	zooLongzhou.js				#浓情618 与“粽”不同 一天一次
+	zooLongzhou02.js			#粽情端午
 	zy_618jc.js 			#618竞猜
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
