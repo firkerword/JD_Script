@@ -121,7 +121,7 @@ update() {
 	else
 		cd $dir_file/git_clone/lxk0301_back
 		git fetch --all
-		git reset --hard a38137a
+		git reset --hard origin/main
 	fi
 	echo -e "$green update$start_script_time $white"
 	echo -e "$green开始下载JS脚本，请稍等$white"
@@ -190,8 +190,9 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_unsubscribe.js		#取关京东店铺和商品
 EOF
 cp  $dir_file/git_clone/lxk0301_back/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
-#wget https://raw.githubusercontent.com/star261/jd/main/scripts/jd_zoo.js -O 	$dir_file_js/jd_zoo.js		#动物联萌 618活动
-wget https://raw.githubusercontent.com/firkerword/JD_Script/main/JSON/jd_zoo.js -O 	$dir_file_js/jd_zoo.js
+wget https://raw.githubusercontent.com/star261/jd/main/scripts/jd_zoo.js  -O 	$dir_file_js/jd_zoo.js
+#wget https://raw.githubusercontent.com/yyetss/jd_scripts/master/jd_zoo.js -O 	$dir_file_js/jd_zoo.js		#动物联萌 618活动
+#wget https://raw.githubusercontent.com/firkerword/JD_Script/main/JSON/jd_zoo.js -O 	$dir_file_js/jd_zoo.js
 wget https://raw.githubusercontent.com/firkerword/JD_Script/main/JSON/jd_zooCollect.js -O $dir_file_js/jd_zooCollect.js
 
 for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
@@ -201,75 +202,9 @@ do
 done
 sleep 5
 
-rm -rf $dir_file_js/jd_party_night.js		#沸腾之夜
-
-#if [ $(date "+%-H") -ge 10 ]; then
-	#echo "大于10点，不拉取和尚库"
-#else
-
-url2="https://raw.githubusercontent.com/monk-coder/dust/dust/i-chenzhe"
-cat >$dir_file/config/tmp/i-chenzhe_script.txt <<EOF
-	z_fanslove.js			#粉丝互动
-	z_shake.js  			#超级摇一摇
-	z_marketLottery.js 		#京东超市-大转盘
-	z_mother_jump.js		#新一期母婴跳一跳开始咯
-	z_shop_captain.js		#超级无线组队分奖品
-EOF
-
-for script_name in `cat $dir_file/config/tmp/i-chenzhe_script.txt | awk '{print $1}'`
-do
-	url="$url2"
-	#wget $url2/$script_name -O $dir_file_js/$script_name
-	#update_if
-done
-
-url3="https://raw.githubusercontent.com/monk-coder/dust/dust/normal"
-cat >$dir_file/config/tmp/monk-normal.txt <<EOF
-	monk_shop_lottery.js 		#店铺大转盘
-	monk_inter_shop_sign.js 	#interCenter渠道店铺签到
-	monk_shop_follow_sku.js 	#关注有礼
-	adolf_pk.js 			#京享值PK
-	adolf_martin.js			#人头马x博朗
-	adolf_superbox.js		#超级盒子
-	adolf_newInteraction.js		#618大势新品赏
-	adolf_urge.js			#坐等更新
-EOF
-
-
-for script_name in `cat $dir_file/config/tmp/monk-normal.txt | awk '{print $1}'`
-do
-	url="$url3"
-	#wget $url3/$script_name -O $dir_file_js/$script_name
-	#update_if
-done
-
-url4="https://raw.githubusercontent.com/monk-coder/dust/dust/car"
-cat >$dir_file/config/tmp/monk-car.txt <<EOF
-	monk_shop_add_to_car.js 	#加购有礼
-EOF
-
-
-for script_name in `cat $dir_file/config/tmp/monk-car.txt | awk '{print $1}'`
-do
-	url="$url4"
-	#wget $url4/$script_name -O $dir_file_js/$script_name
-	#update_if
-done
-
-
-url5="https://raw.githubusercontent.com/monk-coder/dust/dust/member"
-cat >$dir_file/config/tmp/monk-member.txt <<EOF
-	monk_pasture.js			#有机牧场
-EOF
-
-for script_name in `cat $dir_file/config/tmp/monk-member.txt | awk '{print $1}'`
-do
-	url="$url5"
-	#wget $url5/$script_name -O $dir_file_js/$script_name
-	#update_if
-done
-
-#fi
+#删除之前创建的文件（过两天处理掉）
+rm -rf $dir_file/config/tmp/monk-*
+rm -rf $dir_file/config/tmp/panghu999_url.txt
 
 longzhuzhu_url="https://raw.githubusercontent.com/longzhuzhu/nianyu/main/qx"
 cat >$dir_file/config/tmp/longzhuzhu_qx.txt <<EOF
@@ -303,23 +238,23 @@ done
 
 zooPanda_url="https://raw.githubusercontent.com/zooPanda/zoo/dev"
 cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
-	zooBaojiexiaoxiaole.js			#宝洁消消乐 一天一次
-	zooLongzhou.js				#浓情618 与“粽”不同 一天一次
-	zooLongzhou02.js			#粽情端午
-	zooOpencard01.js			#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
-	zooOpencard02.js			#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
-	zooOpencard03.js			#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard04.js			#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard05.js			#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard06.js			#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard07.js			#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard08.js			#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard09.js			#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard10.js			#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooJointeam01.js			#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooSupershophf.js			#合肥旗舰店开业(手动运行吧)
-	zooLimitbox.js				#限时盲盒
-	zooJx88hongbao.js			#京喜88红包
+	zooBaojiexiaoxiaole.js		#宝洁消消乐 一天一次
+	zooLongzhou.js			#浓情618 与“粽”不同 一天一次
+	zooLongzhou02.js		#粽情端午
+	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
+	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
+	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard04.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard05.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard06.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard07.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
+	zooLimitbox.js			#限时盲盒
+	zooJx88hongbao.js		#京喜88红包
 EOF
 
 for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
@@ -331,8 +266,8 @@ done
 
 Wenmoux_url="https://raw.githubusercontent.com/Wenmoux/scripts/master/jd"
 cat >$dir_file/config/tmp/Wenmoux_url.txt <<EOF
-	jd_618redpacket.js			#翻翻乐
-	jd_superBrand.js 			#特物ZX联想
+	jd_618redpacket.js		#翻翻乐
+	jd_superBrand.js 		#特物ZX联想
 
 EOF
 
@@ -348,7 +283,6 @@ done
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	wget https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js -O $dir_file_js/jd_try.js #京东试用
 	wget https://raw.githubusercontent.com/fangpidedongsun/jd_scripts2/master/jd_friend.js -O $dir_file_js/jd_friend.js #joy总动员一次性脚本
 
 rm -rf $dir_file_js/jd_city.js
@@ -361,12 +295,21 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
+	adolf_pk.js 			#京享值PK
+	adolf_martin.js			#人头马x博朗
+	adolf_superbox.js		#超级盒子
+	adolf_newInteraction.js		#618大势新品赏
+	adolf_urge.js			#坐等更新
+	z_fanslove.js			#粉丝互动
+	z_shake.js  			#超级摇一摇
+	z_marketLottery.js 		#京东超市-大转盘
+	z_mother_jump.js		#新一期母婴跳一跳开始咯
+	z_shop_captain.js		#超级无线组队分奖品
 	pk.js				#新的PK京享值脚本
 	jd_check_cookie.js		#检测cookie是否存活（暂时不能看到还有几天到期）
-	monk_shop_lottery.js 		#店铺大转盘
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jx_products_detail.js		#京喜工厂商品列表详情
-	jd_try.js 			#京东试用
+	jd_try.js 			#京东试用（默认不启用）
 	jd_gyec.js			#工业爱消除
 	jd_xxl.js			#东东爱消除
 	jd_xxl_gh.js			#个护爱消除，完成所有任务+每日挑战
@@ -445,9 +388,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_cash.js #签到领现金，每日2毛～5毛长期
 	jd_sgmh.js #闪购盲盒长期活动
 	jd_jdzz.js #京东赚赚长期活动
-	monk_inter_shop_sign.js #interCenter渠道店铺签到
 	jd_syj.js #十元街签到,一天一次即可，一周30豆子
-	monk_shop_add_to_car.js #加购有礼
 	jd_market_lottery.js #幸运大转盘
 	jd_jin_tie.js #领金贴
 	jddj_bean.js			#京东到家鲜豆 一天一次
@@ -492,8 +433,28 @@ run_030() {
 }
 
 run_045() {
+cat >/tmp/jd_tmp/run_045 <<EOF
+	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
+	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
+	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard04.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard05.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard06.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard07.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
+EOF
+
 	echo -e "$green run_045$start_script_time $white"
-	$node $dir_file_js/zooOpencard05.js
+
+	for i in `cat /tmp/jd_tmp/run_045 | awk '{print $1}'`
+	do
+		$node $dir_file_js/$i
+		$run_sleep
+	done
 
 	echo -e "$green run_045$stop_script_time $white"
 }
@@ -505,7 +466,7 @@ cat >/tmp/jd_tmp/run_01 <<EOF
 	jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
 	jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
 EOF
-	long_super_redrain.js		#整点红包雨
+	#long_super_redrain.js		#整点红包雨
 	echo -e "$green run_01$start_script_time $white"
 
 	for i in `cat /tmp/jd_tmp/run_01 | awk '{print $1}'`
@@ -521,16 +482,7 @@ EOF
 run_02() {
 	echo -e "$green run_02$start_script_time $white"
 	$node $dir_file_js/jd_moneyTree.js #摇钱树
-	if [ $(date "+%-H") -ge 13 ]; then
-		sed -i '/PASTURE_EXCHANGE_KEYWORD/d' /etc/profile
-		echo "export PASTURE_EXCHANGE_KEYWORD="10京豆"" >>/etc/profile
-		export PASTURE_EXCHANGE_KEYWORD="10京豆"
-	else
-		sed -i '/PASTURE_EXCHANGE_KEYWORD/d' /etc/profile
-		echo "export PASTURE_EXCHANGE_KEYWORD="1京豆"" >>/etc/profile
-		export PASTURE_EXCHANGE_KEYWORD="1京豆"
-	fi
-	$node $dir_file_js/monk_pasture.js #有机牧场
+	sed -i '/PASTURE_EXCHANGE_KEYWORD/d' /etc/profile
 	$node $dir_file_js/jd_xtg.js			#家电星推官
 	$node $dir_file_js/pk.js			#新的PK京享值脚本
 	echo -e "$green run_02$stop_script_time $white"
@@ -593,9 +545,7 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_sgmh.js #闪购盲盒长期活动
 	jd_speed_sign.js #京东极速版签到+赚现金任务
 	jd_speed_redpocke.js		#极速版红包
-	monk_shop_follow_sku.js #关注有礼
 	jd_cash.js #签到领现金，每日2毛～5毛长期
-	monk_shop_lottery.js		#店铺大转盘
 	jd_jin_tie.js 			#领金贴
 	adolf_martin.js			#人头马x博朗
 	adolf_urge.js			#坐等更新
@@ -1289,10 +1239,7 @@ that_day() {
 	fi
 
 }
-cd $dir_file
-if [ ! `git remote -v | grep -o "https:\/\/github.com\/firkerword\/JD_Script.git" | wc -l` == "2" ];then 
-exit 0
-fi
+
 backnas() {
 	date_time=$(date +%Y-%m-%d-%H:%M | sed "s/:/_/")
 	back_file_name="script_${date_time}.tar.gz"
@@ -1523,6 +1470,8 @@ script_black() {
 	fi
 	clear
 }
+
+cd $dir_file && git remote -v | awk -F "/JD_Script"  '{print $1}' | awk -F "github.com/" '{print $2}' | sort -u >/tmp/github.txt
 
 script_black_Description() {
 cat >> $script_black_file <<EOF
@@ -2052,6 +2001,10 @@ additional_settings() {
 		source /etc/profile
 	fi
 }
+
+if [ ! `cat /tmp/github.txt` == "firkerword" ];then 
+exit 0
+fi
 
 sys_additional_settings(){
 	#京东赚赚长期活动
