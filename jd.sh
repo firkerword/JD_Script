@@ -56,7 +56,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.16"
+	cron_version="3.17"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -83,7 +83,8 @@ cat >>/etc/crontabs/root <<EOF
 00 8,12,22 * * * $dir_file/jd.sh update_script that_day >/tmp/jd_update_script.log 2>&1 #22点更新JD_Script脚本#100#
 5 8,9,11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 && source /etc/profile #9,11,19,22点05分更新lxk0301脚本#100#
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
-0 11 */7 * *  $node $dir_file/js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
+0 11 */7 * *  $node $dir_file_js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
+0 9 * */1 *  $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月1号推送当月京豆资产变化
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
 1 20-21/1 * * * $node $dir_file_js/long_hby_lottery.js >/tmp/long_hby_lottery.log #618主会场红包雨#100#
@@ -195,6 +196,8 @@ wget https://raw.githubusercontent.com/star261/jd/main/scripts/jd_zoo.js  -O 	$d
 #wget https://raw.githubusercontent.com/firkerword/JD_Script/main/JSON/jd_zoo.js -O 	$dir_file_js/jd_zoo.js
 wget https://raw.githubusercontent.com/firkerword/JD_Script/main/JSON/jd_zooCollect.js -O $dir_file_js/jd_zooCollect.js
 
+wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
+
 for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
 do
 	echo -e "$yellow copy $green$script_name$white"
@@ -295,6 +298,7 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
+	jd_all_bean_change.js 		#京东月资产变动通知
 	adolf_pk.js 			#京享值PK
 	adolf_martin.js			#人头马x博朗
 	adolf_superbox.js		#超级盒子
