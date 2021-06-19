@@ -86,9 +86,9 @@ cat >>/etc/crontabs/root <<EOF
 0 11 */7 * *  $node $dir_file_js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 0 9 1 * *  $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月1号推送当月京豆资产变化
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
-50 0-23/8 * * * $node $dir_file_js/jd_wxj.js >/tmp/jd_wxj.log #全民挖现金#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
 1 20-21/1 * * * $node $dir_file_js/long_hby_lottery.js >/tmp/long_hby_lottery.log #618主会场红包雨#100#
+50 0-23/8 * * * $node $dir_file_js/jd_wxj.js >/tmp/jd_wxj.log #全民挖现金#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -264,6 +264,7 @@ zero205_url="https://gitee.com/zero205/JD_tencent_scf/raw/main"
 cat >$dir_file/config/tmp/zero205_url.txt <<EOF
 	jd_wxj.js		        #全民挖现金
 	jd_djjl.js 		        #东东电竞经理
+
 EOF
 
 for script_name in `cat $dir_file/config/tmp/zero205_url.txt | awk '{print $1}'`
@@ -286,7 +287,6 @@ do
 	#wget $Wenmoux_url/$script_name -O $dir_file_js/$script_name
 	#update_if
 done
-
 
 	#检测cookie是否存活（暂时不能看到还有几天到期）
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
