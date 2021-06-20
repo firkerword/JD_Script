@@ -56,7 +56,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.19"
+	cron_version="3.20"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -84,10 +84,9 @@ cat >>/etc/crontabs/root <<EOF
 5 8,9,11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 && source /etc/profile #9,11,19,22点05分更新lxk0301脚本#100#
 55 23 * * * $dir_file/jd.sh kill_joy >/tmp/jd_kill_joy.log 2>&1 #23点55分关掉joy挂机#100#
 0 11 */7 * *  $node $dir_file_js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
-0 9 1 * *  $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月1号推送当月京豆资产变化
+0 9 1 */1 *  $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月1号推送当月京豆资产变化
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
-1 20-21/1 * * * $node $dir_file_js/long_hby_lottery.js >/tmp/long_hby_lottery.log #618主会场红包雨#100#
 0 */8 * * * $node $dir_file_js/jd_wxj.js >/tmp/jd_wxj.log #全民挖现金#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
@@ -156,7 +155,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_lotteryMachine.js 		#京东抽奖机
 	jd_necklace.js			#点点券
 	jd_syj.js			#赚京豆
-	jd_redPacket.js			#全民开红包
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
 	jd_speed.js			#天天加速
@@ -206,7 +204,6 @@ longzhuzhu_url="https://raw.githubusercontent.com/longzhuzhu/nianyu/main/qx"
 cat >$dir_file/config/tmp/longzhuzhu_qx.txt <<EOF
 	long_half_redrain.js		#半点红包雨
 	long_super_redrain.js 		#整点红包雨
-	long_hby_lottery.js		#主会场红包雨
 EOF
 
 for script_name in `cat $dir_file/config/tmp/longzhuzhu_qx.txt | awk '{print $1}'`
@@ -292,9 +289,10 @@ done
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	wget https://raw.githubusercontent.com/fangpidedongsun/jd_scripts2/master/jd_friend.js -O $dir_file_js/jd_friend.js #joy总动员一次性脚本
 
-rm -rf $dir_file_js/jd_city.js
+rm -rf $dir_file_js/long_hby_lottery.js
+rm -rf $dir_file_js/jd_friend.js
+
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
@@ -324,7 +322,6 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	jd_xxl.js			#东东爱消除
 	jd_xxl_gh.js			#个护爱消除，完成所有任务+每日挑战
 	jd_opencard.js			#开卡活动，一次性活动，运行完脚本获得53京豆，进入入口还可以开卡领30都
-	jd_friend.js			#joy总动员 一次性脚本
 	jd_unbind.js 			#注销京东会员卡
 	jdDreamFactoryShareCodes.js	#京喜工厂ShareCodes
 	jdFruitShareCodes.js		#东东农场ShareCodes
@@ -345,7 +342,6 @@ EOF
 	chmod 755 $dir_file_js/*
 	additional_settings
 	#sys_additional_settings
-	zoo_share
 	cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | grep -v "//'" |grep -v "// '" > $openwrt_script_config/js_cookie.txt
 	concurrent_js_update
 	source /etc/profile
@@ -709,7 +705,6 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 }
 
 concurrent_js_run_07() {
-	$node $openwrt_script/JD_Script/js/jd_redPacket.js #京东全民开红包，没时间要求
 	#$node $openwrt_script/JD_Script/js/jd_small_home.js #东东小窝
 	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 	$node $openwrt_script/JD_Script/js/jd_check_cookie.js #检测cookie是否存活
@@ -1861,8 +1856,8 @@ additional_settings() {
 
 	#京喜工厂
 	new_dreamFactory="X2poJVLcLoygZX0TgGmkl8EiBIkQe_zrMAZqtgL24-M=@5MIEocu93aHBEq_1DLOFFA==@DAJklWSqv4HcjA35zvIPGA==@4HL35B_v85-TsEGQbQTfFg==@q3X6tiRYVGYuAO4OD1-Fcg==@Gkf3Upy3YwQn2K3kO1hFFg==@w8B9d4EVh3e3eskOT5PR1A==@jwk7hHoEWAsvQyBkNrBS1Q==@iqAUAWEQx86GvVthAu7-jQ=="
-	zuoyou_20190516_df="oWcboKZa9XxTSWd28tCEPA==@sboe5PFeXgL2EWpxucrKYw==@rm-j1efPyFU50GBjacgEsw==@tZXnazfKhM0mZd2UGPWeCA=="
-	zuoyou_random_df="BprHGWI9w04zUnZPbIzKgw==@9aUfCEmRqRW9fK7-P-eGnQ==@9whmFTgMFw7ZfXcQdEJ3UA==@zVn3SNiwrEhxQEcbMZA27w==@k7iROwM2-Ha5EA59rRxBTg==@D_ttRc6eCyMxdHjMRGLobA==@BeecV8Oe9FL6I13lDGgOgA==@cA7LmxYoXxJNLnS7j25dxA==@aAwyOK0kb9OSm2oq2JVYMQ=="
+	zuoyou_20190516_df="oWcboKZa9XxTSWd28tCEPA==@sboe5PFeXgL2EWpxucrKYw==@rm-j1efPyFU50GBjacgEsw=="
+	zuoyou_random_df="BprHGWI9w04zUnZPbIzKgw==@DriN9xUWha-XqE0cN3u7Fg==@krMPYOnVbZAAkZJiSz5cUw==@9aUfCEmRqRW9fK7-P-eGnQ==@4yiyXPAaB_ReMPQy-st4AQ==@9whmFTgMFw7ZfXcQdEJ3UA==@zVn3SNiwrEhxQEcbMZA27w==@D_ttRc6eCyMxdHjMRGLobA==@BeecV8Oe9FL6I13lDGgOgA==@cA7LmxYoXxJNLnS7j25dxA==@aAwyOK0kb9OSm2oq2JVYMQ==@MmOfTa6Z79J9XRZA4roX1A==@rlJZquhGZTvDFksbDMhs2Q=="
 	Javon_20201224_df="P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8=@LTyKtCPGU6v0uv-n1GSwfQ=="
 	Javon_20201224_random_df="@y7KhVRopnOwB1qFo2vIefg==@WnaDbsWYwImvOD1CpkeVWA==@Y4r32JTAKNBpMoCXvBf7oA==@JuMHWNtZt4Ny_0ltvG6Ipg==@KDhTwFSjylKffc2V7dp5HQ==@zS1ivJY43UFvaqOUiFijZQ==@-q3gc8s9Vr5x17EPRwyB8w==@BsCgeeTl_H2x5JQKGte6ow==@DQYKPYi5mD-dwO86UokUjg==@WHYhQ1mFlqoFow2iuq06wg==@1Oob_S4cfK2z2gApmzRBgw==@Z2t6d_X8aMYIp7IwTnuNyA==@UdTgtWxsEwypwH1v6GETfA=="
 	chiyu_df="us6se4fFC6cSjHDSS_ScMw=="
@@ -1935,7 +1930,7 @@ additional_settings() {
 	done
 
 	#明星小店
-	new_jdss="Ap5_KQYFx2OrXRqHM1TPL3_afnNsJWQ5igvlJ-mfKnI@CXafdU6tKsdt11G6DMpXnA@OyvDBjSDMv-C64g3En4moXyHqz9xFr_ukU3EkW3c_SM@VYlzzuDz-Y8seOROZFxje-gusZ0qMCAXkWRSg4DzCCQ@O-d-kb7wpZ1S27CVsn1DzTmTEwjTAPSH2XscO-ZOeAU"
+	new_jdss="VYlzzuDz-Y8seOROZFxje-gusZ0qMCAXkWRSg4DzCCQ@O-d-kb7wpZ1S27CVsn1DzTmTEwjTAPSH2XscO-ZOeAU"
 
 	new_jdss_set="'$new_jdss',"
 
@@ -1996,7 +1991,7 @@ additional_settings() {
 	sed -i "s/https:\/\/gitee.com\/shylocks\/updateTeam\/raw\/main\/jd_cash.json/https:\/\/raw.githubusercontent.com\/firkerword\/JD_Script\/main\/JSON\/jd_cash.json/g"  $dir_file_js/jd_cash.js
 
 	#全民挖现金
-	sed -i "s/shareCode = ''/shareCode = 'D865D7C046B3594455DA8935E71EA2C5AD1DAAB9A3E3F6CBAFDE81EEB7393333'/g" $dir_file_js/jd_wxj.js		        #全民挖现金
+	sed -i "s/shareCode = ''/shareCode = '2D521ACE2B8F98C739D04047C9BA90FF11F666E9BB07D39A4234F24002978029@CC13A565A40EA41F45137D445B803109@AF5DE5530ECFB07364268B9DBC6BCB3CAD1DAAB9A3E3F6CBAFDE81EEB7393333@D865D7C046B3594455DA8935E71EA2C5AD1DAAB9A3E3F6CBAFDE81EEB7393333'/g" $dir_file_js/jd_wxj.js		        #全民挖现金
 
 	#脚本黑名单
 	script_black
@@ -2107,7 +2102,7 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 	#财富岛
 	new_cfd="698098B001CF38EEEBCF66F9746EAFC7E1627164C06D4AADED9CCBC4B3A308EF@2F37BEBF8BFCDF8BEE92C1C2923706A4D1E39886C942A521A2A0353AED313BEC@74368D6374341F98E02515D2661AA24DDDF4780627137D1A2A93C1D968FE8698@161F722B03A9D0D88957B3A10D1993F0AC232B8CE6586F11D730AC247E887B31"
 	test_cfd="1A91CB7D423B0797C8FCB56F427D8DBE17FC2BC3429518690AE267598024A64F@D2B2DC26C59CE6F9D40087876C5E1365B167EC29D2F4A5A1E466AD6DC908FF13@5B674A6E0E797CF70F2D784210E24D19875694C418C215CB732C90C8534DE908@30267C61BC24DCF80B89925CCCB5B4C3900AAE08116E9F7EC18A0ACF8371482D@EC1EE0B8E9D14A159CB3ED96274FE27FAD7BC87B7873159A8EE7F60C5FD7D681"
-	zuoyou_20190516_cfd="FEDB2AF96850881075FA08A13F621BA2@492629151F9A4D58FD1396DF6A89283271310967BE165544D8C825F27C4A2BA3@B07EC6F47A9BBA48D730300D742021D4AB091E6E8BC38C6FC83951F090865B4D@5266AB2AB4A420E011FDE365CD3761DEA004AF26497E96FE787CEA61D3B9CC5D@E36DC4BBF3C37E38C7E986E8836ECA97D7CC19A31C9E2A1F98A102AEE7E4CCC2@BC11A30DDE0C69ACBA90C9374FB64AF6648270AC47BB30E4340A23CB0B286411@BE23B69794FF9225CA2A11A4FD324D9973306BE33A756B36D5DD201B2D661F69@0FD477A54177EE4FA6B4128DC6C4FE442B153AE2B4C40E1EEC9CA76696BC61CB@11F743A9D0C5D5ADFBBAA2DF0413382B53EC91F0510E9968157559A4B38F176C@02891BCA03C90A1927B0A6B7AEAF2C60255B1E1317B509B477793869356E8D81@9D3BBBB7C428ACF58C7380ACA3EBE0798CBD1466AFAF50B327F3168977EBAF5A@4258CC830AA9723630A626F5CD2CE5E39EB5941364F3A8C9E0E0A04CC41ABAC9"
+	zuoyou_20190516_cfd="60FD822F9BD707BEBB07C0C2CE49E736@51ED9C1321B448D31B81854411F7103CA6CEAB3D1933B613B927879748FB2A6A@B07EC6F47A9BBA48D730300D742021D4F3D49D6F9B14CC4066504ECEF75AC443@2704A782C66BB40C7BAD9B84BBCAC87571310967BE165544D8C825F27C4A2BA3@1189F93EB50AB5B2904D8CD0AE2916B918964C3A62119078BA5B87EFF5EE85B6@C9C09990F22D010DFA8D3A6306094A84E6186DDE933E31084E83E74316AB392C@E10DAE323F14681808B5092A8B4348455844603DB22E7196A8FC21F02AE9CFD4@3441F20A2E22D50ECDD55E0146E583D5525BCDACDE13890B256A23464DBE9130@A19A94ECB6D78013A0121B2FF0D85F1599221344EF91C01B3DFCDD74DDAC91B8@FF19693FD6BF2ADA3F66E5D54B453C39E8405743A0C75A1AE77A06C81CDC6569@10DA5CF560CF85462D85D2DCFB3735A5EB4B6B84009CBB14B8AE6167041CE320@0FD477A54177EE4FA6B4128DC6C4FE44C652D8BE9960E64C66FDB39610F9C276@11F743A9D0C5D5ADFBBAA2DF0413382BF2C629A55BC12E2D327C002F89550672@02891BCA03C90A1927B0A6B7AEAF2C605397F092FCA02CC72DA0D6D8098F305B@9D3BBBB7C428ACF58C7380ACA3EBE079324A5740162BAFE366B52DEB7EC6AC1E@4258CC830AA9723630A626F5CD2CE5E3F917AD10EACDA591FA6B0103A8CC0484@1AFADBAA8414D7E8816A619843DDBF70145C58B75168476B2B231B80E9B19996@A41DD6AEE4D07CAF50ACE1A671B1FB2B689FEC63576BCE1D70787FD16AF64DFD@02B4E4243C610EB7D57F3FAC83CEE41C5B03129928F78CB99D123ECC6D084816"
 	jidiyangguang_20190516_cfd="7EFA02FBA93D2428836E5046ACC9F0BA82A37AE1B41810B042C93A6ED443E619@0CEBB972109F10663A8D5E663E617B5E9DB6862E81793277DFAC711F9FA7665D"
 	Jhone_Potte_20200824_cfd="489E0A39F03311FB59083A7006A35FCB45F5EB3DA92FA7B4446168FAF5EA64DE@45E0C9745C26474C1DBB0E2F5D4E3D661F744C456D2D2516FDADD0689C455C1D"
 	Javon_20201224_cfd="859D1EACFE0FB0DE30DF970EC5DF56A6B38965B50EA9FDE89D8B7F521247778B@3108F77AE5B711A96FBEE78E952FDE2013C40500819B80F54E075DF67A5588AD"
