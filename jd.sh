@@ -1930,7 +1930,7 @@ additional_settings() {
 	done
 
 	#明星小店
-	new_jdss="VYlzzuDz-Y8seOROZFxje-gusZ0qMCAXkWRSg4DzCCQ@O-d-kb7wpZ1S27CVsn1DzTmTEwjTAPSH2XscO-ZOeAU"
+	new_jdss="Ap5_KQYFx2OrXRqHM1TPL3_afnNsJWQ5igvlJ-mfKnI@CXafdU6tKsdt11G6DMpXnA@OyvDBjSDMv-C64g3En4moXyHqz9xFr_ukU3EkW3c_SM@VYlzzuDz-Y8seOROZFxje-gusZ0qMCAXkWRSg4DzCCQ@O-d-kb7wpZ1S27CVsn1DzTmTEwjTAPSH2XscO-ZOeAU"
 
 	new_jdss_set="'$new_jdss',"
 
@@ -1991,7 +1991,7 @@ additional_settings() {
 	sed -i "s/https:\/\/gitee.com\/shylocks\/updateTeam\/raw\/main\/jd_cash.json/https:\/\/raw.githubusercontent.com\/firkerword\/JD_Script\/main\/JSON\/jd_cash.json/g"  $dir_file_js/jd_cash.js
 
 	#全民挖现金
-	sed -i "s/shareCode = ''/shareCode = '2D521ACE2B8F98C739D04047C9BA90FF11F666E9BB07D39A4234F24002978029@CC13A565A40EA41F45137D445B803109@AF5DE5530ECFB07364268B9DBC6BCB3CAD1DAAB9A3E3F6CBAFDE81EEB7393333@D865D7C046B3594455DA8935E71EA2C5AD1DAAB9A3E3F6CBAFDE81EEB7393333'/g" $dir_file_js/jd_wxj.js		        #全民挖现金
+	sed -i "s/shareCode = ''/shareCode = '2D521ACE2B8F98C739D04047C9BA90FF11F666E9BB07D39A4234F24002978029D865D7C046B3594455DA8935E71EA2C5AD1DAAB9A3E3F6CBAFDE81EEB7393333'/g" $dir_file_js/jd_wxj.js		        #全民挖现金
 
 	#脚本黑名单
 	script_black
