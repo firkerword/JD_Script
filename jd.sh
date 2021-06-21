@@ -153,7 +153,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_cash.js			#签到领现金，每日2毛～5毛长期
 	jd_jdzz.js			#京东赚赚长期活动
 	jd_lotteryMachine.js 		#京东抽奖机
-	jd_necklace.js			#点点券
 	jd_syj.js			#赚京豆
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
@@ -284,13 +283,22 @@ do
 	#update_if
 done
 
+panghu999_url="https://raw.githubusercontent.com/panghu999/jd_scripts/master"
+cat >$dir_file/config/tmp/panghu999_url.txt <<EOF
+	jd_necklace.js		#点点劵
+EOF
+
+for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}'`
+do
+	url="$panghu999_url"
+	wget $panghu999_url/$script_name -O $dir_file_js/$script_name
+	update_if
+done
+
 	#检测cookie是否存活（暂时不能看到还有几天到期）
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-
-rm -rf $dir_file_js/long_hby_lottery.js
-rm -rf $dir_file_js/jd_friend.js
 
 
 #将所有文本汇总
