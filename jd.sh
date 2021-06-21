@@ -177,7 +177,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_health_collect.js		#健康社区-收能量
 	jd_daily_lottery.js		#每日抽奖
 	jd_jump.js			#跳跳乐瓜分京豆
-	jd_carnivalcity.js		#京东手机狂欢城
 	jd_gold_creator.js		#金榜创造营
 	jd_mohe.js			#5G超级盲盒
 	jd_star_shop.js			#明星小店
@@ -580,7 +579,6 @@ cat >/tmp/jd_tmp/run_08_12_16 <<EOF
 	jd_syj.js #赚京豆
 	adolf_pk.js 			#京享值PK
 	jd_jump.js			#跳跳乐瓜分京豆
-	jd_carnivalcity.js		#京东手机狂欢城
 EOF
 	echo -e "$green run_08_12_16$start_script_time $white"
 
