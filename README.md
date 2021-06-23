@@ -57,11 +57,7 @@ N1（群友极地阳光测试）
 
 2.互助码怎么找
 
-         sh $jd jd_sharecode
-
-
-**4.问题反馈：https://github.com/ITdesk01/JD_Script/issues (描述清楚问题或者上图片，不然可能没有人理)**
-
+         sh $jd jd_share
 
 ## 你们可以不好好看安装依赖，我也可以拒绝回答任何问题。
 
