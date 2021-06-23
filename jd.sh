@@ -56,7 +56,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.22"
+	cron_version="3.23"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -86,7 +86,7 @@ cat >>/etc/crontabs/root <<EOF
 0 9 1 */1 * $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月1号推送当月京豆资产变化#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
-0 */8 * * * $node $dir_file_js/jd_wxj.js >/tmp/jd_wxj.log #全民挖现金#
+0 */8 * * * $node $dir_file_js/jd_wxj.js >/tmp/jd_wxj.log #全民挖现金#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -99,6 +99,7 @@ EOF
 task_delete() {
         sed -i '/#100#/d' /etc/crontabs/root >/dev/null 2>&1
 	sed -i '/jd_all_bean_change.js/d' /etc/crontabs/root >/dev/null 2>&1
+	sed -i '/jd_wxj.js/d' /etc/crontabs/root >/dev/null 2>&1
 }
 
 ds_setup() {
@@ -297,6 +298,7 @@ done
 
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/hyzaw/scripts/main/ddo_pk.js -O $dir_file_js/ddo_pk.js #新的pk脚本
+	wget https://raw.githubusercontent.com/star261/jd/main/scripts/star_dreamFactory_tuan.js -O $dir_file_js/star_dreamFactory_tuan.js #京喜开团
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
@@ -306,7 +308,8 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
-	ddo_pk.js #新的pk脚本
+	star_dreamFactory_tuan.js 	#京喜开团
+	ddo_pk.js 			#新的pk脚本
 	jd_all_bean_change.js 		#京东月资产变动通知
 	adolf_martin.js			#人头马x博朗
 	adolf_superbox.js		#超级盒子
@@ -515,6 +518,7 @@ EOF
 
 run_06_18() {
 cat >/tmp/jd_tmp/run_06_18 <<EOF
+	star_dreamFactory_tuan.js       #京喜开团
 	jd_mcxhd.js  		#新潮品牌狂欢
 	jd_blueCoin.js  #东东超市兑换，有次数限制，没时间要求
 	jd_shop.js #进店领豆，早点领，一天也可以执行两次以上
@@ -1880,6 +1884,11 @@ additional_settings() {
 		js_amount=$(($js_amount - 1))
 	done
 
+
+	#京喜开团
+	sed -i "s/helpFlag = true/helpFlag = false/g" $dir_file_js/star_dreamFactory_tuan.js
+	sed -i "27 a \let OPEN_DREAMFACTORY_TUAN = '1,2,3,4';" $dir_file_js/star_dreamFactory_tuan.js #京喜开团
+
 	#东东工厂
 	new_ddgc="T024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQCjVWnYaS5kRrbA@T0225KkcRUhP9FCEKR79xaZYcgCjVWnYaS5kRrbA@T0205KkcH0RYsTOkY2iC8I10CjVWnYaS5kRrbA@T0205KkcJEZAjD2vYGGG4Ip0CjVWnYaS5kRrbA"
 
@@ -2032,6 +2041,9 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 		sed -i "$healthcode_rows a \ '$new_health_set', " $dir_file_js/jd_health.js
 		js_amount=$(($js_amount - 1))
 	done
+
+	#关闭翻翻乐的推送太多了
+	sed -i "s/await notify.sendNotify/\/\/await notify.sendNotify/g"  $dir_file_js/jd_618redpacket.js
 	
 	#脚本黑名单
 	script_black
