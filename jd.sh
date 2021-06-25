@@ -128,6 +128,8 @@ update() {
 #cat script_name.txt | awk '{print length, $0}' | sort -rn | sed 's/^[0-9]\+ //'按照文件名长度降序：
 #cat script_name.txt | awk '{print length, $0}' | sort -n | sed 's/^[0-9]\+ //' 按照文件名长度升序
 
+rm -rf $dir_file/config/tmp/*
+
 cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_bean_sign.js			#京东多合一签到
 	jd_fruit.js			#东东农场
@@ -170,7 +172,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_jin_tie.js 			#领金贴
 	jd_health.js			#健康社区
 	jd_health_collect.js		#健康社区-收能量
-	jd_daily_lottery.js		#每日抽奖
 	jd_jump.js			#跳跳乐瓜分京豆
 	jd_gold_creator.js		#金榜创造营
 	jd_mohe.js			#5G超级盲盒
@@ -209,6 +210,7 @@ cat >$dir_file/config/tmp/passerby_url.txt <<EOF
 	jddj_bean.js			#京东到家鲜豆 一天一次
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	jddj_fruit.js			#京东到家果园 0,8,11,17
+	jddj_fruit_code.js		#作用未知
 	jddj_fruit_collectWater.js 	#京东到家果园水车收水滴 作者5分钟收一次
 	jddj_getPoints.js		#京东到家鲜豆庄园收水滴 作者5分钟收一次
 EOF
@@ -295,27 +297,6 @@ do
 	update_if
 done
 
-
-
-#删掉过期脚本
-cat >$dir_file/config/tmp/del_js.txt <<EOF
-	jd_djjl.js 		        #东东电竞经理
-	jd_wxj.js		        #全民挖现金
-	zooJx88hongbao.js		#京喜88红包
-	zooLimitbox.js			#限时盲盒
-	jd_superBrand.js 		#特物ZX联想
-	zooBaojiexiaoxiaole.js		#宝洁消消乐 一天一次
-	zooLongzhou.js			#浓情618 与“粽”不同 一天一次
-	zooLongzhou02.js		#粽情端午
-EOF
-
-for script_name in `cat $dir_file/config/tmp/del_js.txt | awk '{print $1}'`
-do
-	rm -rf $dir_file_js/$script_name
-done
-
-
-
 	#检测cookie是否存活（暂时不能看到还有几天到期）
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
 
@@ -360,6 +341,24 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	jdFactoryShareCodes.js		#东东工厂ShareCodes
 	jdJxncShareCodes.js		#京喜农场ShareCodes
 EOF
+
+#删掉过期脚本
+cat >/tmp/del_js.txt <<EOF
+	jd_daily_lottery.js		#每日抽奖
+	jd_djjl.js 		        #东东电竞经理
+	jd_wxj.js		        #全民挖现金
+	zooJx88hongbao.js		#京喜88红包
+	zooLimitbox.js			#限时盲盒
+	jd_superBrand.js 		#特物ZX联想
+	zooBaojiexiaoxiaole.js		#宝洁消消乐 一天一次
+	zooLongzhou.js			#浓情618 与“粽”不同 一天一次
+	zooLongzhou02.js		#粽情端午
+EOF
+
+for script_name in `cat /tmp/del_js.txt | awk '{print $1}'`
+do
+	rm -rf $dir_file_js/$script_name
+done
 
 
 	if [ $? -eq 0 ]; then
@@ -512,17 +511,19 @@ EOF
 run_02() {
 	echo -e "$green run_02$start_script_time $white"
 	$node $dir_file_js/jd_moneyTree.js #摇钱树
-	sed -i '/PASTURE_EXCHANGE_KEYWORD/d' /etc/profile
 	$node $dir_file_js/ddo_pk.js #新的pk脚本
 	echo -e "$green run_02$stop_script_time $white"
 }
 
 run_03() {
+#这里不会并发
 cat >/tmp/jd_tmp/run_03 <<EOF
+	jd_dianjing.js		#电竞经理
+	jd_joy.js #jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
+	jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
 	jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
 	jd_health.js		#健康社区
 	jddj_fruit.js			#京东到家果园 0,8,11,17
-	jd_daily_lottery.js		#每日抽奖
 	jd_mohe.js			#5G超级盲盒
 EOF
 	echo -e "$green run_03$start_script_time $white"
@@ -628,7 +629,6 @@ EOF
 		$node $dir_file_js/$i
 		$run_sleep
 	done
-	$node $openwrt_script/JD_Script/js/jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
 	echo -e "$green run_10_15_20$stop_script_time $white"
 }
 
@@ -874,7 +874,6 @@ concurrent_js_if() {
 		run_07)
 			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
-			$node $openwrt_script/JD_Script/js/jd_dianjing.js		#电竞经理
 			concurrent_js && if_ps
 			concurrent_js_run_07 && if_ps
 			concurrent_js_clean
@@ -889,14 +888,7 @@ concurrent_js_if() {
 			if_ps
 			concurrent_js_clean
 		;;
-		run_06_18)
-			$node $openwrt_script/JD_Script/js/jd_joy.js #jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
-			action="$action1"
-			concurrent_js
-			if_ps
-			concurrent_js_clean
-		;;
-		run_01|run_02|run_045|run_08_12_16|run_020|run_10_15_20)
+		run_01|run_02|run_045|run_08_12_16|run_020|run_10_15_20|run_06_18)
 			action="$action1"
 			concurrent_js
 			if_ps
@@ -1981,9 +1973,6 @@ additional_settings() {
 	done
 
 	sed -i "s/https:\/\/gitee.com\/shylocks\/updateTeam\/raw\/main\/jd_cash.json/https:\/\/raw.githubusercontent.com\/firkerword\/JD_Script\/main\/JSON\/jd_cash.json/g"  $dir_file_js/jd_cash.js
-
-	#全民挖现金
-	sed -i "s/shareCode = ''/shareCode = '2D521ACE2B8F98C739D04047C9BA90FF11F666E9BB07D39A4234F24002978029@D865D7C046B3594455DA8935E71EA2C5AD1DAAB9A3E3F6CBAFDE81EEB7393333'/g" $dir_file_js/jd_wxj.js		        #全民挖现金
 
 	
 	#闪购盲盒
