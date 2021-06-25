@@ -56,7 +56,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.23"
+	cron_version="3.25"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -86,7 +86,7 @@ cat >>/etc/crontabs/root <<EOF
 0 9 1 */1 * $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月1号推送当月京豆资产变化#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
-0 */8 * * * $node $dir_file_js/jd_wxj.js >/tmp/jd_wxj.log #全民挖现金#100#
+0 0 * * * $node $dir_file_js/star_dreamFactory_tuan.js	>/tmp/star_dreamFactory_tuan.log	#京喜开团#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -98,8 +98,6 @@ EOF
 
 task_delete() {
         sed -i '/#100#/d' /etc/crontabs/root >/dev/null 2>&1
-	sed -i '/jd_all_bean_change.js/d' /etc/crontabs/root >/dev/null 2>&1
-	sed -i '/jd_wxj.js/d' /etc/crontabs/root >/dev/null 2>&1
 }
 
 ds_setup() {
@@ -185,9 +183,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 EOF
 cp  $dir_file/git_clone/lxk0301_back/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
 
-
-wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
-
 for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
 do
 	echo -e "$yellow copy $green$script_name$white"
@@ -227,9 +222,6 @@ done
 
 zooPanda_url="https://raw.githubusercontent.com/zooPanda/zoo/dev"
 cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
-	zooBaojiexiaoxiaole.js		#宝洁消消乐 一天一次
-	zooLongzhou.js			#浓情618 与“粽”不同 一天一次
-	zooLongzhou02.js		#粽情端午
 	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
 	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
 	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行)
@@ -242,9 +234,8 @@ cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
 	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
-	zooLimitbox.js			#限时盲盒
-	zooJx88hongbao.js		#京喜88红包
 EOF
+
 
 for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
 do
@@ -255,22 +246,20 @@ done
 
 zero205_url="https://gitee.com/zero205/JD_tencent_scf/raw/main"
 cat >$dir_file/config/tmp/zero205_url.txt <<EOF
-	jd_wxj.js		        #全民挖现金
-	jd_djjl.js 		        #东东电竞经理
+	
 
 EOF
 
 for script_name in `cat $dir_file/config/tmp/zero205_url.txt | awk '{print $1}'`
 do
 	url="$zero205_url"
-	wget $zero205_url/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $zero205_url/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 Wenmoux_url="https://raw.githubusercontent.com/Wenmoux/scripts/master/jd"
 cat >$dir_file/config/tmp/Wenmoux_url.txt <<EOF
 	jd_618redpacket.js		#翻翻乐
-	jd_superBrand.js 		#特物ZX联想
 
 EOF
 
@@ -281,9 +270,9 @@ do
 	#update_if
 done
 
-panghu999_url="https://raw.githubusercontent.com/panghu999/jd_scripts/master"
-cat >$dir_file/config/tmp/panghu999_url.txt <<EOF
-	jd_necklace.js		#点点劵
+panghu999="https://raw.githubusercontent.com/panghu999/panghu/master"
+cat >$dir_file/config/tmp/panghu999.txt <<EOF
+	jd_hwsx.js		#京东众筹
 EOF
 
 for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}'`
@@ -293,9 +282,44 @@ do
 	update_if
 done
 
+panghu999_url="https://raw.githubusercontent.com/panghu999/jd_scripts/master"
+cat >$dir_file/config/tmp/panghu999_url.txt <<EOF
+	jd_necklace.js		#点点劵
+	jd_dianjing.js		#电竞经理
+EOF
+
+for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}'`
+do
+	url="$panghu999_url"
+	wget $panghu999_url/$script_name -O $dir_file_js/$script_name
+	update_if
+done
+
+
+
+#删掉过期脚本
+cat >$dir_file/config/tmp/del_js.txt <<EOF
+	jd_djjl.js 		        #东东电竞经理
+	jd_wxj.js		        #全民挖现金
+	zooJx88hongbao.js		#京喜88红包
+	zooLimitbox.js			#限时盲盒
+	jd_superBrand.js 		#特物ZX联想
+	zooBaojiexiaoxiaole.js		#宝洁消消乐 一天一次
+	zooLongzhou.js			#浓情618 与“粽”不同 一天一次
+	zooLongzhou02.js		#粽情端午
+EOF
+
+for script_name in `cat $dir_file/config/tmp/del_js.txt | awk '{print $1}'`
+do
+	rm -rf $dir_file_js/$script_name
+done
+
+
+
 	#检测cookie是否存活（暂时不能看到还有几天到期）
 	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
 
+	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/hyzaw/scripts/main/ddo_pk.js -O $dir_file_js/ddo_pk.js #新的pk脚本
 	wget https://raw.githubusercontent.com/star261/jd/main/scripts/star_dreamFactory_tuan.js -O $dir_file_js/star_dreamFactory_tuan.js #京喜开团
@@ -405,9 +429,6 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	adolf_superbox.js		#超级盒子
 	jd_dreamFactory.js 		#京喜工厂
-	jd_djjl.js                      #电竞经理
-	jd_superBrand.js 		#特物ZX联想
-	zooLimitbox.js			#限时盲盒
 EOF
 	echo -e "$green run_0$start_script_time $white"
 
@@ -435,6 +456,7 @@ run_020() {
 run_030() {
 	echo -e "$green run_030$start_script_time $white"
 	$node $dir_file_js/jd_jdfactory.js #东东工厂，不是京喜工厂
+	$node $dir_file_js/jd_jxmc.js			#惊喜牧场
 	$node $dir_file_js/jd_health_collect.js		#健康社区-收能量
 	$node $dir_file_js/jddj_fruit_collectWater.js 	#京东到家果园水车收水滴 作者5分钟收一次
 	$node $dir_file_js/jddj_getPoints.js		#京东到家鲜豆庄园收水滴 作者5分钟收一次
@@ -502,7 +524,6 @@ cat >/tmp/jd_tmp/run_03 <<EOF
 	jddj_fruit.js			#京东到家果园 0,8,11,17
 	jd_daily_lottery.js		#每日抽奖
 	jd_mohe.js			#5G超级盲盒
-	jd_jxmc.js			#惊喜牧场
 EOF
 	echo -e "$green run_03$start_script_time $white"
 
@@ -518,7 +539,7 @@ EOF
 
 run_06_18() {
 cat >/tmp/jd_tmp/run_06_18 <<EOF
-	star_dreamFactory_tuan.js       #京喜开团
+	jd_hwsx.js		#京东众筹
 	jd_mcxhd.js  		#新潮品牌狂欢
 	jd_blueCoin.js  #东东超市兑换，有次数限制，没时间要求
 	jd_shop.js #进店领豆，早点领，一天也可以执行两次以上
@@ -556,9 +577,6 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_jin_tie.js 			#领金贴
 	adolf_martin.js			#人头马x博朗
 	adolf_urge.js			#坐等更新
-	zooBaojiexiaoxiaole.js			#宝洁消消乐 一天一次
-	zooLongzhou.js				#浓情618 与“粽”不同 一天一次
-	zooLongzhou02.js			#粽情端午
 	zy_618jc.js 			#618竞猜
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
@@ -837,7 +855,6 @@ concurrent_js_if() {
 		run_0)
 			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
-			$node $openwrt_script/JD_Script/js/zooJx88hongbao.js	#京喜领88元红包
 			concurrent_js && if_ps
 			if [ ! $action2 ];then
 				if_ps
@@ -857,6 +874,7 @@ concurrent_js_if() {
 		run_07)
 			action="$action1"
 			$node $openwrt_script/JD_Script/js/jd_bean_sign.js "" #京东多合一签到
+			$node $openwrt_script/JD_Script/js/jd_dianjing.js		#电竞经理
 			concurrent_js && if_ps
 			concurrent_js_run_07 && if_ps
 			concurrent_js_clean
@@ -2019,11 +2037,13 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 	random_array
 	new_cfd_set="$new_cfd@$Javon_20201224_cfd@$zuoyou_20190516_cfd@$jidiyangguang_20190516_cfd@$Jhone_Potte_20200824_cfd"
 
-	share_code="$new_cfd_set"
-	share_code_value="$new_cfd_set"
-	share_code_generate
-	sed -i '/JDCFD_SHARECODES/d' /etc/profile >/dev/null 2>&1
-	sed -i "39a \let JDCFD_SHARECODES = \'$share_code_value&&\';" $dir_file_js/jd_cfd.js
+	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
+	jdcfdcode_rows=$(grep -n "let shareCodes \=" $dir_file_js/jd_cfd.js | awk -F ":" '{print $1}')
+	sed -i "s/let shareCodes \= \[/let shareCodes \= \[\n/g" $dir_file_js/jd_cfd.js
+	while [[ ${js_amount} -gt 0 ]]; do
+		sed -i "$jdcfdcode_rows a \ '$new_cfd_set', " $dir_file_js/jd_cfd.js
+		js_amount=$(($js_amount - 1))
+	done
 
 	#健康社区
 	new_health="T024anXulbWUI_NR9ZpeTHmEoPlACjVWmIaW5kRrbA@T0205KkcPElQrCOQVnqP66FpCjVWmIaW5kRrbA@T0225KkcRBpM_VSEKUz8kPENIQCjVWmIaW5kRrbA@T0225KkcRxoZ9AfVdB7wxvRcIQCjVfnoaW5kRrbA@T0225KkcRUhP9FCEKR79xaZYcgCjVfnoaW5kRrbA@T0205KkcH0RYsTOkY2iC8I10CjVfnoaW5kRrbA@T0205KkcJEZAjD2vYGGG4Ip0CjVfnoaW5kRrbA"
