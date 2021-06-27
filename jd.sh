@@ -210,7 +210,6 @@ cat >$dir_file/config/tmp/passerby_url.txt <<EOF
 	jddj_bean.js			#京东到家鲜豆 一天一次
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	jddj_fruit.js			#京东到家果园 0,8,11,17
-	jddj_fruit_code.js		#作用未知
 	jddj_fruit_collectWater.js 	#京东到家果园水车收水滴 作者5分钟收一次
 	jddj_getPoints.js		#京东到家鲜豆庄园收水滴 作者5分钟收一次
 EOF
@@ -234,6 +233,8 @@ cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
 	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard11.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard12.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
 EOF
@@ -344,6 +345,7 @@ EOF
 
 #删掉过期脚本
 cat >/tmp/del_js.txt <<EOF
+	jddj_fruit_code.js		#作用未知
 	jd_daily_lottery.js		#每日抽奖
 	jd_djjl.js 		        #东东电竞经理
 	jd_wxj.js		        #全民挖现金
@@ -474,6 +476,8 @@ cat >/tmp/jd_tmp/run_045 <<EOF
 	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard11.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard12.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行)
 	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
 EOF
@@ -1814,7 +1818,7 @@ additional_settings() {
 	#一路向北
 	superbei666_20201124_pb="gcdr655xfdjq764agedg7f27knlvxw5krpeddfq@gcdr655xfdjq764agedg7f27ko37tplq475lryq"
 
-	random_plantBean="$adong_20201108_pb@$whiteboy_20190711_pd@$wuliao_20210214_pb@$tanherongyi_20210121_pb@$wjq_20190516_pb$NanshanFox_20210303_pb@$Lili_20210121_pb@$jisi_20201211_pb@$Luckies_20210205_pb@$yushengyigelang_2021017_pb@$youxizhenhaowan_20201229_pb@$zuoyou_random_pb@$superbei666_20201124_pb"
+	random_plantBean="$adong_20201108_pb@$whiteboy_20190711_pd@$wuliao_20210214_pb@$tanherongyi_20210121_pb@$wjq_20190516_pb@$NanshanFox_20210303_pb@$Lili_20210121_pb@$jisi_20201211_pb@$Luckies_20210205_pb@$yushengyigelang_2021017_pb@$youxizhenhaowan_20201229_pb@$zuoyou_random_pb@$superbei666_20201124_pb"
 	random="$random_plantBean"
 	random_array
 	new_plantBean_set="'$new_plantBean1@$zuoyou_20190516_pb@$Javon_20201224_pb@$jidiyangguang_20190516_pb@$ashou_20210516_pb@$xiaobandeng_pb@$chiyu_pb@$random_set',"
