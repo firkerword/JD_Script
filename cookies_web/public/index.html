@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>JD辅助工具</title>
+  <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
+  <style type="text/css">
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+    }
+
+    .title {
+      margin: 0;
+      height: 400px;
+      padding-top: 150px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      color: red;
+      box-sizing: border-box;
+    }
+
+    #msg {
+      display: block;
+      width: 90%;
+      height: 30px;
+      border-width: 2px;
+      border-radius: 5px;
+      margin: 0 auto;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      height: calc(100vh - 430px);
+    }
+
+    .btn {
+      margin: 0 auto;
+      border: 1px #3079ed solid;
+      border-radius: 5px;
+      font-size: 32pt;
+      background: #4c8ffb;
+      color: white;
+    }
+
+    .qr {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      inset: 0px;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.45);
+      z-index: 1001;
+    }
+
+    .qrcontainer {
+      position: relative;
+      width: 256px;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid rgb(109, 138, 136);
+      background-color: rgb(255, 255, 255);
+      box-shadow: rgb(0 0 0 / 20%) 0px 0px 7px 3px;
+      box-sizing: content-box;
+    }
+
+    #tip {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 256px;
+      height: 256px;
+      color: rgb(255, 255, 255);
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .des {
+      word-break: break-word;
+      padding-top: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <p class="title">
+    ⚠️需要登录完成后返回浏览器<br />没有跳转请使用默认浏览器打开
+  </p>
+  <div class="container">
+    <button class="btn" id="jdcode">口令登录</button>
+    <button class="btn" id="qrcode">扫码登录</button>
+    <button class="btn" id="jumpapp">直接登录</button>
+  </div>
+ <div class="container">
+<button  id="msg">忽略我就行了，没啥用，做个吉祥物∠( ᐛ 」∠)_看戏</button>
+</div>
+  <div id="qr" class="qr">
+    <div class="qrcontainer">
+      <div id="qrbox"></div>
+      <div id="tip">
+        <h3>二维码已失效</h3>
+      </div>
+      <div id="des" class="des">请无视升级提示</div>
+    </div>
+  </div>
+  <div id="res" class="qr">
+    <div class="qrcontainer">
+      <div id="cookie" class="des"></div>
+    </div>
+  </div>
+</body>
+<script>
+  get_code();
+  var jdCode = '';
+  var loginUrl = '';
+  var resDiv = document.getElementById('res');
+  document.getElementById('jdcode').addEventListener('click', function () {
+    if (jdCode) {
+      copyText(jdCode);
+      alert('复制成功，正在跳转App');
+      window.open('openapp.jdmobile://');
+    } else {
+      alert('还没加载好，请稍后重试');
+    }
+  });
+  document.getElementById('jumpapp').addEventListener('click', function () {
+    if (loginUrl) {
+      window.location.href = `openapp.jdmobile://virtual/ad?params=${encodeURI(
+        JSON.stringify({
+          category: 'jump',
+          des: 'ThirdPartyLogin',
+          action: 'to',
+          onekeylogin: 'return',
+          url: loginUrl,
+          authlogin_returnurl: 'weixin://',
+          browserlogin_fromurl: window.location.host,
+        })
+      )}`;
+    } else {
+      alert('还没加载好，请稍后重试');
+    }
+  });
+  document.getElementById('qrcode').addEventListener('click', function () {
+    if (loginUrl) {
+      document.getElementById('qr').style.display = 'flex';
+    } else {
+      alert('还没加载好，请稍后重试');
+    }
+  });
+  document.getElementById('qr').addEventListener('click', function (event) {
+    if (event.target.id === 'qr') {
+      document.getElementById('qr').style.display = 'none';
+    }
+  });
+  function get_code() {
+    let timeStamp = new Date().getTime();
+    ajax({
+      url: './qrcode?t=' + timeStamp,
+      method: 'get',
+      success: function (data) {
+        if (data.err == 0) {
+          checkLogin(data.user);
+          console.log('jdCode:' + data.jdCode);
+          jdCode = data.jdCode;
+          loginUrl = data.qrcode;
+          qrbox = document.getElementById('qrbox');
+          qrcode = new QRCode(qrbox, {
+            text: loginUrl,
+            correctLevel: QRCode.CorrectLevel.L,
+          });
+        }
+      },
+    });
+  }
+  function checkLogin(user) {
+    time = setInterval(() => {
+      let timeStamp = new Date().getTime();
+      ajax({
+        url: './cookie?t=' + timeStamp,
+        method: 'post',
+        data: { user, msg: document.getElementById('msg').value || '无备注' },
+        success: function (data) {
+          if (data.err == 0) {
+            console.log('cookie:' + data.cookie);
+            document.getElementById('qr').style.display = 'none';
+            document.getElementById('res').style.display = 'flex';
+            document.getElementById('cookie').innerHTML =
+              '<span>' +
+              document.getElementById('msg').value +
+              '</span>' +
+              '<p>' +
+              data.cookie +
+              '</p><button id="copyToClip">复制</button>';
+            document.getElementById('copyToClip').onclick = function () {
+              copyText(data.cookie);
+              alert('复制成功');
+            };
+            clearInterval(time);
+            jdCode = '';
+            loginUrl = '';
+          } else if (data.err == 21) {
+            document.getElementById('tip').style.display = 'flex';
+            alert('请求超时');
+            clearInterval(time);
+            jdCode = '';
+            loginUrl = '';
+          }
+        },
+      });
+    }, 3000);
+  }
+  function copyText(text) {
+    // 数字没有 .length 不能执行selectText 需要转化成字符串
+    var textString = text.toString();
+    var input = document.querySelector('#copy-input');
+    if (!input) {
+      input = document.createElement('input');
+      input.id = 'copy-input';
+      input.readOnly = 'readOnly'; // 防止ios聚焦触发键盘事件
+      input.style.position = 'absolute';
+      input.style.left = '-1000px';
+      input.style.zIndex = '-1000';
+      document.body.appendChild(input);
+    }
+    input.value = textString;
+    // ios必须先选中文字且不支持 input.select();
+    selectText(input, 0, textString.length);
+    console.log(document.execCommand('copy'), 'execCommand');
+    if (document.execCommand('copy')) {
+      document.execCommand('copy');
+      //alert('已复制到粘贴板');
+    }
+    input.blur();
+    // input自带的select()方法在苹果端无法进行选择，所以需要自己去写一个类似的方法
+    // 选择文本。createTextRange(setSelectionRange)是input方法
+    function selectText(textbox, startIndex, stopIndex) {
+      if (textbox.createTextRange) {
+        //ie
+        const range = textbox.createTextRange();
+        range.collapse(true);
+        range.moveStart('character', startIndex); //起始光标
+        range.moveEnd('character', stopIndex - startIndex); //结束光标
+        range.select(); //不兼容苹果
+      } else {
+        //firefox/chrome
+        textbox.setSelectionRange(startIndex, stopIndex);
+        textbox.focus();
+      }
+    }
+  }
+  function ajax(options) {
+    var url = options.url;
+    var method = options.method;
+    var data = options.data;
+    var success = options.success;
+    var ajax = new XMLHttpRequest();
+    ajax.open(method, url);
+    if (method == 'post') {
+      ajax.setRequestHeader('Content-type', 'application/json');
+    }
+    ajax.send(JSON.stringify(data));
+    ajax.onreadystatechange = function () {
+      if (ajax.readyState == 4 && ajax.status == 200) {
+        success(JSON.parse(ajax.responseText));
+      }
+    };
+  }
+</script>
+
+</html>

@@ -56,7 +56,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.25"
+	cron_version="3.28"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -80,8 +80,9 @@ cat >>/etc/crontabs/root <<EOF
 5 7 * * * $dir_file/jd.sh run_07 >/tmp/jd_run_07.log 2>&1 #不需要在零点运行的脚本#100#
 35 10,15,20 * * * $dir_file/jd.sh run_10_15_20 >/tmp/jd_run_10_15_20.log 2>&1 #不是很重要的，错开运行#100#
 10 8,12,16 * * * $dir_file/jd.sh run_08_12_16 >/tmp/jd_run_08_12_16.log 2>&1 #宠汪汪兑换礼品#100#
-00 8,12,22 * * * $dir_file/jd.sh update_script that_day >/tmp/jd_update_script.log 2>&1 #22点更新JD_Script脚本#100#
-5 8,9,11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 && source /etc/profile #9,11,19,22点05分更新lxk0301脚本#100#
+00 12,22 * * * $dir_file/jd.sh update_script that_day >/tmp/jd_update_script.log 2>&1 #22点更新JD_Script脚本#100#
+00 10 15 * * $dir_file/jd.sh check_cookie_push >/tmp/check_cookie_push.log 2>&1 #每个月15号推送cookie预计到期时间#100#
+5 11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 && source /etc/profile #9,11,19,22点05分更新lxk0301脚本#100#
 0 11 */7 * *  $node $dir_file_js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 0 9 1 */1 * $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月1号推送当月京豆资产变化#100#
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
@@ -1026,6 +1027,8 @@ addcookie() {
 		echo  "------------------------------------------------------------------------------"
 	fi
 	check_cooike
+	sed -n  '1p' $openwrt_script_config/check_cookie.txt
+	grep "$pt_pin" $openwrt_script_config/check_cookie.txt
 	echo ""
 	read -p "是否需要继续获取cookie（1.需要  2.不需要 ）：" cookie_continue
 	if [ "$cookie_continue" == "1" ];then
@@ -1097,7 +1100,7 @@ delcookie() {
 check_cooike() {
 #将cookie获取时间导入文本
 	if [ ! -f $openwrt_script_config/check_cookie.txt  ];then
-		echo "Cookie             添加时间	   预计到期时间(不保证百分百准确)" > $openwrt_script_config/check_cookie.txt
+		echo "Cookie             添加时间      预计到期时间(不保证百分百准确)" > $openwrt_script_config/check_cookie.txt
 	fi
 	Current_date=$(date +%Y-%m-%d)
 	Current_date_m=$(echo $Current_date | awk -F "-" '{print $2}')
@@ -1105,13 +1108,30 @@ check_cooike() {
 		Expiration_date="01"
 	else
 		m=$(expr $Current_date_m + 1)
-		Expiration_date=$(date +%Y-$m-%d)
+		Expiration_date=$(date +%Y-%m-%d)
 	fi
 	sed -i "/$pt_pin/d" $openwrt_script_config/check_cookie.txt
 	echo "$pt_pin   $Current_date      $Expiration_date" >> $openwrt_script_config/check_cookie.txt
+}
 
-	sed -n  '1p' $openwrt_script_config/check_cookie.txt
-	grep "$pt_pin" $openwrt_script_config/check_cookie.txt
+check_cookie_push() {
+	cat $openwrt_script_config/check_cookie.txt
+	cookie_content=$(cat $openwrt_script_config/check_cookie.txt |sed "s/Cookie/$line$wrap$wrap_tab\# Cookie/" |sed "s/ /+/g"| sed "s/$/$wrap$wrap_tab/g" |  sed ':t;N;s/\n//;b t')
+
+	cookie_content1=$(echo "${cookie_content}${by}" | sed "s/$wrap_tab####/####/g" )
+
+	if [ ! $SCKEY ];then
+			echo "没找到Server酱key不做操作"
+	else
+		if [ ! $cookie_content ];then
+			echo -e "$red 推送失败$white，请检查 $openwrt_script_config/check_cookie.txt是否存在"
+		else
+			echo -e "$green开始推送Cookie状态$white"
+			curl -s "http://sc.ftqq.com/$SCKEY.send?text=JD++Cookie状态++`date +%Y-%m-%d`++`date +%H:%M`" -d "&desp=$cookie_content1" >/dev/null 2>&1
+			sleep 3
+			echo -e "$green 推送完成$white"
+		fi
+	fi
 }
 
 checklog() {
@@ -1176,13 +1196,17 @@ checklog() {
 
 #检测当天更新情况并推送
 that_day() {
-	cd $dir_file
-	git fetch
+	ping -c 2 github.com > /dev/null 2>&1
 	if [[ $? -eq 0 ]]; then
-		echo ""
+		cd $dir_file
+		git fetch
+		if [[ $? -eq 0 ]]; then
+			echo ""
+		else
+			echo "请检查你的网络，github更新失败，建议科学上网"
+		fi
 	else
-		echo -e "$red>> 取回分支没有成功，重新执行代码$white"
-		that_day
+		echo "请检查你的网络，github更新失败，建议科学上网"
 	fi
 	clear
 	git_branch=$(git branch -v | grep -o behind )
@@ -1203,7 +1227,7 @@ that_day() {
 	echo $git_log >/tmp/git_log_if.log
 	git_log_if=$(grep -Eo "Zhang|ITdesk" /tmp/git_log_if.log | sort -u | wc -l )
 	if [ $git_log_if -ge 1  ];then
-		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line\n#### $current_time+更新日志\n" >> $dir_file/git_log/${current_time}.log
+		echo -e "$line#### Model：$sys_model\n#### Wan+IP地址：+$wan_ip\n#### 系统版本:++$uname_version\n$line\n#### $current_time+`date +%H:%M`点+更新日志\n" >> $dir_file/git_log/${current_time}.log
 		echo "  时间       +作者          +操作" >> $dir_file/git_log/${current_time}.log
 		echo "$git_log" >> $dir_file/git_log/${current_time}.log
 		echo "#### 当前脚本是否最新：$Script_status" >>$dir_file/git_log/${current_time}.log
@@ -1545,6 +1569,8 @@ help() {
 	echo -e "$green  sh \$jd checklog $white  			#检测log日志是否有错误并推送"
 	echo ""
 	echo -e "$green  sh \$jd that_day $white  			#检测JD_script仓库今天更新了什么"
+	echo ""
+	echo -e "$green  sh \$jd check_cookie_push $white  		#推送cookie大概到期时间"
 	echo ""
 	echo -e "$green  sh \$jd script_name $white  			#显示所有JS脚本名称与作用"
 	echo ""
@@ -2340,7 +2366,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie)
+		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push)
 		$action1
 		;;
 		kill_ccr)
@@ -2359,7 +2385,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie)
+		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push)
 		$action2
 		;;
 		kill_ccr)
