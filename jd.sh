@@ -304,7 +304,7 @@ done
 
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	wget https://raw.githubusercontent.com/hyzaw/scripts/main/ddo_pk.js -O $dir_file_js/ddo_pk.js #新的pk脚本
+	#wget https://raw.githubusercontent.com/hyzaw/scripts/main/ddo_pk.js -O $dir_file_js/ddo_pk.js #新的pk脚本
 	wget https://raw.githubusercontent.com/star261/jd/main/scripts/star_dreamFactory_tuan.js -O $dir_file_js/star_dreamFactory_tuan.js #京喜开团
 
 #将所有文本汇总
@@ -316,7 +316,6 @@ done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
 	star_dreamFactory_tuan.js 	#京喜开团
-	ddo_pk.js 			#新的pk脚本
 	jd_all_bean_change.js 		#京东月资产变动通知
 	adolf_martin.js			#人头马x博朗
 	adolf_superbox.js		#超级盒子
@@ -346,6 +345,7 @@ EOF
 
 #删掉过期脚本
 cat >/tmp/del_js.txt <<EOF
+	ddo_pk.js 			#新的pk脚本
 	jddj_fruit_code.js		#作用未知
 	jd_daily_lottery.js		#每日抽奖
 	jd_djjl.js 		        #东东电竞经理
@@ -784,7 +784,7 @@ concurrent_js_clean(){
 kill_ccr() {
 	if [ "$ccr_if" == "yes" ];then
 		echo -e "$green>>终止并发程序启动。请稍等。。。。$white"
-		if [ `ps -ww | grep "js$" | awk '{print $1}' |wc -l` == "0" ];then
+		if [ `ps -ww | grep "js$" | grep -v "index.js" | awk '{print $1}' |wc -l` == "0" ];then
 			sleep 2
 			echo ""
 			echo -e "$green我曾经跨过山和大海，也穿过人山人海。。。$white"
@@ -795,7 +795,7 @@ kill_ccr() {
 			sleep 2
 			echo -e "$green后台都没有进程妹子，散了散了。。。$white"
 		else
-			for i in `ps -ww | grep "js$" | awk '{print $1}'`
+			for i in `ps -ww | grep "js$" | grep -v "index.js" | awk '{print $1}'`
 			do
 				kill -9 $i
 				echo "kill $i"
@@ -803,7 +803,7 @@ kill_ccr() {
 			concurrent_js_clean
 			clear
 			echo -e "$green再次检测一下并发程序是否还有存在$white"
-			if [ `ps -ww | grep "js$" | awk '{print $1}' |wc -l` == "0" ];then
+			if [ `ps -ww | grep "js$" | grep -v "index.js" | awk '{print $1}' |wc -l` == "0" ];then
 				echo -e "$yellow>>并发程序已经全部结束$white"
 			else
 				echo -e "$yellow！！！检测到并发程序还有存在，再继续杀，请稍等。。。$white"
@@ -818,7 +818,7 @@ kill_ccr() {
 
 if_ps() {
 	sleep 10
-	ps_if=$(ps -ww | grep "js$" | awk '{print $1}' |wc -l)
+	ps_if=$(ps -ww | grep "js$" | grep -v "index.js" | awk '{print $1}' |wc -l)
 	num1="10"
 	num2="20"
 	num3="30"
@@ -1108,7 +1108,8 @@ check_cooike() {
 		Expiration_date="01"
 	else
 		m=$(expr $Current_date_m + 1)
-		Expiration_date=$(date +%Y-%m-%d)
+		Expiration_date=$(date +%Y-$m-%d)
+		#$这个不要改动，没有写错
 	fi
 	sed -i "/$pt_pin/d" $openwrt_script_config/check_cookie.txt
 	echo "$pt_pin   $Current_date      $Expiration_date" >> $openwrt_script_config/check_cookie.txt
@@ -1600,6 +1601,8 @@ help() {
 	echo -e "$yellow 6.个性化配置：$white $jd_config_version"
 	echo ""
 	echo -e "$yellow 7.JD_Script报错你可以反馈到这里:$white$green https://github.com/firkerword/JD_Script/issues$white"
+	echo ""
+	echo -e "$index_num"
 	echo ""
 	echo ""
 	echo -e "本脚本基于$green x86主机测试$white，一切正常，其他的机器自行测试，满足依赖一般问题不大"
@@ -2165,9 +2168,11 @@ npm_install() {
 	if [ "$dir_file" == "$openwrt_script/JD_Script" ];then
 		cp $openwrt_script/JD_Script/git_clone/lxk0301_back/package.json $openwrt_script/package.json
 		cd $openwrt_script && npm install && npm install -g request
+		cd $dir_file/cookies_web && npm install
 	else
 		cp $dir_file/git_clone/lxk0301_back/package.json $dir_file/package.json
 		cd $dir_file && npm -g install && npm install -g request
+		cd $dir_file/cookies_web && npm install
 	fi
 }
 
@@ -2310,6 +2315,20 @@ system_variable() {
 		echo -e "$red检测到你的JD_Script的github地址错误，停止为你服务，省的老问我，为什么你更新了以后，没有我说的脚本,你用的都不是我的，怎么可能跟上我的更新！！！$white"
 		echo -e "$green唯一的github地址：https://github.com/firkerword/JD_Script.git$white"
 		exit 0
+	fi
+
+	#后台默认运行index.js
+	openwrt_ip=$(ubus call network.interface.lan status | grep address  | grep -oE '([0-9]{1,3}.){3}[0-9]{1,3}')
+	index_if=$(ps -ww | grep "index.js" | grep -v grep | wc -l)
+	if [ $index_if == "1" ];then
+		index_num="$yellow 8.网页扫码功能已启动，网页输入$green$openwrt_ip:6789$white$yellow,就可以访问了$white"
+	else
+		node $dir_file/cookies_web/index.js &
+		if [ $? -eq 0 ]; then
+			index_num="$yellow 8.网页扫码功能已启动，网页输入$green$openwrt_ip:6789$white$yellow,就可以访问了$white"
+		else
+			index_num="$yellow 8.网页扫码功能启动失败，请手动执行看下问题　node $dir_file/cookies_web/index.js$white"
+		fi
 	fi
 
 	script_black
