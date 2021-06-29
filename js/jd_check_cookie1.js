@@ -69,15 +69,15 @@ async function main() {
       response.body.retcode === '0' &&
       response.body.data.userInfo
     ) {
-      console.log(`京东账号${cookies.length}：${jdName} 有效`);
+      console.log(`京东账号：${jdName} 有效`);
       checkResult = checkResult + '\n' + `京东账号：${jdName} 有效`;
     } else {
-      console.log(`京东账号${cookies.length}：${jdName} 失效`);
+      console.log(`京东账号：${jdName} 失效`);
       checkResult = checkResult + '\n' + `京东账号：${jdName} 失效`;
     }
   }
   !(async () => {
-    await require(sendNotifyPath).sendNotify('JD Cookie检测提醒', checkResult);
+    //await require(sendNotifyPath).sendNotify('JD Cookie检测提醒', checkResult);
   })();
 }
 main();

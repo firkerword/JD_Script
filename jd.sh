@@ -39,6 +39,7 @@ run_sleep=$(sleep 1)
 version="2.2"
 cron_file="/etc/crontabs/root"
 node="/usr/bin/node"
+python3="/usr/bin/python3"
 sys_model=$(cat /tmp/sysinfo/model | awk -v i="+" '{print $1i$2i$3i$4}')
 uname_version=$(uname -a | awk -v i="+" '{print $1i $2i $3}')
 wan_ip=$(ubus call network.interface.wan status | grep \"address\" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
@@ -56,7 +57,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.28"
+	cron_version="3.29"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -88,6 +89,8 @@ cat >>/etc/crontabs/root <<EOF
 10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
 0 0 * * * $node $dir_file_js/star_dreamFactory_tuan.js	>/tmp/star_dreamFactory_tuan.log	#京喜开团#100#
+0 0 * * *　$python3　$dir_file/git_clone/curtinlv_script/getFollowGifts/jd_getFollowGift.py #关注有礼#100#
+0 8,15 * * *　$python3　$dir_file/git_clone/curtinlv_script/OpenCard/jd_OpenCard.py #开卡程序#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -111,6 +114,8 @@ ds_setup() {
 }
 
 update() {
+	cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | grep -v "//'" |grep -v "// '" > $openwrt_script_config/js_cookie.txt
+
 	if [ ! -d $dir_file/git_clone ];then
 		mkdir $dir_file/git_clone
 	fi
@@ -124,6 +129,18 @@ update() {
 		git fetch --all
 		git reset --hard origin/main
 	fi
+
+	if [ ! -d $dir_file/git_clone/curtinlv_script ];then
+		echo ""
+		git clone https://github.com/curtinlv/JD-Script.git $dir_file/git_clone/curtinlv_script
+		curtinlv_script_setup
+	else
+		cd $dir_file/git_clone/curtinlv_script
+		git fetch --all
+		git reset --hard origin/main
+		curtinlv_script_setup
+	fi
+
 	echo -e "$green update$start_script_time $white"
 	echo -e "$green开始下载JS脚本，请稍等$white"
 #cat script_name.txt | awk '{print length, $0}' | sort -rn | sed 's/^[0-9]\+ //'按照文件名长度降序：
@@ -263,7 +280,6 @@ done
 
 Wenmoux_url="https://raw.githubusercontent.com/Wenmoux/scripts/master/jd"
 cat >$dir_file/config/tmp/Wenmoux_url.txt <<EOF
-	jd_618redpacket.js		#翻翻乐
 
 EOF
 
@@ -277,12 +293,13 @@ done
 panghu999="https://raw.githubusercontent.com/panghu999/panghu/master"
 cat >$dir_file/config/tmp/panghu999.txt <<EOF
 	jd_hwsx.js		#京东众筹
+	jd_zxry.js		#柠檬特物ZX荣耀一次性手动运行
 EOF
 
-for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}'`
+for script_name in `cat $dir_file/config/tmp/panghu999.txt | awk '{print $1}'`
 do
-	url="$panghu999_url"
-	wget $panghu999_url/$script_name -O $dir_file_js/$script_name
+	url="$panghu999"
+	wget $panghu999/$script_name -O $dir_file_js/$script_name
 	update_if
 done
 
@@ -299,12 +316,8 @@ do
 	update_if
 done
 
-	#检测cookie是否存活（暂时不能看到还有几天到期）
-	cp  $dir_file/JSON/jd_check_cookie.js  $dir_file_js/jd_check_cookie.js
-
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	#wget https://raw.githubusercontent.com/hyzaw/scripts/main/ddo_pk.js -O $dir_file_js/ddo_pk.js #新的pk脚本
 	wget https://raw.githubusercontent.com/star261/jd/main/scripts/star_dreamFactory_tuan.js -O $dir_file_js/star_dreamFactory_tuan.js #京喜开团
 
 #将所有文本汇总
@@ -315,6 +328,9 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
+	jd_OpenCard.py 			#开卡程序#100#
+	jd_getFollowGift.py 		#关注有礼#100#
+	jd_jxzpk.js			#京享值pk
 	star_dreamFactory_tuan.js 	#京喜开团
 	jd_all_bean_change.js 		#京东月资产变动通知
 	adolf_martin.js			#人头马x博朗
@@ -345,17 +361,7 @@ EOF
 
 #删掉过期脚本
 cat >/tmp/del_js.txt <<EOF
-	ddo_pk.js 			#新的pk脚本
-	jddj_fruit_code.js		#作用未知
-	jd_daily_lottery.js		#每日抽奖
-	jd_djjl.js 		        #东东电竞经理
-	jd_wxj.js		        #全民挖现金
-	zooJx88hongbao.js		#京喜88红包
-	zooLimitbox.js			#限时盲盒
-	jd_superBrand.js 		#特物ZX联想
-	zooBaojiexiaoxiaole.js		#宝洁消消乐 一天一次
-	zooLongzhou.js			#浓情618 与“粽”不同 一天一次
-	zooLongzhou02.js		#粽情端午
+	jd_618redpacket.js		#翻翻乐
 EOF
 
 for script_name in `cat /tmp/del_js.txt | awk '{print $1}'`
@@ -373,7 +379,6 @@ done
 	fi
 	chmod 755 $dir_file_js/*
 	additional_settings
-	cat $openwrt_script_config/jdCookie.js | sed -e "s/pt_key=XXX;pt_pin=XXX//g" -e "s/pt_pin=(//g" -e "s/pt_key=xxx;pt_pin=xxx//g"| grep "pt_pin" | grep -v "//'" |grep -v "// '" > $openwrt_script_config/js_cookie.txt
 	concurrent_js_update
 	source /etc/profile
 	echo -e "$green update$stop_script_time $white"
@@ -431,6 +436,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	adolf_superbox.js		#超级盒子
 	jd_dreamFactory.js 		#京喜工厂
+	jd_jxzpk.js			#pk
 EOF
 	echo -e "$green run_0$start_script_time $white"
 
@@ -439,7 +445,6 @@ EOF
 		$node $dir_file_js/$i
 		$run_sleep
 	done
-
 	run_08_12_16
 	run_06_18
 	run_10_15_20
@@ -496,7 +501,6 @@ EOF
 
 run_01() {
 cat >/tmp/jd_tmp/run_01 <<EOF
-	jd_618redpacket.js			#翻翻乐
 	jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
 	jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
 EOF
@@ -637,6 +641,37 @@ EOF
 	echo -e "$green run_10_15_20$stop_script_time $white"
 }
 
+curtinlv_script_setup() {
+	#开卡
+	curtinlv_cookie=$(cat $openwrt_script_config/jdCookie.js | grep "pt_key" | grep -v "pt_key=xxx" | awk -F "'," '{print $1}' | sed "s/'//g" | sed "s/$/\&/" | sed 's/[[:space:]]//g' | sed ':t;N;s/\n//;b t' | sed "s/&$//" )
+	sed -i "/JD_COOKIE = ''/d" $dir_file/git_clone/curtinlv_script/OpenCard/OpenCardConfig.ini
+	sed -i "3a \JD_COOKIE = '$curtinlv_cookie'" $dir_file/git_clone/curtinlv_script/OpenCard/OpenCardConfig.ini
+	sed -i "s/sleepNum = 0/sleepNum = 0.5/g" $dir_file/git_clone/curtinlv_script/OpenCard/OpenCardConfig.ini
+	if [ ! -L "$dir_file_js/jd_OpenCard.py" ]; then
+		rm -rf $dir_file_js/jd_OpenCard.py
+		ln -s $dir_file/git_clone/curtinlv_script/OpenCard/jd_OpenCard.py $dir_file_js/jd_OpenCard.py
+		ln -s $dir_file/git_clone/curtinlv_script/OpenCard/OpenCardConfig.ini $dir_file_js/OpenCardConfig.ini
+	fi
+
+	#关注有礼
+	cat $openwrt_script_config/js_cookie.txt > $dir_file/git_clone/curtinlv_script/getFollowGifts/JDCookies.txt
+	if [ ! -L "$dir_file_js/jd_getFollowGift.py" ]; then
+		rm -rf $dir_file_js/jd_getFollowGift.py
+		ln -s $dir_file/git_clone/curtinlv_script/getFollowGifts/jd_getFollowGift.py  $dir_file_js/jd_getFollowGift.py
+	fi
+
+	if [ ! -L "$dir_file_js/JDCookies.txt" ]; then
+		rm -rf $dir_file_js/JDCookies.txt
+		ln -s $dir_file/git_clone/curtinlv_script/getFollowGifts/JDCookies.txt  $dir_file_js/JDCookies.txt
+	fi
+
+	#瓜分10亿京豆
+	if [ ! -L "$dir_file_js/jd_zjd.py" ]; then
+		rm -rf $dir_file_js/jd_zjd.py 
+		ln -s $dir_file/git_clone/curtinlv_script/jd_zjd.py   $dir_file_js/jd_zjd.py 
+	fi
+}
+
 script_name() {
 	clear
 	echo -e "$green 显示所有JS脚本名称与作用$white"
@@ -672,6 +707,7 @@ jd_sharecode_if() {
 }
 jd_sharecode_generate() {
 read -p "请输入你的名字和进群时间（例子：zhangsan_20210314，注意zhangsan是个例子，请写自己的名字～～～）：" you_name
+echo -e "$green请稍等，号越多生成会比较慢。。。$white"
 $node $dir_file_js/jd_get_share_code.js >/tmp/get_share_code
 
 cat > /tmp/code_name <<EOF
@@ -703,9 +739,8 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 }
 
 concurrent_js_run_07() {
-	#$node $openwrt_script/JD_Script/js/jd_small_home.js #东东小窝
+	$python3 $openwrt_script/JD_Script/js/jd_zjd.py #瓜分10亿京豆
 	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
-	$node $openwrt_script/JD_Script/js/jd_check_cookie.js #检测cookie是否存活
 	checklog #检测log日志是否有错误并推送
 }
 
@@ -745,7 +780,7 @@ concurrent_js_update() {
 			sed -i '/pt_pin/d' $ccr_js_file/js_$js_amount/jdCookie.js >/dev/null 2>&1
 			sed -i "5a $js_cookie_obtain" $ccr_js_file/js_$js_amount/jdCookie.js
 
-			for i in `ls $dir_file_js | grep -v 'jdCookie.js\|sendNotify.js\|jddj_cookie.js'`
+			for i in `ls $dir_file_js | grep -v 'jdCookie.js\|sendNotify.js\|jddj_cookie.js\|log'`
 			do
 				cp $dir_file_js/$i $ccr_js_file/js_$js_amount/$i
 			done
@@ -1116,8 +1151,15 @@ check_cooike() {
 }
 
 check_cookie_push() {
+	echo "----------------------------------------------"
 	cat $openwrt_script_config/check_cookie.txt
-	cookie_content=$(cat $openwrt_script_config/check_cookie.txt |sed "s/Cookie/$line$wrap$wrap_tab\# Cookie/" |sed "s/ /+/g"| sed "s/$/$wrap$wrap_tab/g" |  sed ':t;N;s/\n//;b t')
+	echo "----------------------------------------------"
+	echo "$line#### cookie数量:`cat $openwrt_script_config/js_cookie.txt |wc -l`$line" >/tmp/jd_check_cookie.txt
+	cat $openwrt_script_config/check_cookie.txt |sed "s/Cookie/$wrap$wrap_tab\# Cookie/"  >>/tmp/jd_check_cookie.txt
+	echo "$line#### cookie是否有效$line" >>/tmp/jd_check_cookie.txt
+	$node $dir_file_js/jd_check_cookie1.js | grep "京东账号" >>/tmp/jd_check_cookie.txt
+
+	cookie_content=$(cat /tmp/jd_check_cookie.txt |sed "s/ /+/g"| sed "s/$/$wrap$wrap_tab/g" |  sed ':t;N;s/\n//;b t' )
 
 	cookie_content1=$(echo "${cookie_content}${by}" | sed "s/$wrap_tab####/####/g" )
 
@@ -1571,7 +1613,7 @@ help() {
 	echo ""
 	echo -e "$green  sh \$jd that_day $white  			#检测JD_script仓库今天更新了什么"
 	echo ""
-	echo -e "$green  sh \$jd check_cookie_push $white  		#推送cookie大概到期时间"
+	echo -e "$green  sh \$jd check_cookie_push $white  		#推送cookie大概到期时间和是否有效"
 	echo ""
 	echo -e "$green  sh \$jd script_name $white  			#显示所有JS脚本名称与作用"
 	echo ""
@@ -1698,7 +1740,10 @@ additional_settings() {
 	#一路向北
 	superbei666_20201124_fr="599451cd6e5843a4b8045ba8963171c5@8cce0e4cb54b433c9eebd251753088fd"
 	
-	random_fruit="$adong_20201108_fr@$whiteboy__20190711_fr@$wuliao_20210214_fr@$tanherongyi_20210121_fr@$wjq_20190516_fr@$NanshanFox_20210303_fr@$Lili_20210121_fr@$jisi_20201211_fr@$Luckies_20210205_fr@$yushengyigelang_2021017_fr@$youxizhenhaowan_20201229_fr@$zuoyou_random_fr@$superbei666_20201124_fr"
+	#dream
+	dreamer_20200524_fr="c79929afc3554d6fa91291914be2e59c"
+	
+	random_fruit="$dreamer_20200524_fr@$adong_20201108_fr@$whiteboy__20190711_fr@$wuliao_20210214_fr@$tanherongyi_20210121_fr@$wjq_20190516_fr@$NanshanFox_20210303_fr@$Lili_20210121_fr@$jisi_20201211_fr@$Luckies_20210205_fr@$yushengyigelang_2021017_fr@$youxizhenhaowan_20201229_fr@$zuoyou_random_fr@$superbei666_20201124_fr"
 	random="$random_fruit"
 	random_array
 	new_fruit_set="'$new_fruit1@$zuoyou_20190516_fr@$Javon_20201224_fr@$jidiyangguang_20190516_fr@$ashou_20210516_fr@$xiaobandeng_fr@$chiyu_fr@$random_set',"
@@ -1765,7 +1810,10 @@ additional_settings() {
 	#一路向北
 	superbei666_20201124_pet="MTAxODcxOTI2NTAwMDAwMDAyNjc1MzUzMw==@MTE1NDQ5OTIwMDAwMDAwNDE4MDc3MzE="
 
-	random_pet="$adong_20201108_pet@$whiteboy_20190711_pet@$wuliao_20210214_pet@$tanherongyi_20210121_pet@$wjq_20190516_pet@$NanshanFox_20210303_pet@$Lili_20210121_pet@$jisi_20201211_pet@$Luckies_20210205_pet@$yushengyigelang_2021017_pet@$youxizhenhaowan_20201229_pet@$zuoyou_random_pet@$superbei666_20201124_pet"
+	#dream
+	dreamer_20200524_pet="MTAxODc2NTEzMjAwMDAwMDAyNjM5Njg3Mw=="
+	
+	random_pet="$dreamer_20200524_pet@$adong_20201108_pet@$whiteboy_20190711_pet@$wuliao_20210214_pet@$tanherongyi_20210121_pet@$wjq_20190516_pet@$NanshanFox_20210303_pet@$Lili_20210121_pet@$jisi_20201211_pet@$Luckies_20210205_pet@$yushengyigelang_2021017_pet@$youxizhenhaowan_20201229_pet@$zuoyou_random_pet@$superbei666_20201124_pet"
 	random="$random_pet"
 	random_array
 	new_pet_set="'$new_pet1@$zuoyou_20190516_pet@$Javon_20201224_pet@$jidiyangguang_20190516_pet@$ashou_20210516_pet@$Jhone_Potte_20200824_pet@$chiyu_pet@$random_set',"
@@ -1847,7 +1895,10 @@ additional_settings() {
 	#一路向北
 	superbei666_20201124_pb="gcdr655xfdjq764agedg7f27knlvxw5krpeddfq@gcdr655xfdjq764agedg7f27ko37tplq475lryq"
 
-	random_plantBean="$adong_20201108_pb@$whiteboy_20190711_pd@$wuliao_20210214_pb@$tanherongyi_20210121_pb@$wjq_20190516_pb@$NanshanFox_20210303_pb@$Lili_20210121_pb@$jisi_20201211_pb@$Luckies_20210205_pb@$yushengyigelang_2021017_pb@$youxizhenhaowan_20201229_pb@$zuoyou_random_pb@$superbei666_20201124_pb"
+	#dream
+	dreamer_20200524_pb="6zn5u4prlglstwnl6wsmt2tyce3h7wlwy7o5jii"
+	
+	random_plantBean="$dreamer_20200524_pb@$adong_20201108_pb@$whiteboy_20190711_pd@$wuliao_20210214_pb@$tanherongyi_20210121_pb@$wjq_20190516_pb@$NanshanFox_20210303_pb@$Lili_20210121_pb@$jisi_20201211_pb@$Luckies_20210205_pb@$yushengyigelang_2021017_pb@$youxizhenhaowan_20201229_pb@$zuoyou_random_pb@$superbei666_20201124_pb"
 	random="$random_plantBean"
 	random_array
 	new_plantBean_set="'$new_plantBean1@$zuoyou_20190516_pb@$Javon_20201224_pb@$jidiyangguang_20190516_pb@$ashou_20210516_pb@$xiaobandeng_pb@$chiyu_pb@$random_set',"
@@ -1876,6 +1927,7 @@ additional_settings() {
 	Jhone_Potte_20200824_df="Q4Rij5_6085kuANMaAvBMA==@gTLa05neWl8UFTGKpFLeog=="
 	ashou_20210516_df="1rQLjMF_eWMiQ-RAWARW_w==@6h514zWW6JNRE_Kp-L4cjA==@2G-4uh8CqPAv48cQT7BbXQ==@cxWqqvvoGwDhojw6JDJzaA==@pvMjBwEJuWqNrupO6Pjn6w==@nNK5doo5rxvF1HjnP0Kwjw==@BoMD6oFV2DhQRRo_w-h83g==@PqXKBSk3K1QcHUS0QRsCBg=="
 	jidiyangguang_20190516_df="w8B9d4EVh3e3eskOT5PR1A==@FyYWfETygv_4XjGtnl2YSg=="
+	test_df="1s8ZZnxD6DVDyjdEUu-zXA==@oK5uN03nIPjodWxbtdxPPA==@7VHDTh1iDT3_YEtiZ1iRPA==@KPmB_yK4CEvytAyuVu1zpA==@2oz-ZbJy_cNdcrgSgRJ4Nw==@RNpsm77e351Rmo_R3KwC-g==@SY7JjLpgyYem-rsx1ezHyQ==@ziq14nX6tEIoto9iGTimVQ=="
 
 	#比白人
 	wjq_20190516_df="43I0xnmtfBvt5qiFm6ftxA==@aGGJ27ylclTmr20WGw-ePQ==@Suo8Gk5ZAB8bY5RgiNgdlw==@NoLbYPmp_p3aXBkDRwdE2Q=="
@@ -1908,8 +1960,11 @@ additional_settings() {
 
 	#一路向北
 	superbei666_20201124_df="5_h5YOeKKB-7m3ejIBrkyg==@B0236CW-TXeW_L-ESFnmpA=="
-
-	random_dreamFactory="$adong_20201108_df@$whiteboy__20190711_df@$wuliao_20210214_df@$tanherongyi_20210121_df@$wjq_20190516_df@$NanshanFox_20210303_df@$Lili_20210121_df@$jisi_20201211_df@$yushengyigelang_2021017_df@$youxizhenhaowan_20201229_df@$zuoyou_random_df@$superbei666_20201124_df"
+	
+	#dream
+	dreamer_20200524_df="mWZ0hopgeC48h6TjnQIPRQ=="
+	
+	random_dreamFactory="$test_df@$dreamer_20200524_df@$adong_20201108_df@$whiteboy__20190711_df@$wuliao_20210214_df@$tanherongyi_20210121_df@$wjq_20190516_df@$NanshanFox_20210303_df@$Lili_20210121_df@$jisi_20201211_df@$yushengyigelang_2021017_df@$youxizhenhaowan_20201229_df@$zuoyou_random_df@$superbei666_20201124_df"
 	random="$random_dreamFactory"
 	random_array
 	new_dreamFactory_set="'$new_dreamFactory@$zuoyou_20190516_df@$Javon_20201224_df@$jidiyangguang_20190516_df@$ashou_20210516_df@$Jhone_Potte_20200824_df@$chiyu_df@$random_set',"
@@ -1993,8 +2048,8 @@ additional_settings() {
 	Jhone_Potte_20200824_jdcash="eU9Yaum1N_4j82-EzCUSgw@eU9Yar-7Nf518GyBniIWhw"
 	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
 	ashou_20210516_jdcash="IhMxaeq0bvsj92i6iw@9qagtEUMPKtx@eU9YaenmYKhwpDyHySFChQ@eU9YariwMvp19G7WmXYU1w@YER3NLXuM6l4pg@eU9YaujjYv8moGrcnSFFgg@eU9Yar_kYvwjpD2DmXER3w@ZEFvJu27bvk"
-
-	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$ashou_20210516_jdcash',"
+	dreamer_20200524_jdcash="IhM0aOyybv4l8266iw"
+	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$ashou_20210516_jdcash@$dreamer_20200524_jdcash',"
 
 	sed -i '/JD_CASH_SHARECODES/d' /etc/profile >/dev/null 2>&1
 
@@ -2018,8 +2073,10 @@ additional_settings() {
 	jidiyangguang_20190516_jdsgmh="T0225KkcRBpK8lbeIxr8wfRcdwCjVQmoaT5kRrbA@T0225KkcR0wdpFCGcRvwxv4JcgCjVQmoaT5kRrbA"
 	chiyu_jdsgmh="T0117aUqCVsc91UCjVQmoaT5kRrbA"
 	
-ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQmoaT5kRrbA@T0225KkcRRtN8wCBdUimlqVbJwCjVQmoaT5kRrbA@T0225KkcRkoboVKEJRr3xvINdQCjVQmoaT5kRrbA@T014_aIzGEdFoAGJdwCjVQmoaT5kRrbA@T0225KkcRhpI8VfXcR79wqVcIACjVQmoaT5kRrbA@T0225KkcRk1P8VTSdUmixvUIfQCjVQmoaT5kRrbA@T011-acrCh8Q_VECjVQmoaT5kRrbA"
-	new_jdsgmh_set="$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$Javon_20201224_jdsgmh@$xo_20201229_jdsgmh@$Jhone_Potte_20200824_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$ashou_20210516_jdsgmh',"
+	ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQmoaT5kRrbA@T0225KkcRRtN8wCBdUimlqVbJwCjVQmoaT5kRrbA@T0225KkcRkoboVKEJRr3xvINdQCjVQmoaT5kRrbA@T014_aIzGEdFoAGJdwCjVQmoaT5kRrbA@T0225KkcRhpI8VfXcR79wqVcIACjVQmoaT5kRrbA@T0225KkcRk1P8VTSdUmixvUIfQCjVQmoaT5kRrbA@T011-acrCh8Q_VECjVQmoaT5kRrbA"
+	dreamer_20200524_jdsgmh="T018v_VwRB4Z_VbUIhqb1ACjVQmoaT5kRrbA"
+	
+	new_jdsgmh_set="$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$Javon_20201224_jdsgmh@$xo_20201229_jdsgmh@$Jhone_Potte_20200824_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$ashou_20210516_jdsgmh@$dreamer_20200524_jdsgmh',"
 
 	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
 	sgmhcode_rows=$(grep -n "inviteCodes = \[" $dir_file_js/jd_sgmh.js | awk -F ":" '{print $1}')
@@ -2050,7 +2107,6 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 	zuoyou_20190516_cfd="60FD822F9BD707BEBB07C0C2CE49E736@51ED9C1321B448D31B81854411F7103CA6CEAB3D1933B613B927879748FB2A6A@B07EC6F47A9BBA48D730300D742021D4F3D49D6F9B14CC4066504ECEF75AC443@2704A782C66BB40C7BAD9B84BBCAC87571310967BE165544D8C825F27C4A2BA3@1189F93EB50AB5B2904D8CD0AE2916B918964C3A62119078BA5B87EFF5EE85B6@C9C09990F22D010DFA8D3A6306094A84E6186DDE933E31084E83E74316AB392C@E10DAE323F14681808B5092A8B4348455844603DB22E7196A8FC21F02AE9CFD4@3441F20A2E22D50ECDD55E0146E583D5525BCDACDE13890B256A23464DBE9130@A19A94ECB6D78013A0121B2FF0D85F1599221344EF91C01B3DFCDD74DDAC91B8@FF19693FD6BF2ADA3F66E5D54B453C39E8405743A0C75A1AE77A06C81CDC6569@10DA5CF560CF85462D85D2DCFB3735A5EB4B6B84009CBB14B8AE6167041CE320@0FD477A54177EE4FA6B4128DC6C4FE44C652D8BE9960E64C66FDB39610F9C276@11F743A9D0C5D5ADFBBAA2DF0413382BF2C629A55BC12E2D327C002F89550672@02891BCA03C90A1927B0A6B7AEAF2C605397F092FCA02CC72DA0D6D8098F305B@9D3BBBB7C428ACF58C7380ACA3EBE079324A5740162BAFE366B52DEB7EC6AC1E@4258CC830AA9723630A626F5CD2CE5E3F917AD10EACDA591FA6B0103A8CC0484@1AFADBAA8414D7E8816A619843DDBF70145C58B75168476B2B231B80E9B19996@A41DD6AEE4D07CAF50ACE1A671B1FB2B689FEC63576BCE1D70787FD16AF64DFD@02B4E4243C610EB7D57F3FAC83CEE41C5B03129928F78CB99D123ECC6D084816"
 	jidiyangguang_20190516_cfd="7EFA02FBA93D2428836E5046ACC9F0BA82A37AE1B41810B042C93A6ED443E619@0CEBB972109F10663A8D5E663E617B5E9DB6862E81793277DFAC711F9FA7665D"
 	Jhone_Potte_20200824_cfd="489E0A39F03311FB59083A7006A35FCB45F5EB3DA92FA7B4446168FAF5EA64DE@45E0C9745C26474C1DBB0E2F5D4E3D661F744C456D2D2516FDADD0689C455C1D"
-	#Javon_20201224_cfd="859D1EACFE0FB0DE30DF970EC5DF56A6B38965B50EA9FDE89D8B7F521247778B@3108F77AE5B711A96FBEE78E952FDE2013C40500819B80F54E075DF67A5588AD"
 	Javon_20201224_cfd="859D1EACFE0FB0DE30DF970EC5DF56A650E311E92455661FE0B84EA019A2D5EE@3108F77AE5B711A96FBEE78E952FDE20AE31FDFBA26D408160EC807BEA50C8A1"
 	
 
@@ -2084,9 +2140,6 @@ ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQ
 		sed -i "$healthcode_rows a \ '$new_health_set', " $dir_file_js/jd_health.js
 		js_amount=$(($js_amount - 1))
 	done
-
-	#关闭翻翻乐的推送太多了
-	sed -i "s/await notify.sendNotify/\/\/await notify.sendNotify/g"  $dir_file_js/jd_618redpacket.js
 	
 	#脚本黑名单
 	script_black
