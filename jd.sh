@@ -288,21 +288,24 @@ do
 	#update_if
 done
 
-Wenmoux_url="https://raw.githubusercontent.com/Wenmoux/scripts/master/jd"
+Wenmoux_url="https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd"
 cat >$dir_file/config/tmp/Wenmoux_url.txt <<EOF
-
+	jd_ddnc_farmpark.js	#东东乐园
+	jd_europeancup.js	#狂欢欧洲杯
+	jd_qqxing.js		#星系牧场,需要手动去开卡然后进去玩一下
 EOF
 
 for script_name in `cat $dir_file/config/tmp/Wenmoux_url.txt | awk '{print $1}'`
 do
 	url="$Wenmoux_url"
-	#wget $Wenmoux_url/$script_name -O $dir_file_js/$script_name
-	#update_if
+	wget $Wenmoux_url/$script_name -O $dir_file_js/$script_name
+	update_if
 done
 
 panghu999="https://raw.githubusercontent.com/panghu999/panghu/master"
 cat >$dir_file/config/tmp/panghu999.txt <<EOF
 	jd_hwsx.js		#京东众筹
+	jd_lsj.js		#柠檬京东零食街
 EOF
 
 for script_name in `cat $dir_file/config/tmp/panghu999.txt | awk '{print $1}'`
@@ -447,6 +450,9 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	adolf_superbox.js		#超级盒子
 	jd_dreamFactory.js 		#京喜工厂
 	jd_jxzpk.js			#pk
+	jd_lsj.js		#柠檬京东零食街
+	jd_ddnc_farmpark.js	#东东乐园
+	jd_europeancup.js	#狂欢欧洲杯
 EOF
 	echo -e "$green run_0$start_script_time $white"
 
@@ -531,6 +537,7 @@ run_02() {
 	echo -e "$green run_02$start_script_time $white"
 	$node $dir_file_js/jd_moneyTree.js #摇钱树
 	$node $dir_file_js/ddo_pk.js #新的pk脚本
+	$node $dir_file_js/jd_qqxing.js		#星系牧场,需要手动去开卡然后进去玩一下
 	echo -e "$green run_02$stop_script_time $white"
 }
 
@@ -762,6 +769,7 @@ concurrent_js() {
 }
 
 concurrent_js_update() {
+	echo -e "$green>> 创建并发文件夹$white"
 	if [ "$ccr_if" == "yes" ];then
 
 		for i in `ls $ccr_js_file | grep -E "^js"`
@@ -806,6 +814,7 @@ concurrent_js_update() {
 			done
 		fi
 	fi
+	echo -e "$green>> 创建并发文件夹完成$white"
 }
 
 concurrent_js_clean(){
@@ -1010,9 +1019,13 @@ addcookie() {
 	if [ `cat /tmp/getcookie.txt | wc -l` == "1"  ];then
 		clear
 		you_cookie=$(cat /tmp/getcookie.txt)
-		rm -rf /tmp/getcookie.txt
-		echo -e "\n$green已经获取到cookie，稍等。。。$white"
-		sleep 1
+		if [[ -z $you_cookie ]]; then
+			echo -e "$red cookie为空值，不做其他操作。。。$white"
+			exit 0
+		else
+			echo -e "\n$green已经获取到cookie，稍等。。。$white"
+			sleep 1
+		fi
 	else
 		clear
 		echo "---------------------------------------------------------------------------"
@@ -1067,6 +1080,7 @@ addcookie() {
 	check_cooike
 	sed -n  '1p' $openwrt_script_config/check_cookie.txt
 	grep "$pt_pin" $openwrt_script_config/check_cookie.txt
+	rm -rf /tmp/getcookie.txt
 }
 
 addcookie_wait(){
