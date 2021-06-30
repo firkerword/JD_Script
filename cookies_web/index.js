@@ -84,11 +84,12 @@ const getCookie = (response) => {
     pt_pin,
   });
     const update_ok = `更新完成`;
-    var exec = require('child_process').exec;
-    var cmd = `echo "${userCookie}" > /tmp/getcookie.txt && sh $jd addcookie && sh $jd update`;
-    exec(cmd, function(error, stdout, stderr) {
- 	// 
+
+    var child = require('child_process');
+    child.exec(`echo "${userCookie}" > /tmp/getcookie.txt && sh $jd addcookie && sh $jd concurrent_js_update`, function(err, sto) {
+	 console.log(sto);//sto才是真正的输出，要不要打印到控制台，由你自己啊
     });
+
     return update_ok
 };
 

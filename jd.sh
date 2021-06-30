@@ -57,7 +57,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.29"
+	cron_version="3.30"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -82,7 +82,7 @@ cat >>/etc/crontabs/root <<EOF
 35 10,15,20 * * * $dir_file/jd.sh run_10_15_20 >/tmp/jd_run_10_15_20.log 2>&1 #不是很重要的，错开运行#100#
 10 8,12,16 * * * $dir_file/jd.sh run_08_12_16 >/tmp/jd_run_08_12_16.log 2>&1 #宠汪汪兑换礼品#100#
 00 12,22 * * * $dir_file/jd.sh update_script that_day >/tmp/jd_update_script.log 2>&1 #22点更新JD_Script脚本#100#
-00 10 15 * * $dir_file/jd.sh check_cookie_push >/tmp/check_cookie_push.log 2>&1 #每个月15号推送cookie预计到期时间#100#
+00 10 */7 * * $dir_file/jd.sh check_cookie_push >/tmp/check_cookie_push.log 2>&1 #每个7天推送cookie相关信息#100#
 5 11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 && source /etc/profile #9,11,19,22点05分更新lxk0301脚本#100#
 0 11 */7 * *  $node $dir_file_js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 0 9 1 */1 * $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月1号推送当月京豆资产变化#100#
@@ -139,6 +139,15 @@ update() {
 		git fetch --all
 		git reset --hard origin/main
 		curtinlv_script_setup
+	fi
+
+	if [ ! -d $dir_file/git_clone/zooPanda ];then
+		echo ""
+		git clone https://github.com/zooPanda/zoo.git $dir_file/git_clone/zooPanda
+	else
+		cd $dir_file/git_clone/zooPanda
+		git fetch --all
+		git reset --hard origin/main
 	fi
 
 	echo -e "$green update$start_script_time $white"
@@ -207,6 +216,33 @@ do
 	echo -e "$yellow copy $green$script_name$white"
 	cp  $dir_file/git_clone/lxk0301_back/$script_name  $dir_file_js/$script_name
 done
+
+#ZooPanda脚本
+cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
+	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
+	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
+	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard04.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard05.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard06.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard07.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard11.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooOpencard12.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行)
+	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
+EOF
+
+
+for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
+do
+	echo -e "$yellow copy $green$script_name$white"
+	cp  $dir_file/git_clone/zooPanda/$script_name  $dir_file_js/$script_name
+done
+
+
 sleep 5
 
 
@@ -239,32 +275,6 @@ do
 	update_if
 done
 
-zooPanda_url="https://raw.githubusercontent.com/zooPanda/zoo/dev"
-cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
-	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
-	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
-	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard04.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard05.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard06.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard07.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard11.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard12.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
-EOF
-
-
-for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
-do
-	url="$zooPanda_url"
-	wget $zooPanda_url/$script_name -O $dir_file_js/$script_name
-	update_if
-done
-
 zero205_url="https://gitee.com/zero205/JD_tencent_scf/raw/main"
 cat >$dir_file/config/tmp/zero205_url.txt <<EOF
 	
@@ -293,7 +303,6 @@ done
 panghu999="https://raw.githubusercontent.com/panghu999/panghu/master"
 cat >$dir_file/config/tmp/panghu999.txt <<EOF
 	jd_hwsx.js		#京东众筹
-	jd_zxry.js		#柠檬特物ZX荣耀一次性手动运行
 EOF
 
 for script_name in `cat $dir_file/config/tmp/panghu999.txt | awk '{print $1}'`
@@ -328,8 +337,8 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
-	jd_OpenCard.py 			#开卡程序#100#
-	jd_getFollowGift.py 		#关注有礼#100#
+	jd_OpenCard.py 			#开卡程序
+	jd_getFollowGift.py 		#关注有礼
 	jd_jxzpk.js			#京享值pk
 	star_dreamFactory_tuan.js 	#京喜开团
 	jd_all_bean_change.js 		#京东月资产变动通知
@@ -361,6 +370,7 @@ EOF
 
 #删掉过期脚本
 cat >/tmp/del_js.txt <<EOF
+	jd_zxry.js			#柠檬特物ZX荣耀一次性手动运行
 	jd_618redpacket.js		#翻翻乐
 EOF
 
@@ -664,12 +674,6 @@ curtinlv_script_setup() {
 		rm -rf $dir_file_js/JDCookies.txt
 		ln -s $dir_file/git_clone/curtinlv_script/getFollowGifts/JDCookies.txt  $dir_file_js/JDCookies.txt
 	fi
-
-	#瓜分10亿京豆
-	if [ ! -L "$dir_file_js/jd_zjd.py" ]; then
-		rm -rf $dir_file_js/jd_zjd.py 
-		ln -s $dir_file/git_clone/curtinlv_script/jd_zjd.py   $dir_file_js/jd_zjd.py 
-	fi
 }
 
 script_name() {
@@ -739,7 +743,6 @@ echo -e "$green============整理完成，可以提交了（没加群的忽略�
 }
 
 concurrent_js_run_07() {
-	$python3 $openwrt_script/JD_Script/js/jd_zjd.py #瓜分10亿京豆
 	$node $openwrt_script/JD_Script/js/jd_bean_change.js #京豆变更
 	checklog #检测log日志是否有错误并推送
 }
@@ -999,7 +1002,7 @@ getcookie() {
 	#彻底完成感谢echowxsy大力支持
 	echo ""
 	echo -e "$yellow 温馨提示，如果你已经有cookie，不想扫码直接添加，可以用$green sh \$jd addcookie$white 增加cookie $green sh \$jd delcookie$white 删除cookie"
-	$node $dir_file_js/getJDCookie.js && addcookie
+	$node $dir_file_js/getJDCookie.js && addcookie && addcookie_wait
 }
 
 addcookie() {
@@ -1064,6 +1067,9 @@ addcookie() {
 	check_cooike
 	sed -n  '1p' $openwrt_script_config/check_cookie.txt
 	grep "$pt_pin" $openwrt_script_config/check_cookie.txt
+}
+
+addcookie_wait(){
 	echo ""
 	read -p "是否需要继续获取cookie（1.需要  2.不需要 ）：" cookie_continue
 	if [ "$cookie_continue" == "1" ];then
@@ -1074,10 +1080,6 @@ addcookie() {
 	elif [ "$cookie_continue" == "2" ];then
 		echo "退出脚本。。。"
 		exit 0
-	elif [ "$cookie_continue" == "3" ];then
-		sleep 1
-		clear
-		addcookie
 	else
 		echo "请不要乱输，退出脚本。。。"
 		exit 0
@@ -2218,15 +2220,18 @@ time() {
 
 npm_install() {
 	echo -e "$green 开始安装npm模块$white"
-	if [ "$dir_file" == "$openwrt_script/JD_Script" ];then
-		cp $openwrt_script/JD_Script/git_clone/lxk0301_back/package.json $openwrt_script/package.json
-		cd $openwrt_script && npm install && npm install -g request
-		cd $dir_file/cookies_web && npm install
-	else
-		cp $dir_file/git_clone/lxk0301_back/package.json $dir_file/package.json
-		cd $dir_file && npm -g install && npm install -g request
-		cd $dir_file/cookies_web && npm install
-	fi
+	cp $dir_file/git_clone/lxk0301_back/package.json $dir_file/package.json
+	cd $dir_file && npm -g install && npm install -g request
+	cd $dir_file/cookies_web && npm install
+
+	python_install
+}
+
+python_install() {
+	echo -e "$green 开始安装python模块$white"
+	python3 $dir_file/get-pip.py
+	pip3 install requests rsa
+	echo -e "$green命令执行完成，如果一直报错我建议你重置系统或者重新编译重新刷$white"
 }
 
 system_variable() {
@@ -2438,7 +2443,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push)
+		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push|python_install|concurrent_js_update)
 		$action1
 		;;
 		kill_ccr)
@@ -2457,7 +2462,7 @@ else
 		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push)
+		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push|python_install|concurrent_js_update)
 		$action2
 		;;
 		kill_ccr)
