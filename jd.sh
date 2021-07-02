@@ -173,7 +173,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_rankingList.js		#京东排行榜签到得京豆
 	jd_cash.js			#签到领现金，每日2毛～5毛长期
 	jd_jdzz.js			#京东赚赚长期活动
-	jd_lotteryMachine.js 		#京东抽奖机
 	jd_syj.js			#赚京豆
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
@@ -197,14 +196,11 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_jump.js			#跳跳乐瓜分京豆
 	jd_gold_creator.js		#金榜创造营
 	jd_mohe.js			#5G超级盲盒
-	jd_star_shop.js			#明星小店
-	jd_mcxhd.js			#新潮品牌狂欢
 	jd_jxmc.js			#惊喜牧场(先将新手任务做完，再执行本脚本，不然会出现未知错误)
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
 EOF
-cp  $dir_file/git_clone/lxk0301_back/activity/jd_unbind.js	$dir_file_js/jd_unbind.js #注销京东会员卡
 
 for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
 do
@@ -224,8 +220,8 @@ EOF
 for script_name in `cat $dir_file/config/tmp/longzhuzhu_qx.txt | awk '{print $1}'`
 do
 	url="$longzhuzhu_url"
-	wget $nianyuguai_url/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $nianyuguai_url/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 passerby_url="https://raw.githubusercontent.com/passerby-b/JDDJ/main"
@@ -253,8 +249,8 @@ EOF
 for script_name in `cat $dir_file/config/tmp/panghu999.txt | awk '{print $1}'`
 do
 	url="$panghu999"
-	wget $panghu999/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $panghu999/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 panghu999_url="https://raw.githubusercontent.com/panghu999/jd_scripts/master"
@@ -266,8 +262,8 @@ EOF
 for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}'`
 do
 	url="$panghu999_url"
-	wget $panghu999_url/$script_name -O $dir_file_js/$script_name
-	update_if
+	#wget $panghu999_url/$script_name -O $dir_file_js/$script_name
+	#update_if
 done
 
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
@@ -281,10 +277,10 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
-	star_dreamFactory_tuan.js #京喜开团　star261脚本
-	jd_ddnc_farmpark.js	#东东乐园 Wenmoux脚本
-	jd_europeancup.js	#狂欢欧洲杯 Wenmoux脚本
-	jd_qqxing.js		#星系牧场,需要手动去开卡然后进去玩一下 Wenmoux脚本
+	star_dreamFactory_tuan.js 	#京喜开团　star261脚本
+	jd_ddnc_farmpark.js		#东东乐园 Wenmoux脚本
+	jd_europeancup.js		#狂欢欧洲杯 Wenmoux脚本
+	jd_qqxing.js			#星系牧场,需要手动去开卡然后进去玩一下 Wenmoux脚本
 	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行) ZooPanda脚本
 	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)ZooPanda脚本
 	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
@@ -304,24 +300,12 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	jd_getFollowGift.py 		#关注有礼
 	jd_jxzpk.js			#京享值pk
 	jd_all_bean_change.js 		#京东月资产变动通知
-	adolf_martin.js			#人头马x博朗
 	adolf_superbox.js		#超级盒子
-	adolf_newInteraction.js		#618大势新品赏
-	adolf_urge.js			#坐等更新
-	z_fanslove.js			#粉丝互动
-	z_shake.js  			#超级摇一摇
-	z_marketLottery.js 		#京东超市-大转盘
-	z_mother_jump.js		#新一期母婴跳一跳开始咯
-	z_shop_captain.js		#超级无线组队分奖品
 	jd_check_cookie.js		#检测cookie是否存活（暂时不能看到还有几天到期）
 	getJDCookie.js			#扫二维码获取cookie有效时间可以90天
 	jx_products_detail.js		#京喜工厂商品列表详情
 	jd_try.js 			#京东试用（默认不启用）
-	jd_gyec.js			#工业爱消除
-	jd_xxl.js			#东东爱消除
-	jd_xxl_gh.js			#个护爱消除，完成所有任务+每日挑战
 	jd_opencard.js			#开卡活动，一次性活动，运行完脚本获得53京豆，进入入口还可以开卡领30都
-	jd_unbind.js 			#注销京东会员卡
 	jdDreamFactoryShareCodes.js	#京喜工厂ShareCodes
 	jdFruitShareCodes.js		#东东农场ShareCodes
 	jdPetShareCodes.js		#东东萌宠ShareCodes
@@ -393,23 +377,21 @@ update_script() {
 run_0() {
 cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_mohe.js			#5G超级盲盒
-	jd_car.js #京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
-	jx_sign.js #京喜app签到长期
-	jd_lotteryMachine.js #京东抽奖机
-	jd_cash.js #签到领现金，每日2毛～5毛长期
-	jd_sgmh.js #闪购盲盒长期活动
-	jd_jdzz.js #京东赚赚长期活动
-	jd_syj.js #十元街签到,一天一次即可，一周30豆子
-	jd_market_lottery.js #幸运大转盘
-	jd_jin_tie.js #领金贴
+	jd_car.js 			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
+	jd_cash.js 			#签到领现金，每日2毛～5毛长期
+	jd_sgmh.js 			#闪购盲盒长期活动
+	jd_jdzz.js			#京东赚赚长期活动
+	jd_syj.js 			#十元街签到,一天一次即可，一周30豆子
+	jd_market_lottery.js 		#幸运大转盘
+	jd_jin_tie.js 			#领金贴
 	jddj_bean.js			#京东到家鲜豆 一天一次
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
-	adolf_superbox.js		#超级盒子
 	jd_dreamFactory.js 		#京喜工厂
+	adolf_superbox.js		#超级盒子
 	jd_jxzpk.js			#pk
-	jd_lsj.js		#柠檬京东零食街
-	jd_ddnc_farmpark.js	#东东乐园
-	jd_europeancup.js	#狂欢欧洲杯
+	jd_lsj.js			#柠檬京东零食街
+	jd_ddnc_farmpark.js		#东东乐园
+	jd_europeancup.js		#狂欢欧洲杯
 EOF
 	echo -e "$green run_0$start_script_time $white"
 
@@ -435,7 +417,7 @@ run_020() {
 
 run_030() {
 	echo -e "$green run_030$start_script_time $white"
-	$node $dir_file_js/jd_jdfactory.js #东东工厂，不是京喜工厂
+	$node $dir_file_js/jd_jdfactory.js 		#东东工厂，不是京喜工厂
 	$node $dir_file_js/jd_jxmc.js			#惊喜牧场
 	$node $dir_file_js/jd_health_collect.js		#健康社区-收能量
 	$node $dir_file_js/jddj_fruit_collectWater.js 	#京东到家果园水车收水滴 作者5分钟收一次
@@ -474,8 +456,8 @@ EOF
 
 run_01() {
 cat >/tmp/jd_tmp/run_01 <<EOF
-	jd_plantBean.js #种豆得豆，没时间要求，一个小时收一次瓶子
-	jd_joy_feedPets.js  #宠汪汪喂食一个小时喂一次
+	jd_plantBean.js 		#种豆得豆，没时间要求，一个小时收一次瓶子
+	jd_joy_feedPets.js  		#宠汪汪喂食一个小时喂一次
 EOF
 	#long_super_redrain.js		#整点红包雨
 	echo -e "$green run_01$start_script_time $white"
@@ -492,8 +474,8 @@ EOF
 
 run_02() {
 	echo -e "$green run_02$start_script_time $white"
-	$node $dir_file_js/jd_moneyTree.js #摇钱树
-	$node $dir_file_js/ddo_pk.js #新的pk脚本
+	$node $dir_file_js/jd_moneyTree.js 	#摇钱树
+	$node $dir_file_js/jd_jxzpk.js		#pk
 	$node $dir_file_js/jd_qqxing.js		#星系牧场,需要手动去开卡然后进去玩一下
 	echo -e "$green run_02$stop_script_time $white"
 }
@@ -501,11 +483,11 @@ run_02() {
 run_03() {
 #这里不会并发
 cat >/tmp/jd_tmp/run_03 <<EOF
-	jd_dianjing.js		#电竞经理
-	jd_joy.js #jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
-	jd_necklace.js  #点点券 大佬0,20领一次先扔这里后面再改
-	jd_speed.js #天天加速 3小时运行一次，打卡时间间隔是6小时
-	jd_health.js		#健康社区
+	jd_dianjing.js			#电竞经理
+	jd_joy.js 			#jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
+	jd_necklace.js  		#点点券 大佬0,20领一次先扔这里后面再改
+	jd_speed.js 			#天天加速 3小时运行一次，打卡时间间隔是6小时
+	jd_health.js			#健康社区
 	jddj_fruit.js			#京东到家果园 0,8,11,17
 	jd_mohe.js			#5G超级盲盒
 EOF
@@ -523,13 +505,12 @@ EOF
 
 run_06_18() {
 cat >/tmp/jd_tmp/run_06_18 <<EOF
-	jd_hwsx.js		#京东众筹
-	jd_mcxhd.js  		#新潮品牌狂欢
-	jd_shop.js #进店领豆，早点领，一天也可以执行两次以上
-	jd_fruit.js #东东水果，6-9点 11-14点 17-21点可以领水滴
-	jd_pet.js #东东萌宠，跟手机商城同一时间
-	jd_joy_steal.js #可偷好友积分，零点开始，六点再偷一波狗粮
-	jd_superMarket.js #东东超市,6点 18点多加两场用于收金币
+	jd_hwsx.js			#京东众筹
+	jd_shop.js 			#进店领豆，早点领，一天也可以执行两次以上
+	jd_fruit.js 			#东东水果，6-9点 11-14点 17-21点可以领水滴
+	jd_pet.js 			#东东萌宠，跟手机商城同一时间
+	jd_joy_steal.js 		#可偷好友积分，零点开始，六点再偷一波狗粮
+	jd_superMarket.js 		#东东超市,6点 18点多加两场用于收金币
 	jd_gold_creator.js		#金榜创造营
 EOF
 	echo -e "$green run_06_18$start_script_time $white"
@@ -545,22 +526,23 @@ EOF
 
 run_07() {
 cat >/tmp/jd_tmp/run_07 <<EOF
-	jx_sign.js #京喜app签到长期
-	jd_rankingList.js #京东排行榜签到领京豆
-	jd_kd.js #京东快递签到 一天运行一次即可
-	jd_bean_home.js #领京豆额外奖励
-	jd_club_lottery.js #摇京豆，没时间要求
-	jd_jdzz.js #京东赚赚长期活动
-	jd_jxnc.js #京喜农场
-	jd_ms.js #京东秒秒币 一个号大概60
-	jd_sgmh.js #闪购盲盒长期活动
-	jd_speed_sign.js #京东极速版签到+赚现金任务
+	adolf_superbox.js		#超级盒子
+	jd_jxzpk.js			#pk
+	jd_lsj.js			#柠檬京东零食街
+	jd_ddnc_farmpark.js		#东东乐园
+	jd_europeancup.js		#狂欢欧洲杯
+	jd_rankingList.js 		#京东排行榜签到领京豆
+	jd_kd.js 			#京东快递签到 一天运行一次即可
+	jd_bean_home.js 		#领京豆额外奖励
+	jd_club_lottery.js 		#摇京豆，没时间要求
+	jd_jdzz.js 			#京东赚赚长期活动
+	jd_jxnc.js 			#京喜农场
+	jd_ms.js 			#京东秒秒币 一个号大概60
+	jd_sgmh.js 			#闪购盲盒长期活动
+	jd_speed_sign.js 		#京东极速版签到+赚现金任务
 	jd_speed_redpocke.js		#极速版红包
-	jd_cash.js #签到领现金，每日2毛～5毛长期
+	jd_cash.js 			#签到领现金，每日2毛～5毛长期
 	jd_jin_tie.js 			#领金贴
-	adolf_martin.js			#人头马x博朗
-	adolf_urge.js			#坐等更新
-	zy_618jc.js 			#618竞猜
 	jddj_bean.js			#京东到家鲜豆 一天一次
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	jd_unsubscribe.js 		#取关店铺，没时间要求
@@ -572,20 +554,13 @@ EOF
 		$node $dir_file_js/$i
 		$run_sleep
 	done
-	#z_fanslove.js #粉丝互动
-	#z_shake.js  #超级摇一摇
-	#z_marketLottery.js 		#京东超市-大转盘
-	#z_mother_jump.js		#新一期母婴跳一跳开始咯
-	#$node $dir_file_js/jd_unbind.js #注销京东会员卡
 	echo -e "$green run_07$stop_script_time $white"
 }
 
 run_08_12_16() {
 cat >/tmp/jd_tmp/run_08_12_16 <<EOF
-	jd_fndd.js			#福牛多多
-	jd_star_shop.js			#明星小店
-	jd_joy_reward.js #宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
-	jd_syj.js #赚京豆
+	jd_joy_reward.js 		#宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
+	jd_syj.js 			#赚京豆
 	jd_jump.js			#跳跳乐瓜分京豆
 EOF
 	echo -e "$green run_08_12_16$start_script_time $white"
@@ -601,9 +576,8 @@ EOF
 
 run_10_15_20() {
 cat >/tmp/jd_tmp/run_10_15_20 <<EOF
-	jd_superMarket.js #东东超市,0 10 15 20四场补货加劵
-	jd_cfd.js #京东财富岛 有一日三餐任务
-	adolf_newInteraction.js		#618大势新品赏
+	jd_superMarket.js 		#东东超市,0 10 15 20四场补货加劵
+	jd_cfd.js 			#京东财富岛 有一日三餐任务
 EOF
 
 	echo -e "$green run_10_15_20$start_script_time $white"
@@ -1719,7 +1693,7 @@ additional_settings() {
 	superbei666_20201124_fr="599451cd6e5843a4b8045ba8963171c5@8cce0e4cb54b433c9eebd251753088fd"
 	
 	#dream
-	dreamer_20200524_fr="c79929afc3554d6fa91291914be2e59c"
+	dreamer_20200524_fr="c79929afc3554d6fa91291914be2e59c@ab1b407c39174ddeaddb6395a141746a@acd4a50eb3a942c4995420f0354d5ad2@b57495d0746b49ea94c9a08f689829c3@3cc3388a207f4fd28e7cc9f3746e167a"
 	
 	random_fruit="$dreamer_20200524_fr@$adong_20201108_fr@$whiteboy__20190711_fr@$wuliao_20210214_fr@$tanherongyi_20210121_fr@$wjq_20190516_fr@$NanshanFox_20210303_fr@$Lili_20210121_fr@$jisi_20201211_fr@$Luckies_20210205_fr@$yushengyigelang_2021017_fr@$youxizhenhaowan_20201229_fr@$zuoyou_random_fr@$superbei666_20201124_fr"
 	random="$random_fruit"
@@ -1789,7 +1763,8 @@ additional_settings() {
 	superbei666_20201124_pet="MTAxODcxOTI2NTAwMDAwMDAyNjc1MzUzMw==@MTE1NDQ5OTIwMDAwMDAwNDE4MDc3MzE="
 
 	#dream
-	dreamer_20200524_pet="MTAxODc2NTEzMjAwMDAwMDAyNjM5Njg3Mw=="
+	dreamer_20200524_pet="MTAxODc2NTEzMjAwMDAwMDAyNjM5Njg3Mw==@MTE1NDUwMTI0MDAwMDAwMDQ0MTg0MzAz@MTE1NDUyMjEwMDAwMDAwNDM4NTU3OTE=@MTE1NDQ5MzYwMDAwMDAwNDM4NTU4MTc="
+
 	
 	random_pet="$dreamer_20200524_pet@$adong_20201108_pet@$whiteboy_20190711_pet@$wuliao_20210214_pet@$tanherongyi_20210121_pet@$wjq_20190516_pet@$NanshanFox_20210303_pet@$Lili_20210121_pet@$jisi_20201211_pet@$Luckies_20210205_pet@$yushengyigelang_2021017_pet@$youxizhenhaowan_20201229_pet@$zuoyou_random_pet@$superbei666_20201124_pet"
 	random="$random_pet"
@@ -1874,7 +1849,7 @@ additional_settings() {
 	superbei666_20201124_pb="gcdr655xfdjq764agedg7f27knlvxw5krpeddfq@gcdr655xfdjq764agedg7f27ko37tplq475lryq"
 
 	#dream
-	dreamer_20200524_pb="6zn5u4prlglstwnl6wsmt2tyce3h7wlwy7o5jii"
+	dreamer_20200524_pb="6zn5u4prlglstwnl6wsmt2tyce3h7wlwy7o5jii@mlrdw3aw26j3x6dft2224ol7uxl4pt3brorrnmq@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi3cryuz47q6fnckyklpz2b3hypuy@e7lhibzb3zek2fezcmre67qfy5wbopeqkbld5oq@452ugavbuefo27jz6vmbvonb5q5ac3f4ijdgqji"
 	
 	random_plantBean="$dreamer_20200524_pb@$adong_20201108_pb@$whiteboy_20190711_pd@$wuliao_20210214_pb@$tanherongyi_20210121_pb@$wjq_20190516_pb@$NanshanFox_20210303_pb@$Lili_20210121_pb@$jisi_20201211_pb@$Luckies_20210205_pb@$yushengyigelang_2021017_pb@$youxizhenhaowan_20201229_pb@$zuoyou_random_pb@$superbei666_20201124_pb"
 	random="$random_plantBean"
@@ -1900,7 +1875,7 @@ additional_settings() {
 	zuoyou_20190516_df="oWcboKZa9XxTSWd28tCEPA==@sboe5PFeXgL2EWpxucrKYw==@rm-j1efPyFU50GBjacgEsw=="
 	zuoyou_random_df="BprHGWI9w04zUnZPbIzKgw==@DriN9xUWha-XqE0cN3u7Fg==@krMPYOnVbZAAkZJiSz5cUw==@9aUfCEmRqRW9fK7-P-eGnQ==@4yiyXPAaB_ReMPQy-st4AQ==@9whmFTgMFw7ZfXcQdEJ3UA==@zVn3SNiwrEhxQEcbMZA27w==@D_ttRc6eCyMxdHjMRGLobA==@BeecV8Oe9FL6I13lDGgOgA==@cA7LmxYoXxJNLnS7j25dxA==@aAwyOK0kb9OSm2oq2JVYMQ==@MmOfTa6Z79J9XRZA4roX1A==@rlJZquhGZTvDFksbDMhs2Q=="
 	Javon_20201224_df="P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8=@LTyKtCPGU6v0uv-n1GSwfQ=="
-	Javon_20201224_random_df="@y7KhVRopnOwB1qFo2vIefg==@WnaDbsWYwImvOD1CpkeVWA==@Y4r32JTAKNBpMoCXvBf7oA==@JuMHWNtZt4Ny_0ltvG6Ipg==@KDhTwFSjylKffc2V7dp5HQ==@zS1ivJY43UFvaqOUiFijZQ==@-q3gc8s9Vr5x17EPRwyB8w==@BsCgeeTl_H2x5JQKGte6ow==@DQYKPYi5mD-dwO86UokUjg==@WHYhQ1mFlqoFow2iuq06wg==@1Oob_S4cfK2z2gApmzRBgw==@Z2t6d_X8aMYIp7IwTnuNyA==@UdTgtWxsEwypwH1v6GETfA=="
+	Javon_20201224_random_df="P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8=@Y4r32JTAKNBpMoCXvBf7oA==@KDhTwFSjylKffc2V7dp5HQ==@UdTgtWxsEwypwH1v6GETfA==@LTyKtCPGU6v0uv-n1GSwfQ==@JuMHWNtZt4Ny_0ltvG6Ipg==@WnaDbsWYwImvOD1CpkeVWA==@Z2t6d_X8aMYIp7IwTnuNyA==@1Oob_S4cfK2z2gApmzRBgw==@BsCgeeTl_H2x5JQKGte6ow==@y7KhVRopnOwB1qFo2vIefg==@zS1ivJY43UFvaqOUiFijZQ==@USNexnDxgdW3h1M84IA8hQ==@QcxX97p7yNgImbEEZVEcyw==@N3AXGi-1Gt51bwdrCo76-Q=="
 	chiyu_df="us6se4fFC6cSjHDSS_ScMw=="
 	Jhone_Potte_20200824_df="Q4Rij5_6085kuANMaAvBMA==@gTLa05neWl8UFTGKpFLeog=="
 	ashou_20210516_df="1rQLjMF_eWMiQ-RAWARW_w==@6h514zWW6JNRE_Kp-L4cjA==@2G-4uh8CqPAv48cQT7BbXQ==@cxWqqvvoGwDhojw6JDJzaA==@pvMjBwEJuWqNrupO6Pjn6w==@nNK5doo5rxvF1HjnP0Kwjw==@BoMD6oFV2DhQRRo_w-h83g==@PqXKBSk3K1QcHUS0QRsCBg=="
@@ -1979,21 +1954,6 @@ additional_settings() {
 		js_amount=$(($js_amount - 1))
 	done
 
-	#明星小店
-	new_jdss="Ap5_KQYFx2OrXRqHM1TPL3_afnNsJWQ5igvlJ-mfKnI@CXafdU6tKsdt11G6DMpXnA@OyvDBjSDMv-C64g3En4moXyHqz9xFr_ukU3EkW3c_SM@VYlzzuDz-Y8seOROZFxje-gusZ0qMCAXkWRSg4DzCCQ@O-d-kb7wpZ1S27CVsn1DzTmTEwjTAPSH2XscO-ZOeAU"
-
-	new_jdss_set="'$new_jdss',"
-
-	jdss_rows=$(grep -n "\$.authorCodeList \= \[" $dir_file_js/jd_star_shop.js | awk -F ":" '{print $1}')
-	
-	sed -i "s/{'id':'YCDXNN','name':'蔡徐坤'},//g" $dir_file_js/jd_star_shop.js
-	sed -i "s/蔡徐坤//g" $dir_file_js/jd_star_shop.js
-	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
-	while [[ ${js_amount} -gt 0 ]]; do
-		sed -i "$jdss_rows a \ $new_jdss_set " $dir_file_js/jd_star_shop.js
-		js_amount=$(($js_amount - 1))
-	done
-
 	#京东试用
 	if [ "$jd_try" == "yes" ];then
 		jd_try_if=$(grep "jd_try.js" $cron_file | wc -l)
@@ -2014,11 +1974,6 @@ additional_settings() {
 		echo "京东试用计划任务不导入"
 	fi
 
-	#取消会员卡脚本修复路径
-	sed -i "s/..\/jdCookie.js/.\/jdCookie.js/g" $dir_file_js/jd_unbind.js
-	sed -i "s/..\/sendNotify/.\/sendNotify/g" $dir_file_js/jd_unbind.js
-	sed -i "s/..\/USER_AGENTS/.\/USER_AGENTS/g" $dir_file_js/jd_unbind.js
-
 	#签到领现金
 	new_jdcash="95OquUc_sFugJO5_E_2dAgm-@eU9YELv7P4thhw6utCVw@eU9YaOjnbvx1-Djdz3UUgw@eU9Yau_gMP4nombWynsU1w@eU9Ya--wYP8g8zyBnyJF0w@eU9YFZ_THaRkrhGyrDlm@eU9Ya-iyZ68kpWrRmXBFgw@eU9YabrkZ_h1-GrcmiJB0A@eU9YM7bzIptVshyjrwlteU9YCLTrH5VesRWnvw5t@P2nGgK6JgLtCqJBeQJ0f27XXLQwYAFHrKmA2siZTuj8=@JuMHWNtZt4Ny_0ltvG6Ipg==@IRM2beu1b-En9mzUwnU@eU9YaOSwMP8m-D_XzHpF0w@eU9Yau-yMv8ho2fcnXAQ1Q@eU9YCovbMahykhWdvS9R@JxwyaOWzbvk7-W3WzHcV1mw"
 	zuoyou_20190516_jdcash="f1kwaQ@a1hzJOmy@eU9Ya7-wM_Qg-T_SyXIb0g@flpkLei3@f0JgObLlIalJrA@eU9YG4X6HpZMixS8lBBu@eU9YH6THD4pXkiqTuCFi@eU9YD7rQHo1btTm9shR7@eU9YE67FOpl9hTG0mjNp@cUJpO6X3Yf4m@e1JzPbLlJ6V5rzk@eU9Ya7m3NaglpW3QziUW0A@eU9YFbnVJ6VArC-2lQtI@ZE9ILbHhMJR9oyq_ozs@eU9Yaengbv9wozzUmiIU3g@eU9YaO22Z_og-DqGz3AX1Q@eU9YBJrlD5xcixKfrS1U@eU9YG7TVDLlhgAyBsRpw@eU9YOKTPGLRegB2mmCpg"
@@ -2026,7 +1981,7 @@ additional_settings() {
 	Jhone_Potte_20200824_jdcash="eU9Yaum1N_4j82-EzCUSgw@eU9Yar-7Nf518GyBniIWhw"
 	jidiyangguang_20190516_jdcash="eU9YaOjhYf4v8m7dnnBF1Q@eU9Ya762N_h3oG_RmXoQ0A"
 	ashou_20210516_jdcash="IhMxaeq0bvsj92i6iw@9qagtEUMPKtx@eU9YaenmYKhwpDyHySFChQ@eU9YariwMvp19G7WmXYU1w@YER3NLXuM6l4pg@eU9YaujjYv8moGrcnSFFgg@eU9Yar_kYvwjpD2DmXER3w@ZEFvJu27bvk"
-	dreamer_20200524_jdcash="IhM0aOyybv4l8266iw"
+	dreamer_20200524_jdcash="IhM0aOyybv4l8266iw@eU9Yaem2bqhz-WzSyHdG1Q@eU9Ya77hNakv8GaGyXUa0Q@eU9YaLnmYv909mvWnyUX0g@aUNoKb_qI6Im9m_S"
 	new_jdcash_set="'$new_jdcash@$zuoyou_20190516_jdcash@$jidiyangguang_20190516_jdcash@$chiyu_jdcash@$Jhone_Potte_20200824_jdcash@$ashou_20210516_jdcash@$dreamer_20200524_jdcash',"
 
 	sed -i '/JD_CASH_SHARECODES/d' /etc/profile >/dev/null 2>&1
@@ -2052,7 +2007,7 @@ additional_settings() {
 	chiyu_jdsgmh="T0117aUqCVsc91UCjVQmoaT5kRrbA"
 	
 	ashou_20210516_jdsgmh="T018v_V1RRgf_VPSJhyb1ACjVQmoaT5kRrbA@T012a0DkmLenrwOACjVQmoaT5kRrbA@T0225KkcRRtN8wCBdUimlqVbJwCjVQmoaT5kRrbA@T0225KkcRkoboVKEJRr3xvINdQCjVQmoaT5kRrbA@T014_aIzGEdFoAGJdwCjVQmoaT5kRrbA@T0225KkcRhpI8VfXcR79wqVcIACjVQmoaT5kRrbA@T0225KkcRk1P8VTSdUmixvUIfQCjVQmoaT5kRrbA@T011-acrCh8Q_VECjVQmoaT5kRrbA"
-	dreamer_20200524_jdsgmh="T018v_VwRB4Z_VbUIhqb1ACjVQmoaT5kRrbA"
+	dreamer_20200524_jdsgmh="T018v_VwRB4Z_VbUIhqb1ACjVQmoaT5kRrbA@T0225KkcRRsd_QCCKBjzl_NfdwCjVQmoaT5kRrbA@T0225KkcR0xKpgHeIRKnlvEDcwCjVQmoaT5kRrbA@T0225KkcREtN8VeFJx_3wKEOcACjVQmoaT5kRrbA@T0169KUsBU1BsArXJxvzCjVQmoaT5kRrbA"
 	
 	new_jdsgmh_set="$new_jdsgmh@$zuoyou_20190516_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$Javon_20201224_jdsgmh@$xo_20201229_jdsgmh@$Jhone_Potte_20200824_jdsgmh@$jidiyangguang_20190516_jdsgmh@$chiyu_jdsgmh@$ashou_20210516_jdsgmh@$dreamer_20200524_jdsgmh',"
 
