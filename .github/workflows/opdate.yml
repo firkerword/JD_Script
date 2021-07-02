@@ -8,9 +8,9 @@ on:
 
  #     - main
 
-   schedule:
+ #  schedule:
 
-     - cron: 50 9-21/3 * * * 
+ #    - cron: 50 9-21/3 * * * 
 
  #   release:
 
