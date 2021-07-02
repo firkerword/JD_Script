@@ -86,7 +86,7 @@ const getCookie = (response) => {
     const update_ok = `更新完成`;
 
     var child = require('child_process');
-    child.exec(`echo "${userCookie}" > /tmp/getcookie.txt && sh $jd addcookie && sh $jd concurrent_js_update`, function(err, sto) {
+    child.exec(`echo "${userCookie}" > /tmp/getcookie.txt && sh /usr/share/jd_openwrt_script/JD_Script/jd.sh addcookie && sh /usr/share/jd_openwrt_script/JD_Script/jd.sh concurrent_js_update`, function(err, sto) {
 	 console.log(sto);//sto才是真正的输出，要不要打印到控制台，由你自己啊
     });
 

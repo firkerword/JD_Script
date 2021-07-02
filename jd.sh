@@ -57,7 +57,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.31"
+	cron_version="3.32"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -86,11 +86,16 @@ cat >>/etc/crontabs/root <<EOF
 5 11,19,22 * * * $dir_file/jd.sh update >/tmp/jd_update.log 2>&1 && source /etc/profile #9,11,19,22点05分更新lxk0301脚本#100#
 0 11 */7 * *  $node $dir_file_js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 0 9 28 */1 * $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月28号推送当月京豆资产变化#100#
-10-20/5 12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
+10-20/5 10,12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
 0 0 * * * $node $dir_file_js/star_dreamFactory_tuan.js	>/tmp/star_dreamFactory_tuan.log	#京喜开团#100#
-0 0 * * *　$python3　$dir_file/git_clone/curtinlv_script/getFollowGifts/jd_getFollowGift.py #关注有礼#100#
-0 8,15 * * *　$python3　$dir_file/git_clone/curtinlv_script/OpenCard/jd_OpenCard.py #开卡程序#100#
+0 0 * * *　$python3　$dir_file/git_clone/curtinlv_script/getFollowGifts/jd_getFollowGift.py >/tmp/jd_getFollowGift.log #关注有礼#100#
+0 8,15 * * *　$python3　$dir_file/git_clone/curtinlv_script/OpenCard/jd_OpenCard.py  >/tmp/jd_OpenCard.log #开卡程序#100#
+59 23 * * * sleep 57 && $node $dir_file_js/jd_blueCoin.js  >/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求
+59 23 * * * sleep 58 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求
+59 23 * * * sleep 59 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求
+59 23 * * * sleep 60 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求
+59 23 * * * sleep 61 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -141,15 +146,6 @@ update() {
 		curtinlv_script_setup
 	fi
 
-	if [ ! -d $dir_file/git_clone/zooPanda ];then
-		echo ""
-		git clone https://github.com/zooPanda/zoo.git $dir_file/git_clone/zooPanda
-	else
-		cd $dir_file/git_clone/zooPanda
-		git fetch --all
-		git reset --hard origin/dev
-	fi
-
 	echo -e "$green update$start_script_time $white"
 	echo -e "$green开始下载JS脚本，请稍等$white"
 #cat script_name.txt | awk '{print length, $0}' | sort -rn | sed 's/^[0-9]\+ //'按照文件名长度降序：
@@ -170,7 +166,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_joy_feedPets.js 		#宠汪汪单独喂食
 	jd_joy.js			#宠汪汪
 	jd_joy_reward.js 		#宠汪汪兑换奖品
-	jd_car_exchange.js		#京东汽车兑换，500赛点兑换500京豆
 	jd_car.js			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	jd_club_lottery.js		#摇京豆
 	jd_shop.js			#进店领豆
@@ -217,33 +212,6 @@ do
 	cp  $dir_file/git_clone/lxk0301_back/$script_name  $dir_file_js/$script_name
 done
 
-#ZooPanda脚本
-cat >$dir_file/config/tmp/zooPanda_url.txt <<EOF
-	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
-	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
-	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard04.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard05.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard06.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard07.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard11.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard12.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
-	zooCaptain01.js			#安佳牛奶组队瓜分京豆(不能并发，否则无法组队)
-EOF
-
-
-for script_name in `cat $dir_file/config/tmp/zooPanda_url.txt | awk '{print $1}'`
-do
-	echo -e "$yellow copy $green$script_name$white"
-	cp  $dir_file/git_clone/zooPanda/$script_name  $dir_file_js/$script_name
-done
-
-
 sleep 5
 
 
@@ -276,33 +244,6 @@ do
 	update_if
 done
 
-zero205_url="https://gitee.com/zero205/JD_tencent_scf/raw/main"
-cat >$dir_file/config/tmp/zero205_url.txt <<EOF
-	
-
-EOF
-
-for script_name in `cat $dir_file/config/tmp/zero205_url.txt | awk '{print $1}'`
-do
-	url="$zero205_url"
-	#wget $zero205_url/$script_name -O $dir_file_js/$script_name
-	#update_if
-done
-
-Wenmoux_url="https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd"
-cat >$dir_file/config/tmp/Wenmoux_url.txt <<EOF
-	jd_ddnc_farmpark.js	#东东乐园
-	jd_europeancup.js	#狂欢欧洲杯
-	jd_qqxing.js		#星系牧场,需要手动去开卡然后进去玩一下
-EOF
-
-for script_name in `cat $dir_file/config/tmp/Wenmoux_url.txt | awk '{print $1}'`
-do
-	url="$Wenmoux_url"
-	wget $Wenmoux_url/$script_name -O $dir_file_js/$script_name
-	update_if
-done
-
 panghu999="https://raw.githubusercontent.com/panghu999/panghu/master"
 cat >$dir_file/config/tmp/panghu999.txt <<EOF
 	jd_hwsx.js		#京东众筹
@@ -331,7 +272,6 @@ done
 
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	wget https://raw.githubusercontent.com/star261/jd/main/scripts/star_dreamFactory_tuan.js -O $dir_file_js/star_dreamFactory_tuan.js #京喜开团
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
@@ -341,10 +281,28 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
+	star_dreamFactory_tuan.js #京喜开团　star261脚本
+	jd_ddnc_farmpark.js	#东东乐园 Wenmoux脚本
+	jd_europeancup.js	#狂欢欧洲杯 Wenmoux脚本
+	jd_qqxing.js		#星系牧场,需要手动去开卡然后进去玩一下 Wenmoux脚本
+	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)ZooPanda脚本
+	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard04.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard05.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard06.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard07.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard11.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooOpencard12.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
+	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
+	zooCaptain01.js			#安佳牛奶组队瓜分京豆(不能并发，否则无法组队)
 	jd_OpenCard.py 			#开卡程序
 	jd_getFollowGift.py 		#关注有礼
 	jd_jxzpk.js			#京享值pk
-	star_dreamFactory_tuan.js 	#京喜开团
 	jd_all_bean_change.js 		#京东月资产变动通知
 	adolf_martin.js			#人头马x博朗
 	adolf_superbox.js		#超级盒子
@@ -435,8 +393,6 @@ update_script() {
 run_0() {
 cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_mohe.js			#5G超级盲盒
-	jd_blueCoin.js  	#东东超市兑换，有次数限制，没时间要求
-	jd_car_exchange.js   #京东汽车兑换，500赛点兑换500京豆
 	jd_car.js #京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	jx_sign.js #京喜app签到长期
 	jd_lotteryMachine.js #京东抽奖机
@@ -569,7 +525,6 @@ run_06_18() {
 cat >/tmp/jd_tmp/run_06_18 <<EOF
 	jd_hwsx.js		#京东众筹
 	jd_mcxhd.js  		#新潮品牌狂欢
-	jd_blueCoin.js  #东东超市兑换，有次数限制，没时间要求
 	jd_shop.js #进店领豆，早点领，一天也可以执行两次以上
 	jd_fruit.js #东东水果，6-9点 11-14点 17-21点可以领水滴
 	jd_pet.js #东东萌宠，跟手机商城同一时间
@@ -606,6 +561,8 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	adolf_martin.js			#人头马x博朗
 	adolf_urge.js			#坐等更新
 	zy_618jc.js 			#618竞猜
+	jddj_bean.js			#京东到家鲜豆 一天一次
+	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_07$start_script_time $white"
@@ -668,6 +625,10 @@ curtinlv_script_setup() {
 	if [ ! -L "$dir_file_js/jd_OpenCard.py" ]; then
 		rm -rf $dir_file_js/jd_OpenCard.py
 		ln -s $dir_file/git_clone/curtinlv_script/OpenCard/jd_OpenCard.py $dir_file_js/jd_OpenCard.py
+	fi
+
+	if [ ! -L "$dir_file_js/OpenCardConfig.ini" ]; then
+		rm -rf $dir_file_js/OpenCardConfig.ini
 		ln -s $dir_file/git_clone/curtinlv_script/OpenCard/OpenCardConfig.ini $dir_file_js/OpenCardConfig.ini
 	fi
 
@@ -2157,12 +2118,6 @@ additional_settings() {
 		sed -i "$healthcode_rows a \ '$new_health_set', " $dir_file_js/jd_health.js
 		js_amount=$(($js_amount - 1))
 	done
-	
-	#脚本黑名单
-	script_black
-
-	#农场萌宠关闭通知
-	close_notification
 }
 
 if [ ! `cat /tmp/github.txt` == "firkerword" ];then 
@@ -2405,6 +2360,9 @@ system_variable() {
 			index_num="$yellow 8.网页扫码功能启动失败，请手动执行看下问题　node $dir_file/cookies_web/index.js$white"
 		fi
 	fi
+
+	#农场萌宠关闭通知
+	close_notification
 
 	script_black
 }
