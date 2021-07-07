@@ -174,7 +174,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_syj.js			#赚京豆
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
-	jd_speed.js			#天天加速
 	jd_pigPet.js			#金融养猪
 	jd_daily_egg.js 		#京东金融-天天提鹅
 	jd_sgmh.js			#闪购盲盒长期活动
@@ -189,8 +188,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_moneyTree.js 		#摇钱树
 	jd_market_lottery.js 		#幸运大转盘
 	jd_jin_tie.js 			#领金贴
-	jd_health.js			#健康社区
-	jd_health_collect.js		#健康社区-收能量
 	jd_gold_creator.js		#金榜创造营
 	jd_mohe.js			#5G超级盲盒
 	jd_get_share_code.js		#获取jd所有助力码脚本
