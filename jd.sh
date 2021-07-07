@@ -163,9 +163,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_blueCoin.js			#东东超市兑换奖品
 	jd_dreamFactory.js		#京喜工厂
 	jd_jdfactory.js			#东东工厂
-	jd_joy_feedPets.js 		#宠汪汪单独喂食
-	jd_joy.js			#宠汪汪
-	jd_joy_reward.js 		#宠汪汪兑换奖品
+	jd_joy_new.js			#宠汪汪
 	jd_car.js			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	jd_club_lottery.js		#摇京豆
 	jd_shop.js			#进店领豆
@@ -193,10 +191,8 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_jin_tie.js 			#领金贴
 	jd_health.js			#健康社区
 	jd_health_collect.js		#健康社区-收能量
-	jd_jump.js			#跳跳乐瓜分京豆
 	jd_gold_creator.js		#金榜创造营
 	jd_mohe.js			#5G超级盲盒
-	jd_jxmc.js			#惊喜牧场(先将新手任务做完，再执行本脚本，不然会出现未知错误)
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
@@ -484,7 +480,7 @@ run_03() {
 #这里不会并发
 cat >/tmp/jd_tmp/run_03 <<EOF
 	jd_dianjing.js			#电竞经理
-	jd_joy.js 			#jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
+	jd_joy_new.js 			#jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
 	jd_necklace.js  		#点点券 大佬0,20领一次先扔这里后面再改
 	jd_speed.js 			#天天加速 3小时运行一次，打卡时间间隔是6小时
 	jd_health.js			#健康社区
