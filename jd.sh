@@ -163,7 +163,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_blueCoin.js			#东东超市兑换奖品
 	jd_dreamFactory.js		#京喜工厂
 	jd_jdfactory.js			#东东工厂
-	jd_joy_new.js			#宠汪汪
+	jd_joy_reward.js 		#宠汪汪
 	jd_car.js			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	jd_club_lottery.js		#摇京豆
 	jd_shop.js			#进店领豆
@@ -480,7 +480,7 @@ run_03() {
 #这里不会并发
 cat >/tmp/jd_tmp/run_03 <<EOF
 	jd_dianjing.js			#电竞经理
-	jd_joy_new.js 			#jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
+	jd_joy_reward.js 		#jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
 	jd_necklace.js  		#点点券 大佬0,20领一次先扔这里后面再改
 	jd_speed.js 			#天天加速 3小时运行一次，打卡时间间隔是6小时
 	jd_health.js			#健康社区
@@ -555,7 +555,6 @@ EOF
 
 run_08_12_16() {
 cat >/tmp/jd_tmp/run_08_12_16 <<EOF
-	jd_joy_reward.js 		#宠汪汪积分兑换奖品，有次数限制，每日京豆库存会在0:00、8:00、16:00更新，经测试发现中午12:00也会有补发京豆
 	jd_syj.js 			#赚京豆
 	jd_jump.js			#跳跳乐瓜分京豆
 EOF
