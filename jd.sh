@@ -87,6 +87,7 @@ cat >>/etc/crontabs/root <<EOF
 0 11 */7 * *  $node $dir_file_js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 0 9 28 */1 * $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月28号推送当月京豆资产变化#100#
 10-20/5 10,12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
+45 0,6-23/4 * * * $node $dir_file_js/jd_qjd.js	>/tmp/jd_qjd.js.log #抢京豆#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
 0 0 * * * $node $dir_file_js/star_dreamFactory_tuan.js	>/tmp/star_dreamFactory_tuan.log	#京喜开团#100#
 0 0 * * *　$python3　$dir_file/git_clone/curtinlv_script/getFollowGifts/jd_getFollowGift.py >/tmp/jd_getFollowGift.log #关注有礼#100#
@@ -193,6 +194,10 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_get_share_code.js		#获取jd所有助力码脚本
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
+	jd_qjd.js                       #抢京豆
+	jd_z_health_community.js        #健康社区
+	jd_z_health_energy.js           #健康收能量
+	
 EOF
 
 for script_name in `cat $dir_file/config/tmp/lxk0301_script.txt | awk '{print $1}'`
@@ -412,7 +417,7 @@ run_030() {
 	echo -e "$green run_030$start_script_time $white"
 	$node $dir_file_js/jd_jdfactory.js 		#东东工厂，不是京喜工厂
 	$node $dir_file_js/jd_jxmc.js			#惊喜牧场
-	$node $dir_file_js/jd_health_collect.js		#健康社区-收能量
+	$node $dir_file_js/jd_z_health_energy.js	#健康社区-收能量
 	$node $dir_file_js/jddj_fruit_collectWater.js 	#京东到家果园水车收水滴 作者5分钟收一次
 	$node $dir_file_js/jddj_getPoints.js		#京东到家鲜豆庄园收水滴 作者5分钟收一次
 	echo -e "$green run_030$stop_script_time $white"
@@ -480,7 +485,7 @@ cat >/tmp/jd_tmp/run_03 <<EOF
 	jd_joy_reward.js 		#jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
 	jd_necklace.js  		#点点券 大佬0,20领一次先扔这里后面再改
 	jd_speed.js 			#天天加速 3小时运行一次，打卡时间间隔是6小时
-	jd_health.js			#健康社区
+	jd_z_health_community.js	#健康社区
 	jddj_fruit.js			#京东到家果园 0,8,11,17
 	jd_mohe.js			#5G超级盲盒
 EOF
@@ -2060,9 +2065,9 @@ additional_settings() {
 	new_health_set="$new_health@$Javon_20201224_health@$random_set"
 
 	js_amount=$(cat $openwrt_script_config/js_cookie.txt | wc -l)
-	healthcode_rows=$(grep -n "inviteCodes = \[" $dir_file_js/jd_health.js | awk -F ":" '{print $1}')
+	healthcode_rows=$(grep -n "inviteCodes = \[" $dir_file_js/jd_z_health_community.js | awk -F ":" '{print $1}')
 	while [[ ${js_amount} -gt 0 ]]; do
-		sed -i "$healthcode_rows a \ '$new_health_set', " $dir_file_js/jd_health.js
+		sed -i "$healthcode_rows a \ '$new_health_set', " $dir_file_js/jd_z_health_community.js
 		js_amount=$(($js_amount - 1))
 	done
 }
