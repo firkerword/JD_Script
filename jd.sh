@@ -36,7 +36,7 @@ fi
 ccr_js_file="$dir_file/ccr_js"
 run_sleep=$(sleep 1)
 
-version="2.2"
+version="2.3"
 cron_file="/etc/crontabs/root"
 node="/usr/bin/node"
 python3="/usr/bin/python3"
@@ -57,7 +57,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.32"
+	cron_version="3.33"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
