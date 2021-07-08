@@ -88,6 +88,7 @@ cat >>/etc/crontabs/root <<EOF
 0 9 28 */1 * $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月28号推送当月京豆资产变化#100#
 10-20/5 10,12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 45 0,6-23/4 * * * $node $dir_file_js/jd_qjd.js	>/tmp/jd_qjd.js.log #抢京豆#100#
+12 9,11,13,15,17 * * * $node $dir_file_js/jd_summer_movement.js >/tmp/jd_summer_movement.js.log #燃动夏季#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
 0 0 * * * $node $dir_file_js/star_dreamFactory_tuan.js	>/tmp/star_dreamFactory_tuan.log	#京喜开团#100#
 0 0 * * *　$python3　$dir_file/git_clone/curtinlv_script/getFollowGifts/jd_getFollowGift.py >/tmp/jd_getFollowGift.log #关注有礼#100#
@@ -266,6 +267,8 @@ done
 
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
+	wget https://raw.githubusercontent.com/smiek2221/scripts/master/MovementFaker.js -O $dir_file_js/MovementFaker.js
+	wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
