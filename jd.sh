@@ -36,7 +36,7 @@ fi
 ccr_js_file="$dir_file/ccr_js"
 run_sleep=$(sleep 1)
 
-version="2.3"
+version="2.3.1"
 cron_file="/etc/crontabs/root"
 node="/usr/bin/node"
 python3="/usr/bin/python3"
@@ -57,7 +57,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.33"
+	cron_version="3.34"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -88,7 +88,7 @@ cat >>/etc/crontabs/root <<EOF
 0 9 28 */1 * $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月28号推送当月京豆资产变化#100#
 10-20/5 10,12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 45 0,6-23/4 * * * $node $dir_file_js/jd_qjd.js	>/tmp/jd_qjd.js.log #抢京豆#100#
-12 9,11,13,15,17 * * * $node $dir_file_js/jd_summer_movement.js >/tmp/jd_summer_movement.js.log #燃动夏季#100#
+25 0,6-23/2 * * * $node $dir_file_js/jd_summer_movement.js >/tmp/jd_summer_movement.js.log #燃动夏季#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
 0 0 * * * $node $dir_file_js/star_dreamFactory_tuan.js	>/tmp/star_dreamFactory_tuan.log	#京喜开团#100#
 0 0 * * *　$python3　$dir_file/git_clone/curtinlv_script/getFollowGifts/jd_getFollowGift.py >/tmp/jd_getFollowGift.log #关注有礼#100#
@@ -186,9 +186,9 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	jd_cfd.js			#京喜财富岛
 	jd_live.js			#京东直播
-	jd_live_redrain.js 		#超级直播间红包雨
 	jd_moneyTree.js 		#摇钱树
-	jd_market_lottery.js 		#幸运大转盘
+	jd_summer_movement.js           #燃动夏日   
+	jd_summer_movement_card.js      #燃动夏日会员
 	jd_jin_tie.js 			#领金贴
 	jd_gold_creator.js		#金榜创造营
 	jd_mohe.js			#5G超级盲盒
@@ -267,8 +267,8 @@ done
 
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	wget https://raw.githubusercontent.com/smiek2221/scripts/master/MovementFaker.js -O $dir_file_js/MovementFaker.js
-	wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
+	#wget https://raw.githubusercontent.com/smiek2221/scripts/master/MovementFaker.js -O $dir_file_js/MovementFaker.js
+	#wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
@@ -383,7 +383,6 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_sgmh.js 			#闪购盲盒长期活动
 	jd_jdzz.js			#京东赚赚长期活动
 	jd_syj.js 			#十元街签到,一天一次即可，一周30豆子
-	jd_market_lottery.js 		#幸运大转盘
 	jd_jin_tie.js 			#领金贴
 	jddj_bean.js			#京东到家鲜豆 一天一次
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
