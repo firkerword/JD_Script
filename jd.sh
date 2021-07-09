@@ -189,7 +189,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_cfd.js			#京喜财富岛
 	jd_live.js			#京东直播
 	jd_moneyTree.js 		#摇钱树
-	jd_summer_movement.js           #燃动夏日
 	jd_summer_movement_map.js       #燃动夏日店铺
 	jd_summer_movement_card.js      #燃动夏日会员
 	jd_jin_tie.js 			#领金贴
@@ -272,7 +271,7 @@ done
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement_help.js -O $dir_file_js/jd_summer_movement_help.js
-	#wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
+	wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
