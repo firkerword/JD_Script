@@ -57,7 +57,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.38"
+	cron_version="3.39"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -90,6 +90,7 @@ cat >>/etc/crontabs/root <<EOF
 45 0,6-23/4 * * * $node $dir_file_js/jd_qjd.js	>/tmp/jd_qjd.js.log #抢京豆#100#
 25 0,6-23/2 * * * $node $dir_file_js/jd_summer_movement.js >/tmp/jd_summer_movement.js.log #燃动夏季#100#
 7 10,20 * * * $node $dir_file_js/jd_summer_movement_map.js >/tmp/jd_summer_movement_map.js.log #燃动夏季店铺#100#
+12 7-14 * * * $node $dir_file_js/jd_summer_movement_help.js >/tmp/jd_summer_movement_help.js.log #燃动夏季SH助力#100#
 30 6 * * * $node $dir_file_js/jd_zqfl.js >/tmp/jd_zqfl.js.log #早起福利#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
 0 0 * * * $node $dir_file_js/star_dreamFactory_tuan.js	>/tmp/star_dreamFactory_tuan.log	#京喜开团#100#
@@ -271,7 +272,7 @@ done
 
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	#wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement_help.js -O $dir_file_js/jd_summer_movement_help.js
+	wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement_help.js -O $dir_file_js/jd_summer_movement_help.js
 	#wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
 
 #将所有文本汇总
