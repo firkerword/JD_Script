@@ -57,7 +57,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.36"
+	cron_version="3.37"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -89,6 +89,7 @@ cat >>/etc/crontabs/root <<EOF
 10-20/5 10,12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 45 0,6-23/4 * * * $node $dir_file_js/jd_qjd.js	>/tmp/jd_qjd.js.log #抢京豆#100#
 25 0,6-23/2 * * * $node $dir_file_js/jd_summer_movement.js >/tmp/jd_summer_movement.js.log #燃动夏季#100#
+7 10,20 * * * $node $dir_file_js/jd_summer_movement_map.js >/tmp/jd_summer_movement_map.js.log #燃动夏季店铺#100#
 12 7-14 * * * $node $dir_file_js/jd_summer_movement_help.js >/tmp/jd_summer_movement_help.js.log #燃动夏季助力#100#
 30 6 * * * $node $dir_file_js/jd_zqfl.js >/tmp/jd_zqfl.js.log #早起福利#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
@@ -188,7 +189,9 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_delCoupon.js			#删除优惠券（默认不运行，有需要手动运行）
 	jd_cfd.js			#京喜财富岛
 	jd_live.js			#京东直播
-	jd_moneyTree.js 		#摇钱树  
+	jd_moneyTree.js 		#摇钱树
+	jd_summer_movement.js           #燃动夏日
+	jd_summer_movement_map.js       #燃动夏日店铺
 	jd_summer_movement_card.js      #燃动夏日会员
 	jd_jin_tie.js 			#领金贴
 	jd_gold_creator.js		#金榜创造营
@@ -269,8 +272,8 @@ done
 
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement_help.js -O $dir_file_js/jd_summer_movement_help.js
-	wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
+	#wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement_help.js -O $dir_file_js/jd_summer_movement_help.js
+	#wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
@@ -528,6 +531,7 @@ EOF
 
 run_07() {
 cat >/tmp/jd_tmp/run_07 <<EOF
+	jd_summer_movement_card.js      #燃动夏日会员
 	adolf_superbox.js		#超级盒子
 	jd_jxzpk.js			#pk
 	jd_lsj.js			#柠檬京东零食街
