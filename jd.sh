@@ -36,7 +36,7 @@ fi
 ccr_js_file="$dir_file/ccr_js"
 run_sleep=$(sleep 1)
 
-version="2.3.3"
+version="2.3.4"
 cron_file="/etc/crontabs/root"
 node="/usr/bin/node"
 python3="/usr/bin/python3"
@@ -57,7 +57,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.39"
+	cron_version="3.4"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -89,7 +89,6 @@ cat >>/etc/crontabs/root <<EOF
 10-20/5 10,12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
 45 0,6-23/4 * * * $node $dir_file_js/jd_qjd.js	>/tmp/jd_qjd.js.log #抢京豆#100#
 25 0,6-23/2 * * * $node $dir_file_js/jd_summer_movement.js >/tmp/jd_summer_movement.js.log #燃动夏季#100#
-7 10,20 * * * $node $dir_file_js/jd_summer_movement_map.js >/tmp/jd_summer_movement_map.js.log #燃动夏季店铺#100#
 12 7-14 * * * $node $dir_file_js/jd_summer_movement_help.js >/tmp/jd_summer_movement_help.js.log #燃动夏季SH助力#100#
 30 6 * * * $node $dir_file_js/jd_zqfl.js >/tmp/jd_zqfl.js.log #早起福利#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
@@ -160,6 +159,8 @@ rm -rf $dir_file/config/tmp/*
 
 cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_bean_sign.js			#京东多合一签到
+	jd_sign.js                      #验证码活动
+	jd_sign_validate.js
 	jd_fruit.js			#东东农场
 	jd_jxnc.js			#京喜农场
 	jd_pet.js			#东东萌宠
@@ -190,7 +191,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_live.js			#京东直播
 	jd_moneyTree.js 		#摇钱树
         jd_summer_movement.js           #燃动夏日
-	jd_summer_movement_map.js       #燃动夏日店铺
 	jd_summer_movement_card.js      #燃动夏日会员
         jd_summer_movement_help.js      #燃动夏日助力
 	jd_jin_tie.js 			#领金贴
@@ -200,9 +200,15 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_bean_change.js		#京豆变动通知(长期)
 	jd_unsubscribe.js		#取关京东店铺和商品
 	jd_qjd.js                       #抢京豆
+	jd_zjb.js                       #送金币 
 	jd_zqfl.js                      #早起福利
 	jd_z_health_community.js        #健康社区
 	jd_z_health_energy.js           #健康收能量
+	jd_lsj.js		        #柠檬京东零食街
+	jd_crazy_joy.js                 #疯狂的joy
+	jd_ddo_pk.js			#pk
+	jd_superBrand.js                #特物Z
+	jd_wxFans.js                    #7月粉丝
 	
 EOF
 
@@ -247,7 +253,6 @@ done
 panghu999="https://raw.githubusercontent.com/panghu999/panghu/master"
 cat >$dir_file/config/tmp/panghu999.txt <<EOF
 	jd_hwsx.js		#京东众筹
-	jd_lsj.js		#柠檬京东零食街
 EOF
 
 for script_name in `cat $dir_file/config/tmp/panghu999.txt | awk '{print $1}'`
@@ -304,7 +309,7 @@ cat >>$dir_file/config/collect_script.txt <<EOF
 	zooCaptain01.js			#安佳牛奶组队瓜分京豆(不能并发，否则无法组队)
 	jd_OpenCard.py 			#开卡程序
 	jd_getFollowGift.py 		#关注有礼
-	jd_jxzpk.js			#京享值pk
+	jd_ddo_pk.js			#pk
 	jd_all_bean_change.js 		#京东月资产变动通知
 	adolf_superbox.js		#超级盒子
 	jd_check_cookie.js		#检测cookie是否存活（暂时不能看到还有几天到期）
@@ -393,7 +398,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	jd_dreamFactory.js 		#京喜工厂
 	adolf_superbox.js		#超级盒子
-	jd_jxzpk.js			#pk
+	jd_ddo_pk.js			#pk
 	jd_lsj.js			#柠檬京东零食街
 	jd_ddnc_farmpark.js		#东东乐园
 	jd_europeancup.js		#狂欢欧洲杯
@@ -480,7 +485,7 @@ EOF
 run_02() {
 	echo -e "$green run_02$start_script_time $white"
 	$node $dir_file_js/jd_moneyTree.js 	#摇钱树
-	$node $dir_file_js/jd_jxzpk.js		#pk
+	$node $dir_file_js/jd_ddo_pk.js		#pk
 	$node $dir_file_js/jd_qqxing.js		#星系牧场,需要手动去开卡然后进去玩一下
 	echo -e "$green run_02$stop_script_time $white"
 }
@@ -533,7 +538,7 @@ run_07() {
 cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_summer_movement_card.js      #燃动夏日会员
 	adolf_superbox.js		#超级盒子
-	jd_jxzpk.js			#pk
+	jd_ddo_pk.js			#pk
 	jd_lsj.js			#柠檬京东零食街
 	jd_ddnc_farmpark.js		#东东乐园
 	jd_europeancup.js		#狂欢欧洲杯
@@ -549,9 +554,14 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_speed_redpocke.js		#极速版红包
 	jd_cash.js 			#签到领现金，每日2毛～5毛长期
 	jd_jin_tie.js 			#领金贴
+	jd_zjb.js                       #送金币 
 	jddj_bean.js			#京东到家鲜豆 一天一次
 	jddj_plantBeans.js 		#京东到家鲜豆庄园脚本 一天一次
 	jd_unsubscribe.js 		#取关店铺，没时间要求
+	jd_crazy_joy.js                 #疯狂的joy
+	jd_sign.js                      #验证码活动
+	jd_superBrand.js                #特物Z
+	jd_wxFans.js                    #7月粉丝
 EOF
 	echo -e "$green run_07$start_script_time $white"
 
@@ -2131,7 +2141,7 @@ time() {
 
 npm_install() {
 	echo -e "$green 开始安装npm模块$white"
-	cp $dir_file/git_clone/lxk0301_back/package.json $dir_file/package.json
+       #cp $dir_file/git_clone/lxk0301_back/package.json $dir_file/package.json
 	cd $dir_file && npm -g install && npm install -g request
 	cd $dir_file/cookies_web && npm install
 
