@@ -277,6 +277,7 @@ done
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
 	wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_necklace.js -O $dir_file_js/jd_necklace.js #点点券
+	wget https://raw.githubusercontent.com/smiek2221/scripts/master/ZooFaker_Necklace.js -O $dir_file_js/ZooFaker_Necklace.js #点点券
         #wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement_help.js -O $dir_file_js/jd_summer_movement_help.js
         #wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
 
