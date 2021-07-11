@@ -250,7 +250,8 @@ done
 
 panghu999="https://raw.githubusercontent.com/panghu999/panghu/master"
 cat >$dir_file/config/tmp/panghu999.txt <<EOF
-	jd_hwsx.js		#京东众筹
+	jd_senbeans.js		#莱客有礼
+	jd_wish.js              #京东众筹
 EOF
 
 for script_name in `cat $dir_file/config/tmp/panghu999.txt | awk '{print $1}'`
@@ -529,7 +530,7 @@ EOF
 
 run_06_18() {
 cat >/tmp/jd_tmp/run_06_18 <<EOF
-	jd_hwsx.js			#京东众筹
+	jd_wish.js			#京东众筹
 	jd_shop.js 			#进店领豆，早点领，一天也可以执行两次以上
 	jd_fruit.js 			#东东水果，6-9点 11-14点 17-21点可以领水滴
 	jd_pet.js 			#东东萌宠，跟手机商城同一时间
@@ -576,6 +577,7 @@ cat >/tmp/jd_tmp/run_07 <<EOF
 	jd_sign.js                      #验证码活动
 	jd_superBrand.js                #特物Z
 	jd_wxFans.js                    #7月粉丝
+	jd_senbeans.js		        #莱客有礼
 EOF
 	echo -e "$green run_07$start_script_time $white"
 
