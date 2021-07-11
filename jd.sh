@@ -36,7 +36,7 @@ fi
 ccr_js_file="$dir_file/ccr_js"
 run_sleep=$(sleep 1)
 
-version="2.3.4"
+version="2.3.5"
 cron_file="/etc/crontabs/root"
 node="/usr/bin/node"
 python3="/usr/bin/python3"
@@ -190,9 +190,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_cfd.js			#京喜财富岛
 	jd_live.js			#京东直播
 	jd_moneyTree.js 		#摇钱树
-        jd_summer_movement.js           #燃动夏日
 	jd_summer_movement_card.js      #燃动夏日会员
-        jd_summer_movement_help.js      #燃动夏日助力
 	jd_jin_tie.js 			#领金贴
 	jd_gold_creator.js		#金榜创造营
 	jd_mohe.js			#5G超级盲盒
@@ -264,7 +262,10 @@ done
 
 panghu999_url="https://raw.githubusercontent.com/panghu999/jd_scripts/master"
 cat >$dir_file/config/tmp/panghu999_url.txt <<EOF
+        jd_joy_feedPets.js      #宠汪汪喂食一个小时喂一次
 	jd_dianjing.js		#电竞经理
+	jd_jxmc.js              #京喜牧场
+	jd_speed.js             #天天加速
 EOF
 
 for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}'`
@@ -274,12 +275,24 @@ do
 	#update_if
 done
 
+smiek2221_url="https://raw.githubusercontent.com/smiek2221/scripts/master"
+cat >$dir_file/config/tmp/smiek2221_url.txt <<EOF
+        jd_necklace.js #点点券
+	ZooFaker_Necklace.js #点点券
+	jd_summer_movement_help.js
+	jd_summer_movement.js
+	JDJRValidator_Pure.js
+EOF
+
+for script_name in `cat $dir_file/config/tmp/smiek2221_url.txt | awk '{print $1}'`
+do
+	url="$smiek2221_url"
+	wget $smiek2221_url/$script_name -O $dir_file_js/$script_name
+	update_if
+done
+
 	wget https://raw.githubusercontent.com/jiulan/platypus/main/scripts/jd_all_bean_change.js -O $dir_file_js/jd_all_bean_change.js #京东月资产变动通知
 	wget https://raw.githubusercontent.com/whyour/hundun/master/quanx/jx_products_detail.js -O $dir_file_js/jx_products_detail.js #京喜工厂商品列表详情
-	wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_necklace.js -O $dir_file_js/jd_necklace.js #点点券
-	wget https://raw.githubusercontent.com/smiek2221/scripts/master/ZooFaker_Necklace.js -O $dir_file_js/ZooFaker_Necklace.js #点点券
-        #wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement_help.js -O $dir_file_js/jd_summer_movement_help.js
-        #wget https://raw.githubusercontent.com/smiek2221/scripts/master/jd_summer_movement.js -O $dir_file_js/jd_summer_movement.js
 
 #将所有文本汇总
 echo > $dir_file/config/collect_script.txt
@@ -577,7 +590,6 @@ EOF
 run_08_12_16() {
 cat >/tmp/jd_tmp/run_08_12_16 <<EOF
 	jd_syj.js 			#赚京豆
-	jd_jump.js			#跳跳乐瓜分京豆
 EOF
 	echo -e "$green run_08_12_16$start_script_time $white"
 
