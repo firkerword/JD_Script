@@ -169,13 +169,13 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_blueCoin.js			#东东超市兑换奖品
 	jd_dreamFactory.js		#京喜工厂
 	jd_jdfactory.js			#东东工厂
-	jd_joy_reward.js 		#宠汪汪
 	jd_car.js			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	jd_club_lottery.js		#摇京豆
 	jd_shop.js			#进店领豆
 	jd_bean_home.js			#领京豆额外奖励
 	jd_rankingList.js		#京东排行榜签到得京豆
 	jd_jdzz.js			#京东赚赚长期活动
+	jd_joy_reward.js                #宠汪汪兑换
 	jd_syj.js			#赚京豆
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
@@ -263,7 +263,6 @@ done
 
 panghu999_url="https://raw.githubusercontent.com/panghu999/jd_scripts/master"
 cat >$dir_file/config/tmp/panghu999_url.txt <<EOF
-        jd_joy_feedPets.js      #宠汪汪喂食一个小时喂一次
 	jd_dianjing.js		#电竞经理
 	jd_jxmc.js              #京喜牧场
 	jd_speed.js             #天天加速
@@ -276,12 +275,27 @@ do
 	update_if
 done
 
+JDHelloWorld_url="https://raw.githubusercontent.com/JDHelloWorld/jd_scripts/main"
+cat >$dir_file/config/tmp/JDHelloWorld.txt <<EOF
+	jd_cfd.ts		#财富岛
+	jd_cfd_loop.ts 		#财富岛热气球
+EOF
+
+for script_name in `cat $dir_file/config/tmp/JDHelloWorld.txt | awk '{print $1}'`
+do
+	url="$JDHelloWorld_url"
+	#wget $JDHelloWorld_url/$script_name -O $dir_file_js/$script_name
+	#update_if
+done
+
 smiek2221_url="https://raw.githubusercontent.com/smiek2221/scripts/master"
 cat >$dir_file/config/tmp/smiek2221_url.txt <<EOF
-        jd_necklace.js #点点券
-	ZooFaker_Necklace.js #点点券
-	jd_summer_movement_help.js
-	jd_summer_movement.js
+        jd_joy_steal.js             #宠汪汪偷金币
+        jd_joy.js                   #宠汪汪
+        jd_necklace.js              #点点券
+	ZooFaker_Necklace.js        #点点券
+	jd_summer_movement_help.js  #燃动夏季
+	jd_summer_movement.js       #燃动夏季
 	JDJRValidator_Pure.js
 EOF
 
@@ -481,8 +495,8 @@ EOF
 
 run_01() {
 cat >/tmp/jd_tmp/run_01 <<EOF
+        jd_cfd.ts	        	#财富岛
 	jd_plantBean.js 		#种豆得豆，没时间要求，一个小时收一次瓶子
-	jd_joy_feedPets.js  		#宠汪汪喂食一个小时喂一次
 EOF
 	#long_super_redrain.js		#整点红包雨
 	echo -e "$green run_01$start_script_time $white"
@@ -499,6 +513,7 @@ EOF
 
 run_02() {
 	echo -e "$green run_02$start_script_time $white"
+	$node $dir_file_js/jd_joy.js 		#jd宠汪汪
 	$node $dir_file_js/jd_moneyTree.js 	#摇钱树
 	$node $dir_file_js/jd_ddo_pk.js		#pk
 	$node $dir_file_js/jd_qqxing.js		#星系牧场,需要手动去开卡然后进去玩一下
@@ -509,7 +524,6 @@ run_03() {
 #这里不会并发
 cat >/tmp/jd_tmp/run_03 <<EOF
 	jd_dianjing.js			#电竞经理
-	jd_joy_reward.js 		#jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
 	jd_necklace.js  		#点点券 大佬0,20领一次先扔这里后面再改
 	jd_speed.js 			#天天加速 3小时运行一次，打卡时间间隔是6小时
 	jd_z_health_community.js	#健康社区
@@ -1815,23 +1829,6 @@ additional_settings() {
 		js_amount=$(($js_amount - 1))
 	done
 
-	#宠汪汪积分兑换奖品改成兑换500豆子，个别人会兑换错误(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
-	sed -i "s/let joyRewardName = 0/let joyRewardName = $jd_joy_reward/g" $dir_file_js/jd_joy_reward.js
-
-	#宠汪汪喂食改成80
-	sed -i "s/|| 10/|| $jd_joy_feedPets/g" $dir_file_js/jd_joy_feedPets.js
-
-	#宠汪汪不给好友喂食
-	sed -i "s/let jdJoyHelpFeed = true/let jdJoyHelpFeed = $jd_joy_steal/g" $dir_file_js/jd_joy_steal.js
-
-	if [ `cat $openwrt_script_config/js_cookie.txt | wc -l`  -ge "10" ];then
-		export JOY_TEAM_LEVEL="10"
-	else
-		export JOY_TEAM_LEVEL="2"
-	fi
-
-	export JOY_RUN_HELP_MYSELF="true"
-
 	#种豆
 	new_plantBean1="nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi3n46rivf5vyrszud7yvj7hcdr5a@mlrdw3aw26j3xeqso5asaq6zechwcl76uojnpha@nkvdrkoit5o65lgaousaj4dqrfmnij2zyntizsa@u5lnx42k5ifivyrtqhfjikhl56zsnbmk6v66uzi@5sxiasthesobwa3lehotyqcrd4@b3q5tww6is42gzo3u67hjquj54@b3q5tww6is42gzo3u67hjquj54"
 	zuoyou_20190516_pb="sz5infcskhz3woqbns6eertieu@mxskszygpa3kaouswi7rele2ji@nuvfqviuwvnigxx65s7s77gbbvd4thrll7o63pq@fn5sjpg5zdejnypipngfhaudisqrfccakjuyaty@e7lhibzb3zek2xhmmypkf6ratimjeenqwvqvwjq@4npkonnsy7xi3vk7khql3p7gkpodivnbwjoziga@cq7ylqusen234wdwxxbkf23g6y"
@@ -2289,7 +2286,6 @@ system_variable() {
 	jd_fruit=$(grep "jd_fruit" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_blueCoin=$(grep "jd_blueCoin" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_joy_reward=$(grep "jd_joy_reward" $jd_openwrt_config | awk -F "'" '{print $2}')
-	jd_joy_feedPets=$(grep "jd_joy_feedPets" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_joy_steal=$(grep "jd_joy_steal" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_unsubscribe=$(grep "jd_unsubscribe" $jd_openwrt_config | awk -F "'" '{print $2}')
 
@@ -2358,10 +2354,6 @@ jd_blueCoin='20'
 
 #宠汪汪积分兑换500豆子，(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
 jd_joy_reward='500'
-
-
-#宠汪汪喂食(更多参数自己去看js脚本描述)
-jd_joy_feedPets='80'
 
 
 #宠汪汪不给好友喂食 false不喂食 ture喂食
