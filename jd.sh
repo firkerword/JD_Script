@@ -277,15 +277,15 @@ done
 
 JDHelloWorld_url="https://raw.githubusercontent.com/JDHelloWorld/jd_scripts/main"
 cat >$dir_file/config/tmp/JDHelloWorld.txt <<EOF
-	#jd_cfd.ts		#财富岛
-	#jd_cfd_loop.ts 		#财富岛热气球
+	jd_cfd.ts		#财富岛
+	jd_cfd_loop.ts 		#财富岛热气球
 EOF
 
 for script_name in `cat $dir_file/config/tmp/JDHelloWorld.txt | awk '{print $1}'`
 do
 	url="$JDHelloWorld_url"
-	#wget $JDHelloWorld_url/$script_name -O $dir_file_js/$script_name
-	#update_if
+	wget $JDHelloWorld_url/$script_name -O $dir_file_js/$script_name
+	update_if
 done
 
 smiek2221_url="https://raw.githubusercontent.com/smiek2221/scripts/master"
