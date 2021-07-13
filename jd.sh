@@ -57,7 +57,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.4"
+	cron_version="3.4.1"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -87,11 +87,13 @@ cat >>/etc/crontabs/root <<EOF
 0 11 */7 * *  $node $dir_file_js/jd_price.js >/tmp/jd_price.log #每7天11点执行京东保价#100#
 0 9 28 */1 * $node $dir_file_js/jd_all_bean_change.js >/tmp/jd_all_bean_change.log #每个月28号推送当月京豆资产变化#100#
 10-20/5 10,12 * * * $node $dir_file_js/jd_live.js	>/tmp/jd_live.log #京东直播#100#
-45 0,6-23/4 * * * $node $dir_file_js/jd_qjd.js	>/tmp/jd_qjd.js.log #抢京豆#100#
-25 0,6-23/2 * * * $node $dir_file_js/jd_summer_movement.js >/tmp/jd_summer_movement.js.log #燃动夏季#100#
-12 7-14 * * * $node $dir_file_js/jd_summer_movement_help.js >/tmp/jd_summer_movement_help.js.log #燃动夏季SH助力#100#
+45 0,6-23/4 * * * $node $dir_file_js/jd_qjd.js	>/tmp/jd_qjd.log #抢京豆#100#
+25 0,6-23/2 * * * $node $dir_file_js/jd_summer_movement.js >/tmp/jd_summer_movement.log #燃动夏季#100#
+12 7-14 * * * $node $dir_file_js/jd_summer_movement_help.js >/tmp/jd_summer_movement_help.log #燃动夏季SH助力#100#
 30 6 * * * $node $dir_file_js/jd_zqfl.js >/tmp/jd_zqfl.js.log #早起福利#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
+10 1,12 * * * $node $dir_file_js/jd_cfd_loop.js	>/tmp/jd_cfd_loop.log      #热气球
+5 * * * * $node $dir_file_js/jd_cfd.js	>/tmp/jd_cfd.log                   #财富岛
 0 0 * * * $node $dir_file_js/star_dreamFactory_tuan.js	>/tmp/star_dreamFactory_tuan.log	#京喜开团#100#
 0 0 * * *　$python3　$dir_file/git_clone/curtinlv_script/getFollowGifts/jd_getFollowGift.py >/tmp/jd_getFollowGift.log #关注有礼#100#
 0 8,15 * * *　$python3　$dir_file/git_clone/curtinlv_script/OpenCard/jd_OpenCard.py  >/tmp/jd_OpenCard.log #开卡程序#100#
@@ -175,7 +177,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_bean_home.js			#领京豆额外奖励
 	jd_rankingList.js		#京东排行榜签到得京豆
 	jd_jdzz.js			#京东赚赚长期活动
-	jd_joy_reward.js                #宠汪汪兑换
 	jd_syj.js			#赚京豆
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
@@ -275,16 +276,17 @@ do
 	update_if
 done
 
-JDHelloWorld_url="https://raw.githubusercontent.com/JDHelloWorld/jd_scripts/main"
-cat >$dir_file/config/tmp/JDHelloWorld.txt <<EOF
-	jd_cfd.ts		#财富岛
-	jd_cfd_loop.ts 		#财富岛热气球
+FanchangWang_url="https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts"
+cat >$dir_file/config/tmp/FanchangWang.txt <<EOF
+	jd_cfd.js		#财富岛
+	jd_cfd_loop.js 		#财富岛热气球
+	jd_joy_reward.js        #宠汪汪兑换
 EOF
 
-for script_name in `cat $dir_file/config/tmp/JDHelloWorld.txt | awk '{print $1}'`
+for script_name in `cat $dir_file/config/tmp/FanchangWang.txt | awk '{print $1}'`
 do
-	url="$JDHelloWorld_url"
-	wget $JDHelloWorld_url/$script_name -O $dir_file_js/$script_name
+	url="$FanchangWang_url"
+	wget $FanchangWang_url/$script_name -O $dir_file_js/$script_name
 	update_if
 done
 
