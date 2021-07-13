@@ -292,6 +292,7 @@ done
 
 smiek2221_url="https://raw.githubusercontent.com/smiek2221/scripts/master"
 cat >$dir_file/config/tmp/smiek2221_url.txt <<EOF
+        gua_wealth_island.js        #财富岛
         jd_joy_steal.js             #宠汪汪偷金币
         jd_joy.js                   #宠汪汪
         jd_necklace.js              #点点券
@@ -514,6 +515,7 @@ EOF
 
 run_02() {
 	echo -e "$green run_02$start_script_time $white"
+        $node $dir_file_js/gua_wealth_island.js #财富岛
 	$node $dir_file_js/jd_joy.js 		#jd宠汪汪
 	$node $dir_file_js/jd_moneyTree.js 	#摇钱树
 	$node $dir_file_js/jd_ddo_pk.js		#pk
