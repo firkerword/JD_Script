@@ -175,6 +175,7 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_bean_home.js			#领京豆额外奖励
 	jd_rankingList.js		#京东排行榜签到得京豆
 	jd_jdzz.js			#京东赚赚长期活动
+	jd_joy_reward.js                #宠汪汪兑换
 	jd_syj.js			#赚京豆
 	jd_kd.js			#京东快递签到 一天运行一次即可
 	jd_small_home.js		#东东小窝
@@ -276,7 +277,6 @@ done
 
 FanchangWang_url="https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts"
 cat >$dir_file/config/tmp/FanchangWang.txt <<EOF
-	jd_joy_reward.js        #宠汪汪兑换
 EOF
 
 for script_name in `cat $dir_file/config/tmp/FanchangWang.txt | awk '{print $1}'`
