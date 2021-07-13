@@ -90,7 +90,7 @@ cat >>/etc/crontabs/root <<EOF
 45 0,6-23/4 * * * $node $dir_file_js/jd_qjd.js	>/tmp/jd_qjd.log #抢京豆#100#
 25 0,6-23/2 * * * $node $dir_file_js/jd_summer_movement.js >/tmp/jd_summer_movement.log #燃动夏季#100#
 12 7-14 * * * $node $dir_file_js/jd_summer_movement_help.js >/tmp/jd_summer_movement_help.log #燃动夏季SH助力#100#
-30 6 * * * $node $dir_file_js/jd_zqfl.js >/tmp/jd_zqfl.js.log #早起福利#100#
+30 6 * * * $node $dir_file_js/jd_zqfl.js >/tmp/jd_zqfl.log #早起福利#100#
 30 20-23/1 * * * $node $dir_file_js/long_half_redrain.js	>/tmp/long_half_redrain.log	#半点红包雨#100#
 10 1,12 * * * $node $dir_file_js/jd_cfd_loop.js	>/tmp/jd_cfd_loop.log      #热气球
 5 * * * * $node $dir_file_js/jd_cfd.js	>/tmp/jd_cfd.log                   #财富岛
