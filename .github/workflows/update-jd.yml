@@ -1,0 +1,28 @@
+name: 同步源仓库
+on:
+  schedule:
+    - cron: '5 2,6,10,14 16 * *'
+  workflow_dispatch:
+  watch:
+    types: started
+  repository_dispatch:
+    types: 同步源仓库
+jobs:
+  repo-sync:
+    env:
+      PAT: ${{ secrets.PAT || github.event.client_payload.PAT }}
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: sync scripts
+        uses: repo-sync/github-sync@v2
+        if: env.PAT
+        with:
+          source_repo: "https://github.com/ITdesk01/JD_Script.git"
+          source_branch: "main"
+          destination_branch: "main-plus"
+          github_token: ${{ secrets.PAT || github.event.client_payload.PAT }}
