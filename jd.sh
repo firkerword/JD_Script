@@ -170,6 +170,8 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_dreamFactory.js		#京喜工厂
 	jd_jdfactory.js			#东东工厂
 	jd_car.js			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
+	jd_cfd.js	        	#财富岛
+	jd_cfd_loop.js 		        #财富岛热气球
 	jd_club_lottery.js		#摇京豆
 	jd_shop.js			#进店领豆
 	jd_bean_home.js			#领京豆额外奖励
@@ -271,19 +273,6 @@ for script_name in `cat $dir_file/config/tmp/panghu999_url.txt | awk '{print $1}
 do
 	url="$panghu999_url"
 	wget $panghu999_url/$script_name -O $dir_file_js/$script_name
-	update_if
-done
-
-FanchangWang_url="https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts"
-cat >$dir_file/config/tmp/FanchangWang.txt <<EOF
-	jd_cfd.js		#财富岛
-	jd_cfd_loop.js 		#财富岛热气球
-EOF
-
-for script_name in `cat $dir_file/config/tmp/FanchangWang.txt | awk '{print $1}'`
-do
-	url="$FanchangWang_url"
-	wget $FanchangWang_url/$script_name -O $dir_file_js/$script_name
 	update_if
 done
 
