@@ -408,6 +408,7 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_mohe.js			#5G超级盲盒
 	jd_car.js 			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	jd_cash.js 			#签到领现金，每日2毛～5毛长期
+	jd_cfd_loop.js                  #热气球
 	jd_sgmh.js 			#闪购盲盒长期活动
 	jd_jdzz.js			#京东赚赚长期活动
 	jd_syj.js 			#十元街签到,一天一次即可，一周30豆子
