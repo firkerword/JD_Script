@@ -502,7 +502,7 @@ EOF
 
 run_02() {
 	echo -e "$green run_02$start_script_time $white"
-        $node $dir_file_js/gua_wealth_island.js #财富岛
+        $node $dir_file_js/jd_cfd.js            #财富岛
 	$node $dir_file_js/jd_joy.js 		#jd宠汪汪
 	$node $dir_file_js/jd_moneyTree.js 	#摇钱树
 	$node $dir_file_js/jd_ddo_pk.js		#pk
