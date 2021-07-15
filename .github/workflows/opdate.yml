@@ -2,25 +2,25 @@ name: Update_js
 
 on:
 
- # push:
+  push:
 
- #   branches: 
+   branches: 
 
- #     - main
+      - main
 
- #  schedule:
+  schedule:
 
- #    - cron: 50 9-21/3 * * * 
+     - cron: 50 9-21/3 * * * 
 
- #   release:
+  release:
 
- #     types: [published]
+      types: [published]
 
-   watch:
+  watch:
 
      types: started
 
-   workflow_dispatch:
+  workflow_dispatch:
 
     
 
