@@ -58,7 +58,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.42"
+	cron_version="3.43"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -98,6 +98,7 @@ cat >>/etc/crontabs/root <<EOF
 59 23 * * * sleep 60 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求#100#
 59 23 * * * sleep 61 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求#100#
 59 23 * * 0,1,2,5,6 sleep 59 && $dir_file/jd.sh run_jd_cash >/tmp/jd_cash_exchange.log	#签到领现金兑换#100#
+0 1-23/1 * * * $node $dir_file/jd_cfd_loop.js #财富岛挂气球#100#
 59 */1 * * * $dir_file/jd.sh kill_cfd #杀气球#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
@@ -222,6 +223,7 @@ done
 #JDHelloWorld
 cat >$dir_file/config/tmp/JDHelloWorld_script.txt <<EOF
 	jd_joy_new.js			#宠汪汪二代目
+	jd_big_winner.js		#翻翻乐
 EOF
 
 for script_name in `cat $dir_file/config/tmp/JDHelloWorld_script.txt | awk '{print $1}'`
@@ -265,6 +267,7 @@ done
 
 panghu999="https://raw.githubusercontent.com/panghu999/panghu/master"
 cat >$dir_file/config/tmp/panghu999.txt <<EOF
+	jd_opencard2.js		#柠檬一次性开卡
 	jd_lsj.js		#柠檬京东零食街
 	jd_twz-star.js		#特务Z行动-星小店
 EOF
@@ -311,7 +314,6 @@ cat >$dir_file/config/tmp/cdle_url.txt <<EOF
 	jd_angryCash.js			#愤怒的现金
 	jd_angryKoi.js			#愤怒的锦鲤
 	jd_goodMorning.js		#早起福利
-	jd_olympicgames.js 		#全民运动会
 	jd_joy_park_help.js 		#汪汪乐园助力
 	jd_cash_exchange.js		#签到领现金兑换
 EOF
@@ -348,28 +350,13 @@ do
 done
 
 cat >>$dir_file/config/collect_script.txt <<EOF
+	jd_cfd_loop.js 			#财富岛挂气球(杀气球运行sh \$jd kill_cfd)
 	jd_mp_h5.js			#疯狂星期五
-	jd_olympicgames.js 		#全民运动会
 	jd_sign.js  			#京东签到针对图形验证码
 	jd_senbeans.js			#来客有礼
 	star_dreamFactory_tuan.js 	#京喜开团　star261脚本
 	jd_ddnc_farmpark.js		#东东乐园 Wenmoux脚本
 	jd_qqxing.js			#星系牧场,需要手动去开卡然后进去玩一下 Wenmoux脚本
-	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)ZooPanda脚本
-	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard04.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard05.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard06.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard07.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard11.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooOpencard12.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行) ZooPanda脚本
-	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
-	zooCaptain01.js			#安佳牛奶组队瓜分京豆(不能并发，否则无法组队)
 	jd_OpenCard.py 			#开卡程序
 	jd_getFollowGift.py 		#关注有礼
 	jd_jxzpk.js			#京享值pk
@@ -390,11 +377,9 @@ EOF
 
 #删掉过期脚本
 cat >/tmp/del_js.txt <<EOF
+	jd_olympicgames.js 		#全民运动会
 	jd_europeancup.js		#狂欢欧洲杯
 	jd_joy_help.js
-	jd_cfd.ts			#财富岛新版
-	jd_cfd_loop.ts			#财富岛挂气球
-	TS_USER_AGENTS.ts 		#TS UA
 EOF
 
 for script_name in `cat /tmp/del_js.txt | awk '{print $1}'`
@@ -474,11 +459,11 @@ cat >/tmp/jd_tmp/run_0 <<EOF
 	jd_jxzpk.js			#pk
 	jd_lsj.js			#柠檬京东零食街
 	jd_ddnc_farmpark.js		#东东乐园
-	jd_olympicgames.js 		#全民运动会
 	jd_sign.js  			#京东签到针对图形验证码
 	jd_joypark_task.js		#汪汪乐园每日任务
 	jd_mp_h5.js			#疯狂星期五
 	jd_twz-star.js			#特务Z行动-星小店
+	jd_unsubscribe.js 		#取关店铺，没时间要求
 EOF
 	echo -e "$green run_0$start_script_time $white"
 
@@ -524,20 +509,7 @@ EOF
 
 run_045() {
 cat >/tmp/jd_tmp/run_045 <<EOF
-	zooOpencard01.js		#纯开卡 大牌联合618提前购 (默认不运行，自己考虑要不要运行)
-	zooOpencard02.js		#纯开卡 大牌强联合好物提前购(默认不运行，自己考虑要不要运行)
-	zooOpencard03.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard04.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard05.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard06.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard07.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard08.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard09.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard10.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard11.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooOpencard12.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooJointeam01.js		#纯开卡 (默认不运行，自己考虑要不要运行)
-	zooSupershophf.js		#合肥旗舰店开业(手动运行吧)
+	jd_opencard2.js		#柠檬一次性开卡
 EOF
 
 	echo -e "$green run_045$start_script_time $white"
@@ -553,12 +525,12 @@ EOF
 
 run_01() {
 cat >/tmp/jd_tmp/run_01 <<EOF
+	jd_big_winner.js		#翻翻乐
 	#jd_summer_movement.js		#燃动夏季
 	#jd_summer_movement_help.js	#燃动夏季助力
 	jd_joypark_joy.js		#汪汪乐园养joy
 	jd_plantBean.js 		#种豆得豆，没时间要求，一个小时收一次瓶子
 	gua_wealth_island.js 		#财富岛新版
-	jd_cfd_loop.js			#财富岛挂气球
 	#long_super_redrain.js		#整点红包雨
 EOF
 	echo -e "$green run_01$start_script_time $white"
@@ -570,6 +542,10 @@ EOF
 	done
 
 	echo -e "$green run_01$stop_script_time $white"
+}
+
+cfd_loop() {
+	$node $dir_file_js/jd_cfd_loop.js			#财富岛挂气球
 }
 
 kill_cfd() {
@@ -2522,10 +2498,10 @@ if [[ -z $action1 ]]; then
 	help
 else
 	case "$action1" in
-		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020|run_jd_cash|kill_cfd)
+		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020|run_jd_cash)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push|python_install|concurrent_js_update|run_jd_cash)
+		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push|python_install|concurrent_js_update|cfd_loop|kill_cfd)
 		$action1
 		;;
 		kill_ccr)
@@ -2541,10 +2517,10 @@ else
 		echo ""
 	else
 		case "$action2" in
-		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020|run_jd_cash|kill_cfd)
+		run_0|run_01|run_06_18|run_10_15_20|run_02|run_03|run_045|run_08_12_16|run_07|run_030|run_020|run_jd_cash)
 		concurrent_js_if
 		;;
-		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push|python_install|concurrent_js_update)
+		system_variable|update|update_script|task|jx|additional_settings|jd_sharecode|ds_setup|checklog|that_day|stop_script|script_black|script_name|backnas|npm_install|checktool|concurrent_js_clean|if_ps|getcookie|addcookie|delcookie|check_cookie_push|python_install|concurrent_js_update|cfd_loop|kill_cfd)
 		$action2
 		;;
 		kill_ccr)
