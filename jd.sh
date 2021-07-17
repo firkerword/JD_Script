@@ -447,7 +447,7 @@ update_script() {
 ccr_run() {
 	echo ""
 	$node $openwrt_script/JD_Script/js/jd_bean_sign.js #京东多合一签到
-	$node $openwrt_script/JD_Script/js/jd_angryKoi.js #愤怒的锦鲤
+	#$node $openwrt_script/JD_Script/js/jd_angryKoi.js #愤怒的锦鲤
 	$node $openwrt_script/JD_Script/js/jd_angryCash.js #愤怒的现金
 }
 
