@@ -58,7 +58,7 @@ stop_script_time="脚本结束，当前时间：`date "+%Y-%m-%d %H:%M"`"
 script_read=$(cat $dir_file/script_read.txt | grep "我已经阅读脚本说明"  | wc -l)
 
 task() {
-	cron_version="3.43"
+	cron_version="3.45"
 	if [[ `grep -o "JD_Script的定时任务$cron_version" $cron_file |wc -l` == "0" ]]; then
 		echo "不存在计划任务开始设置"
 		task_delete
@@ -92,14 +92,10 @@ cat >>/etc/crontabs/root <<EOF
 0 0 * * * $node $dir_file_js/star_dreamFactory_tuan.js	>/tmp/star_dreamFactory_tuan.log	#京喜开团#100#
 0 0 * * * $python3 $dir_file/git_clone/curtinlv_script/getFollowGifts/jd_getFollowGift.py >/tmp/jd_getFollowGift.log #关注有礼#100#
 0 8,15 * * * $python3 $dir_file/git_clone/curtinlv_script/OpenCard/jd_OpenCard.py  >/tmp/jd_OpenCard.log #开卡程序#100#
-59 23 * * * sleep 57 && $node $dir_file_js/jd_blueCoin.js  >/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求#100#
-59 23 * * * sleep 58 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求#100#
-59 23 * * * sleep 59 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求#100#
-59 23 * * * sleep 60 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求#100#
-59 23 * * * sleep 61 && $node $dir_file_js/jd_blueCoin.js  >>/tmp/jd_blueCoin.log	#东东超市兑换，有次数限制，没时间要求#100#
 59 23 * * 0,1,2,5,6 sleep 59 && $dir_file/jd.sh run_jd_cash >/tmp/jd_cash_exchange.log	#签到领现金兑换#100#
-0 1-23/1 * * * $node $dir_file/jd_cfd_loop.js #财富岛挂气球#100#
+0 1-23/1 * * * $node $dir_file_js/jd_cfd_loop.js #财富岛挂气球#100#
 59 */1 * * * $dir_file/jd.sh kill_cfd #杀气球#100#
+59 23 * * * $python3 $dir_file_js/jd_blueCoin.py >/tmp/jd_blueCoin.log	#东东超市兑换#100#
 ###########100##########请将其他定时任务放到底下###############
 #**********这里是backnas定时任务#100#******************************#
 0 */4 * * * $dir_file/jd.sh backnas  >/tmp/jd_backnas.log 2>&1 #每4个小时备份一次script,如果没有填写参数不会运行#100#
@@ -111,7 +107,6 @@ EOF
 
 task_delete() {
         sed -i '/#100#/d' /etc/crontabs/root >/dev/null 2>&1
-	sed -i '/jd_blueCoin.log/d' /etc/crontabs/root >/dev/null 2>&1
 }
 
 ds_setup() {
@@ -176,7 +171,6 @@ cat >$dir_file/config/tmp/lxk0301_script.txt <<EOF
 	jd_pet.js			#东东萌宠
 	jd_plantBean.js			#种豆得豆
 	jd_superMarket.js		#东东超市
-	jd_blueCoin.js			#东东超市兑换奖品
 	jd_dreamFactory.js		#京喜工厂
 	jd_jdfactory.js			#东东工厂
 	jd_car.js			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
@@ -299,6 +293,8 @@ cat >$dir_file/config/tmp/smiek2221_url.txt <<EOF
 	gua_wealth_island.js 		#财富岛新版
 	jd_necklace.js  		#点点券
 	ZooFaker_Necklace.js		#点点券依赖文件
+	jd_joy.js			#宠汪汪
+	jd_joy_steal.js			#宠汪汪偷好友积分与狗粮
 EOF
 
 for script_name in `cat $dir_file/config/tmp/smiek2221_url.txt | awk '{print $1}'`
@@ -336,6 +332,18 @@ for script_name in `cat $dir_file/config/tmp/Tsukasa007_url.txt | awk '{print $1
 do
 	url="$Tsukasa007_url"
 	wget $Tsukasa007_url/$script_name -O $dir_file_js/$script_name
+	update_if
+done
+
+zero205_url="https://raw.githubusercontent.com/zero205/JD_tencent_scf/main"
+cat >$dir_file/config/tmp/zero205_url.txt <<EOF
+	jd_jxqd.js			#京喜签到
+EOF
+
+for script_name in `cat $dir_file/config/tmp/zero205_url.txt | awk '{print $1}'`
+do
+	url="$zero205_url"
+	wget $zero205_url/$script_name -O $dir_file_js/$script_name
 	update_if
 done
 
@@ -377,6 +385,7 @@ EOF
 
 #删掉过期脚本
 cat >/tmp/del_js.txt <<EOF
+	jd_blueCoin.js			#东东兑换
 	jd_olympicgames.js 		#全民运动会
 	jd_europeancup.js		#狂欢欧洲杯
 	jd_joy_help.js
@@ -438,12 +447,12 @@ update_script() {
 ccr_run() {
 	echo ""
 	$node $openwrt_script/JD_Script/js/jd_bean_sign.js #京东多合一签到
+	$node $openwrt_script/JD_Script/js/jd_angryKoi.js #愤怒的锦鲤
+	$node $openwrt_script/JD_Script/js/jd_angryCash.js #愤怒的现金
 }
 
 run_0() {
 cat >/tmp/jd_tmp/run_0 <<EOF
-	jd_angryCash.js			#愤怒的现金
-	jd_angryKoi.js			#愤怒的锦鲤
 	jd_mohe.js			#5G超级盲盒
 	jd_car.js 			#京东汽车，签到满500赛点可兑换500京豆，一天运行一次即可
 	jd_cash.js 			#签到领现金，每日2毛～5毛长期
@@ -489,6 +498,7 @@ run_020() {
 
 run_030() {
 cat >/tmp/jd_tmp/run_030 <<EOF
+	gua_wealth_island.js 		#财富岛新版
 	jd_jdfactory.js 		#东东工厂，不是京喜工厂
 	jd_jxmc.js			#惊喜牧场
 	jd_health_collect.js		#健康社区-收能量
@@ -530,7 +540,6 @@ cat >/tmp/jd_tmp/run_01 <<EOF
 	#jd_summer_movement_help.js	#燃动夏季助力
 	jd_joypark_joy.js		#汪汪乐园养joy
 	jd_plantBean.js 		#种豆得豆，没时间要求，一个小时收一次瓶子
-	gua_wealth_island.js 		#财富岛新版
 	#long_super_redrain.js		#整点红包雨
 EOF
 	echo -e "$green run_01$start_script_time $white"
@@ -560,6 +569,7 @@ kill_cfd() {
 
 run_02() {
 cat >/tmp/jd_tmp/run_02 <<EOF
+	jd_joy.js		#宠汪汪
 	jd_moneyTree.js 	#摇钱树
 	jd_jxzpk.js		#pk
 	jd_qqxing.js		#星系牧场,需要手动去开卡然后进去玩一下
@@ -621,6 +631,7 @@ EOF
 
 run_07() {
 cat >/tmp/jd_tmp/run_07 <<EOF
+	jd_jxqd.js			#京喜签到
 	jd_morningSc.js			#早起赢现金
 	adolf_superbox.js		#超级盒子
 	jd_jxzpk.js			#pk
@@ -730,6 +741,9 @@ curtinlv_script_setup() {
 		rm -rf $dir_file_js/JDCookies.txt
 		ln -s $dir_file/git_clone/curtinlv_script/getFollowGifts/JDCookies.txt  $dir_file_js/JDCookies.txt
 	fi
+
+	#东东超市商品兑换
+	cp $dir_file/git_clone/curtinlv_script/jd_blueCoin.py $dir_file_js/jd_blueCoin.py
 }
 
 script_name() {
@@ -1738,8 +1752,10 @@ additional_settings() {
 		sed -i "s/helpAuthor=true/helpAuthor=false/g" $dir_file_js/$i
 	done
 
-	#京小超兑换豆子
-	sed -i "s/|| 0/|| $jd_blueCoin/g" $dir_file_js/jd_blueCoin.js
+	#东东超市兑换豆子
+	sed -i "s/coinToBeans = ''/coinToBeans = '超值京豆包'/g" $dir_file_js/jd_blueCoin.py
+	sed -i "s/blueCoin_Cc = False/blueCoin_Cc = True/g" $dir_file_js/jd_blueCoin.py
+
 
 	#取消店铺从20个改成50个(没有星推官先默认20吧)
 	sed -i "s/|| 20/|| $jd_unsubscribe/g" $dir_file_js/jd_unsubscribe.js
@@ -2404,7 +2420,6 @@ system_variable() {
 	ccr_if=$(grep "concurrent" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_try=$(grep "jd_try" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_fruit=$(grep "jd_fruit" $jd_openwrt_config | awk -F "'" '{print $2}')
-	jd_blueCoin=$(grep "jd_blueCoin" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_joy_reward=$(grep "jd_joy_reward" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_joy_feedPets=$(grep "jd_joy_feedPets" $jd_openwrt_config | awk -F "'" '{print $2}')
 	jd_joy_steal=$(grep "jd_joy_steal" $jd_openwrt_config | awk -F "'" '{print $2}')
@@ -2469,11 +2484,6 @@ jd_try='no'
 
 #农场不浇水换豆 false关闭 ture打开
 jd_fruit='false'
-
-
-#京小超默认兑换20豆子(可以改成你要的1000豆子或者其他)
-jd_blueCoin='20'
-
 
 #宠汪汪积分兑换500豆子，(350积分兑换20豆子，8000积分兑换500豆子要求等级16级，16000积分兑换1000京豆16级以后不能兑换)
 jd_joy_reward='500'
