@@ -338,6 +338,7 @@ done
 zero205_url="https://raw.githubusercontent.com/zero205/JD_tencent_scf/main"
 cat >$dir_file/config/tmp/zero205_url.txt <<EOF
 	jd_jxqd.js			#京喜签到
+        jd_fcdyj.js                     #发财大赢家
 EOF
 
 for script_name in `cat $dir_file/config/tmp/zero205_url.txt | awk '{print $1}'`
@@ -588,6 +589,7 @@ EOF
 run_03() {
 #这里不会并发
 cat >/tmp/jd_tmp/run_03 <<EOF
+        jd_fcdyj.js                     #发财大赢家
 	jd_dianjing.js			#电竞经理
 	jd_joy_new.js 			#jd宠汪汪，零点开始，11.30-15:00 17-21点可以领狗粮
 	jd_necklace.js  		#点点券 大佬0,20领一次先扔这里后面再改
