@@ -10,7 +10,7 @@ on:
 
   schedule:
 
-     - cron: 50 9-21/3 * * * 
+     - cron: 50 21-13/4 * * * 
 
   release:
 
