@@ -43,7 +43,7 @@ let UserName, index, isLogin, nickName;
       console.log(e)
       break
     }
-    await wait(30000)
+    await wait(10000)
   }
 })()
 
